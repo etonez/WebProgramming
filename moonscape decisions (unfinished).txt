@@ -1,0 +1,24 @@
+Moonscape Things to Decide
+
+Priority
+
+- task assignment: ~ page itself (server set up, etc.)
+		   ~ log in page? database?
+		   ~ tbc
+- coursework timeline
+- how to deliver instructions, aims, and plot
+- 
+
+
+
+
+Non-priority
+
+- # skins for character
+- diff weapons?
+- enemies: ~ dragons (with flamethrowers)
+	   ~ ogres
+	   ~ scientologists (with mind-powered lasers)
+	   ~ knight aliens
+- decide on plot
+-
