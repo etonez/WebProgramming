@@ -6,7 +6,7 @@ TopDownGame.Game = function(){};
 TopDownGame.Game.prototype = {
   create: function() {
     //Using placeholder levels before chunks can be used
-    this.map = this.game.add.tilemap('level1.json');
+    this.map = this.game.add.tilemap('level1');
 
     //adds tile sets
     this.map.addTilesetImage('tiles', 'gameTiles');
