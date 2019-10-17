@@ -25,7 +25,7 @@ TopDownGame.Game.prototype = {
     //create player
     var result = this.findObjectsByType('playerStart', this.map, 'objectsLayer')
     //Gets player sprite with 0 x and y offset
-    this.player = this.game.add.sprite(result[0].x, result[0].y, 'player');
+    this.player = this.game.add.sprite(result[0], result[0],'player');
     //enables default arcade physics for player
     this.game.physics.arcade.enable(this.player);
 
