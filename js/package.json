@@ -1,0 +1,14 @@
+{
+  "name": "moonscape",
+  "version": "1.0.0",
+  "description": "created by Joshua Wan, Dewi Payne, Autumn Larke & Dale Hillis",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joshua Wan",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
