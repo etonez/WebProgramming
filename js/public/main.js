@@ -143,6 +143,7 @@ Character.prototype.placeAt = function(x, y)
 }
 Character.prototype.processMovement = function(t)
 {
+
     if(this.tileFrom[0]==this.tileTo[0] &&
     this.tileFrom[1]==this.tileTo[1])
     {
@@ -177,8 +178,30 @@ Character.prototype.processMovement = function(t)
             this.position[0] = Math.round(this.position[0]);
             this.position[1] = Math.round(this.position[1]);
     }
+    
     return true;
 }
+Character.prototype.canMoveTo = function(x, y)
+{
+    if(x < 0 || x>= mapW || y < 0 || y >= mapH) {return false;}
+    if(tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.solid) {return false;}
+    return true;
+}
+
+Character.prototype.canMoveUp       = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);}
+Character.prototype.canMoveDown     = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);}
+Character.prototype.canMoveLeft     = function() {return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);}
+Character.prototype.canMoveRight    = function() {return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1] - 1);}
+
+
+Character.prototype.moveLeft        = function(t) {this.tileTo[0]-=1; this.timeMoved = t;}
+Character.prototype.moveRight       = function(t) {this.tileTo[0]+=1; this.timeMoved = t;}
+Character.prototype.moveUp          = function(t) {this.tileTo[1]-=1; this.timeMoved = t;}
+Character.prototype.moveDown        = function(t) {this.tileTo[1]+=1; this.timeMoved = t;}
+
+
+
+
 
 function toIndex(x, y)
 {
@@ -230,29 +253,21 @@ function drawMap()
     
     if(!player.processMovement(currentFrameTime))
     {
-        if(keysDown[87] && player.tileFrom[1]>0 &&
-                gameMap[toIndex(player.tileFrom[0],
-                    player.tileFrom[1]-1)]==1)
+        if(keysDown[87] && player.canMoveUp())
         {
-            player.tileTo[1]-= 1;
+            player.moveUp(currentFrameTime);
         }
-        else  if(keysDown[83] && player.tileFrom[1]<(mapH-1) &&
-                gameMap[toIndex(player.tileFrom[0],
-                    player.tileFrom[1]+1)]==1)
+        else  if(keysDown[83] && player.canMoveDown())
         {
-            player.tileTo[1]+= 1;
+            player.moveDown(currentFrameTime);
         }
-        else if(keysDown[65] && player.tileFrom[0]>0 &&
-                gameMap[toIndex(player.tileFrom[0]-1,
-                    player.tileFrom[1])]==1)
+        else if(keysDown[65] && player.canMoveLeft())
         {
-            player.tileTo[0]-= 1;
+            player.moveLeft(currentFrameTime);
         }
-        else if(keysDown[68] && player.tileFrom[0]<(mapW-1) &&
-                gameMap[toIndex(player.tileFrom[0]+1,
-                    player.tileFrom[1])]==1)
+        else if(keysDown[68] && player.canMoveRight())
         {
-            player.tileTo[0]+= 1;
+            player.moveRight(currentFrameTime);
         }
         if(player.tileFrom[0]!=player.tileTo[0] || player.tileFrom[1]!=player.tileTo[1])
         {
@@ -272,14 +287,7 @@ function drawMap()
     {
         for(var x = viewport.startTile[0]; x < viewport.endTile[0]; x++)
         {
-            switch(gameMap[((y*mapW)+x)])
-            {
-                case 0:
-                    ctx.fillStyle = "#999999";
-                    break;
-                default:
-                    ctx.fillStyle = "#eeeeee";
-            }
+            ctx.fillStyle = tileTypes[gameMap[toIndex(x,y)]].colour;
             ctx.fillRect(viewport.offset[0] + x*tileW, viewport.offset[1] + y*tileH, tileW, tileH);
         }
     }
