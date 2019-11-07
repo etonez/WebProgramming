@@ -5,6 +5,8 @@ var mapW = 60, mapH = 60;
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0;
 var lastFrameTime = 0;
 
+var tileset = null, tilesetURL = "tileset.png", tilesetLoaded = false;
+
 var floorTypes = {
     solid : 0,
     path : 1,
