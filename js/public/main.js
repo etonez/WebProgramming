@@ -1,3 +1,6 @@
+/*global variables 
+
+*/
 var ctx = null;
 var tileW = 40, tileH = 40;
 var mapW = 60, mapH = 60;
