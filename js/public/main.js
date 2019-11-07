@@ -17,10 +17,15 @@ var floorTypes = {
 }
 
 var tileTypes = {
-    0 : { colour:"#999999", floor:floorTypes.solid},
-    1 : { colour:"#eeeeee", floor:floorTypes.path},
-    2 : { colour:"#0B99F7", floor:floorTypes.water},
+    0 : { colour:"#999999", floor:floorTypes.solid, sprite:[{x:200, y:200, w:40, h:40}]},
+    1 : { colour:"#eeeeee", floor:floorTypes.path, sprite:[{x:0, y:0, w:40, h:40}]},
+    2 : { colour:"#0B99F7", floor:floorTypes.water, sprite:[{x:80, y:0, w:40, h:40}]},
 
+}
+
+var directions = {
+    right  : 0,
+    left   : 1
 }
 
 
@@ -137,6 +142,12 @@ function Character()
     this.dimensions = [35, 35];
     this.position   = [40, 40];
     this.delayMove  = 90;
+    this.direction  = directions.right;
+
+    this.sprites    = {};
+    this.sprites[directions.right]  = [{x:0, y:205, w:35, h:35}];
+    this.sprites[directions.left]  = [{x:35, y:205, w:35, h:35}];
+
 }
 Character.prototype.placeAt = function(x, y)
 {
@@ -186,7 +197,7 @@ Character.prototype.processMovement = function(t)
     
     return true;
 }
-Character.prototype.canMoveTo = function(x, y)
+Character.prototype.canMoveTo = function(x, y) 
 {
     if(x < 0 || x>= mapW || y < 0 || y >= mapH) {return false;}
     if(tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.solid) {return false;}
@@ -199,8 +210,8 @@ Character.prototype.canMoveLeft     = function() {return this.canMoveTo(this.til
 Character.prototype.canMoveRight    = function() {return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);}
 
 
-Character.prototype.moveLeft        = function(t) {this.tileTo[0]-=1; this.timeMoved = t;}
-Character.prototype.moveRight       = function(t) {this.tileTo[0]+=1; this.timeMoved = t;}
+Character.prototype.moveLeft        = function(t) {this.tileTo[0]-=1; this.timeMoved = t; this.direction = directions.left;}
+Character.prototype.moveRight       = function(t) {this.tileTo[0]+=1; this.timeMoved = t; this.direction = directions.right;}
 Character.prototype.moveUp          = function(t) {this.tileTo[1]-=1; this.timeMoved = t;}
 Character.prototype.moveDown        = function(t) {this.tileTo[1]+=1; this.timeMoved = t;}
 
@@ -238,11 +249,24 @@ window.onload = function()
         document.getElementById('map').width,
         document.getElementById('map').height,
     ]
+
+    tileset = new this.Image();
+
+    this.tileset.onerror = function(){
+        ctx = null;
+        alert("Failed to load sprites");
+    }
+    this.tileset.onload = function() { tilesetLoaded = true;}
+
+    this.tileset.src = tilesetURL;
+
 }
 
 function drawMap()
 {
     if (ctx==null) {return;}
+
+    if(!tilesetLoaded) { requestAnimationFrame(drawMap); return;}
 
     var currentFrameTime = Date.now();
     var timeElapsed = currentFrameTime - lastFrameTime;
@@ -292,13 +316,18 @@ function drawMap()
     {
         for(var x = viewport.startTile[0]; x < viewport.endTile[0]; x++)
         {
-            ctx.fillStyle = tileTypes[gameMap[toIndex(x,y)]].colour;
-            ctx.fillRect(viewport.offset[0] + x*tileW, viewport.offset[1] + y*tileH, tileW, tileH);
+            var tile = tileTypes[gameMap[toIndex(x,y)]];
+            ctx.drawImage(tileset, tile.sprite[0].x, tile.sprite[0].y, tile.sprite[0].w, tile.sprite[0].h, viewport.offset[0] + (x*tileW), viewport.offset[1] + (y*tileH), tileW, tileH)
         }
     }
+
+    var sprite = player.sprites[player.direction];
+    ctx.drawImage(tileset, sprite[0].x, sprite[0].y, sprite[0].w, sprite[0].h, viewport.offset[0] + player.position[0], viewport.offset[1] + player.position[1], player.dimensions[0], player.dimensions[1]);
+
     ctx.fillStyle = "#0000ff";
     ctx.fillRect(viewport.offset[0] + player.position[0], viewport.offset[1] + player.position[1],
         player.dimensions[0], player.dimensions[1]);
 
     requestAnimationFrame(drawMap);
 }
+
