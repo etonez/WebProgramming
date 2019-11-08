@@ -9,13 +9,11 @@ layers = {0:"#cdcdcd", #gray
           2:"#fff100", #yellow
           3:"#ff0000", #red
           4:"#747474"} #dark gray
+          
 current_colour = 0
 def set_current_colour(c):
     global current_colour
-    print (current_colour,c)
-    
     current_colour = c
-    
     
 def colchange(self):
     col = self.cget("bg")
