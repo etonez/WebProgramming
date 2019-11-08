@@ -24,8 +24,8 @@ def colchange(self):
 
 class square(tk.Canvas):    
     def __init__(self,x,y,ID):
-        super().__init__(root,height=10,
-                           width=10,bg="grey")
+        super().__init__(root,height=12,
+                           width=12,bg="#cdcdcd")
         tk.Canvas.grid(self,row=x,column=y)
         self.config(bd=0,highlightthickness=0, relief='ridge')
         self.bind("<Enter>", (lambda event: colchange(self)))
@@ -39,33 +39,31 @@ class square(tk.Canvas):
 
 def p(d):
     for i in range(len(d)):
-        if i%sq_size==0:
-            print("")
-        if d[i].backg == "blue":
-            print(1, end=", ")
-        else:
-            print(0, end=", ")
-
+        col = d[i].backg
+        for x in range(len(layers)):
+            if col == layers[x]:
+                print(x, end=", ")      
+        
 for x in range(sq_size):
     for y in range(sq_size):
         ID = (x*sq_size)+y
         d[ID] = square(x,y,ID)
         this_o = d[ID]
 
-outb = tk.Button(root,command = (lambda : p(d)))
+outb = tk.Button(root,text="output",command = (lambda : p(d)))
 outb.grid(row=61,column=61)
 
-but_1 = tk.Button(root,text="lg",command = (lambda : set_current_colour(0)))
+but_1 = tk.Button(root,text="light gray",command = (lambda : set_current_colour(0)))
 but_1.grid(row=61,column = 0, columnspan = 10)
 
-but_2 = tk.Button(root,text="bl",command = (lambda : set_current_colour(1)))
+but_2 = tk.Button(root,text="blue",command = (lambda : set_current_colour(1)))
 but_2.grid(row=61,column=11,columnspan = 10)
 
-but_2 = tk.Button(root,text="ye",command = (lambda : set_current_colour(2)))
+but_2 = tk.Button(root,text="yellow",command = (lambda : set_current_colour(2)))
 but_2.grid(row=61,column=21,columnspan = 10)
 
-but_2 = tk.Button(root,text="rd",command = (lambda : set_current_colour(3)))
+but_2 = tk.Button(root,text="red",command = (lambda : set_current_colour(3)))
 but_2.grid(row=61,column=31,columnspan = 10)
 
-but_2 = tk.Button(root,text="dg",command = (lambda : set_current_colour(4)))
+but_2 = tk.Button(root,text="dark gray",command = (lambda : set_current_colour(4)))
 but_2.grid(row=61,column=41,columnspan = 10)
