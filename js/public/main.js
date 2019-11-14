@@ -10,6 +10,8 @@ var lastFrameTime = 0;
 
 var tileset = null, tilesetURL = "tileset.png", tilesetLoaded = false;
 
+
+//This variable distinguishes different types of tile so that it can be used to make for a more dynamic map with obstacles
 var floorTypes = {
     solid : 0,
     path : 1,
@@ -17,6 +19,7 @@ var floorTypes = {
     lava  : 3
 }
 
+//the below variable stores all of the different types of tiles and assigns them a sprite from tileset.png
 var tileTypes = {
     0 : { colour:"#999999", floor:floorTypes.solid, sprite:[{x:200, y:200, w:40, h:40}]},
     1 : { colour:"#eeeeee", floor:floorTypes.path, sprite:[{x:0, y:0, w:40, h:40}]},
@@ -28,13 +31,15 @@ var tileTypes = {
 
 }
 
+
+//this variable stores two directions to allow for different sprites depending on which direction the character is facing
 var directions = {
     right  : 0,
     left   : 1
 }
 
 
-
+//the below variable assigns each key that will be used (WASD) a false value so that when the key is pressed they can be assigned true
 var keysDown = {
     87 : false,
     65 : false,
@@ -44,6 +49,7 @@ var keysDown = {
 
 var player = new Character();
 
+//the below variable stores all of the tiles that are used to create the map that the players traverses
 var gameMap = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
@@ -108,6 +114,8 @@ var gameMap = [
    	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ];
 
+
+//t
 var viewport = {
         screen      :[0,0],
         startTile   :[0,0],
