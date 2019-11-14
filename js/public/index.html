@@ -1,19 +1,28 @@
 <!DOCTYPE html>
-<html> 
+<html>
 <head>
-<style>
-    body    {text-align: center;}
-</style>
-<script src="main.js"></script>
+    <link rel="stylesheet" href="login.css">
 </head>
+<form method="post" action="index.html">
+<div class="box">
 
-</head>
-<body> 
-    <h1> Moonscape </h1>
-    <!–– canvas which game is drawn to: ––> 
-    <canvas id = "map" width = "600" height = "600"></canvas>
+<h1>Moonscape</h1>
+
+<input type="username" name="username" value="username" onFocus="field_focus(this, 'username');" onblur="field_blur(this, 'username');" class="username" />
+  
+<input type="password" name="password" value="password" onFocus="field_focus(this, 'password');" onblur="field_blur(this, 'password');" class="password" />
 
 
-    </body>
+  
+<a href="charselect.html"><div class="btn">Sign In</div></a> <!-- End Btn -->
+
+  
+</div> <!-- End Box -->
+  
+</form>
+
+<p>Enter an existing username & password or create an account! </p>
+  
+<script src="login.js"></script>
 
 </html>

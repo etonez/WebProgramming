@@ -47,7 +47,7 @@ canvas.addEventListener('click', function(evt) {
     var mousePos = getMousePos(canvas, evt);
 
     if (isInside(mousePos,archer)) {
-        window.open("index.html");
+        window.open("main.html");
     }
 }, false);
 
@@ -55,7 +55,7 @@ canvas.addEventListener('click', function(evt) {
     var mousePos = getMousePos(canvas, evt);
 
     if (isInside(mousePos,knight)) {
-        window.open("index.html");
+        window.open("main.html");
     }
 }, false);
 
@@ -63,6 +63,6 @@ canvas.addEventListener('click', function(evt) {
     var mousePos = getMousePos(canvas, evt);
 
     if (isInside(mousePos,mage)) {
-        window.open("index.html");
+        window.open("main.html");
     }
 }, false);
