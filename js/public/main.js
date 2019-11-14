@@ -35,7 +35,9 @@ var tileTypes = {
 //this variable stores two directions to allow for different sprites depending on which direction the character is facing
 var directions = {
     right  : 0,
-    left   : 1
+    left   : 1,
+    up     : 2,
+    down   : 3
 }
 
 
@@ -159,6 +161,8 @@ function Character()
     this.sprites    = {};
     this.sprites[directions.right] = [{x:0, y:205, w:35, h:35}];
     this.sprites[directions.left]  = [{x:35, y:205, w:35, h:35}];
+    this.sprites[directions.up]    = [{x:35, y:170, w:35, h:35}];
+    this.sprites[directions.down]  = [{x:0, y:170, w:35, h:35}];;
 
 }
 Character.prototype.placeAt = function(x, y)
@@ -217,8 +221,8 @@ Character.prototype.canMoveRight    = function() {return this.canMoveTo(this.til
 
 Character.prototype.moveLeft        = function(t) {this.tileTo[0]-=1; this.timeMoved = t; this.direction = directions.left;}
 Character.prototype.moveRight       = function(t) {this.tileTo[0]+=1; this.timeMoved = t; this.direction = directions.right;}
-Character.prototype.moveUp          = function(t) {this.tileTo[1]-=1; this.timeMoved = t;}
-Character.prototype.moveDown        = function(t) {this.tileTo[1]+=1; this.timeMoved = t;}
+Character.prototype.moveUp          = function(t) {this.tileTo[1]-=1; this.timeMoved = t; this.direction = directions.up;}
+Character.prototype.moveDown        = function(t) {this.tileTo[1]+=1; this.timeMoved = t; this.direction = directions.down;}
 
 
 
