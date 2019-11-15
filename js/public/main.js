@@ -5,6 +5,13 @@ var ctx = null;
 var tileW = 40, tileH = 40;
 var mapW = 60, mapH = 60;
 
+var canvasRect = {
+    x:0,
+    y:0,
+    width:0,
+    height:600
+};
+
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0;
 var lastFrameTime = 0;
 
@@ -165,12 +172,28 @@ function Character()
     this.sprites[directions.down]  = [{x:0, y:170, w:35, h:35}];;
 
 }
+
+//Function to get the mouse position
+function getMousePos(canvas, event) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+    };
+}
+
+//Function to check whether a point is inside a rectangle
+function isInside(pos, rect){
+    return pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.height && pos.y > rect.y
+}
+
 Character.prototype.placeAt = function(x, y)
 {
     this.tileFrom   = [x,y];
     this.tileTo     = [x,y];
     this.position   = [((tileW*x) + ((tileW-this.dimensions[0])/2)), ((tileH*y) + ((tileH-this.dimensions[1])/2))];
 }
+
 Character.prototype.processMovement = function(t)
 {
 
@@ -271,6 +294,7 @@ window.onload = function()
 
 }
 
+
 function drawMap()
 {
     if (ctx==null) {return;}
@@ -279,6 +303,8 @@ function drawMap()
 
     var currentFrameTime = Date.now();
     var timeElapsed = currentFrameTime - lastFrameTime;
+
+    
 
     var sec = Math.floor(Date.now()/1000);
     if(sec!=currentSecond)
