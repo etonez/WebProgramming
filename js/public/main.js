@@ -7,21 +7,6 @@ var tileW = 40, tileH = 40;
 var mapW = 60, mapH = 60;
 
 
-
-
-
-
-
-
-
-
-var canvasRect = {
-    x:0,
-    y:0,
-    width:0,
-    height:600
-};
-
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0;
 var lastFrameTime = 0;
 
@@ -33,15 +18,14 @@ var floorTypes = {
     solid : 0,
     path : 1,
     water : 2,
-    lava  : 3,
-    sand  : 4
+    lava  : 3
 }
 
 //the below variable stores all of the different types of tiles and assigns them a sprite from tileset.png
 var tileTypes = {
     0 : { colour:"#999999", floor:floorTypes.solid, sprite:[{x:200, y:200, w:40, h:40}]},
     1 : { colour:"#eeeeee", floor:floorTypes.path, sprite:[{x:0, y:0, w:40, h:40}]},
-    2 : { colour:"#0B99F7", floor:floorTypes.sand, sprite:[{x:40, y:0, w:40, h:40}]},
+    2 : { colour:"#0B99F7", floor:floorTypes.path, sprite:[{x:40, y:0, w:40, h:40}]},
     3 : { colour:"#0B99F7", floor:floorTypes.water, sprite:[{x:80, y:0, w:40, h:40}]},
     4 : { colour:"#0B99F7", floor:floorTypes.path, sprite:[{x:120, y:0, w:40, h:40}]},
     5 : { colour:"#0B99F7", floor:floorTypes.lava, sprite:[{x:160, y:0, w:40, h:40}]},
