@@ -2,6 +2,7 @@
 
 */
 var ctx = null;
+var ctx_hp = null;
 var tileW = 40, tileH = 40;
 var mapW = 60, mapH = 60;
 
@@ -206,7 +207,13 @@ function Character()
     this.thisMoved  = 0;
     this.dimensions = [35, 35];
     this.position   = [40, 40];
-    this.delayMove  = 120;
+    this.hp = 100;
+
+    this.delayMove = {}
+    this.delayMove[floorTypes.path]  = 120;
+    this.delayMove[floorTypes.water] = 200;
+    this.delayMove[floorTypes.lava] = 200;
+
     this.direction  = directions.right;
 
     this.sprites    = {};
@@ -255,7 +262,9 @@ Character.prototype.processMovement = function(t)
         return false;
     }
 
-    if((t-this.timeMoved) >= this.delayMove)
+    var moveSpeed = this.delayMove[tileTypes[gameMap[toIndex(this.tileFrom[0], this.tileFrom[1])]].floor];
+
+    if((t-this.timeMoved) >= moveSpeed)
     {
         this.placeAt(this.tileTo[0], this.tileTo[1]);
     }
@@ -265,12 +274,12 @@ Character.prototype.processMovement = function(t)
 
         if(this.tileTo[0] != this.tileFrom[0])
             {
-                var diff = (tileW / this.delayMove) * (t - this.timeMoved);
+                var diff = (tileW / moveSpeed) * (t - this.timeMoved);
                 this.position[0]+= (this.tileTo[0]<this.tileFrom[0] ? 0 - diff : diff);
             }
             if(this.tileTo[1] != this.tileFrom[1])
             {
-                var diff = (tileH / this.delayMove) * (t - this.timeMoved);
+                var diff = (tileH / moveSpeed) * (t - this.timeMoved);
                 this.position[1]+= (this.tileTo[1]<this.tileFrom[1] ? 0 - diff : diff);
             }
 
@@ -320,7 +329,7 @@ monster.prototype.processMovement = function(t)
 Character.prototype.canMoveTo = function(x, y) 
 {
     if(x < 0 || x>= mapW || y < 0 || y >= mapH) {return false;}
-    if(tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.solid) {return false;}
+    if(typeof this.delayMove[tileTypes[gameMap[toIndex(x,y)]].floor] == 'undefined') {return false;}
     return true;
 }
 
@@ -366,7 +375,7 @@ function toIndex(x, y)
 window.onload = function()
 {
     ctx = document.getElementById('map').getContext('2d');
-
+    ctx_hp = document.getElementById('playerhp').getContext('2d');
     requestAnimationFrame(drawMap);
 
     ctx.font = "bold 10pt sans-serif";
@@ -403,16 +412,32 @@ window.onload = function()
 
 }
 
-
+Character.prototype.gethp = function(){return this.hp}
+Character.prototype.sethp = function(v){this.hp = v;drawHp()}
+function drawHp()
+{
+    if (ctx_hp == null){return;}
+    ctx_hp.clearRect(0,0,6000,200);
+    ctx_hp.fillStyle = "#00FF00";
+    ctx_hp.fillRect(0,0,(player.gethp()*6),10)
+    
+}
 function drawMap()
 {
-    if (ctx==null) {return;}
 
+    if (ctx==null) {return;}
+    if (tileTypes[gameMap[toIndex(player.tileFrom[0],player.tileFrom[1])]].floor == 2)
+    {
+        player.sethp(player.gethp()-1);
+        console.log("a");
+        console.log(player.gethp());
+    }
+   
     if(!tilesetLoaded) { requestAnimationFrame(drawMap); return;}
 
     var currentFrameTime = Date.now();
     var timeElapsed = currentFrameTime - lastFrameTime;
-
+    drawHp();
     
 
     var sec = Math.floor(Date.now()/1000);
@@ -438,6 +463,7 @@ function drawMap()
     
     if(!player.processMovement(currentFrameTime))
     {
+        console.log(tileTypes[gameMap[toIndex(player.tileFrom[0],player.tileFrom[1])]].floor)
         if(keysDown[87] && player.canMoveUp())
         {
             player.moveUp(currentFrameTime);
@@ -663,6 +689,7 @@ function drawMap()
 
 
 
+    
     requestAnimationFrame(drawMap);
 }
 
