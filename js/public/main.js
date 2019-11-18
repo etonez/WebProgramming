@@ -320,6 +320,8 @@ function drawMap()
     if (tileTypes[gameMap[toIndex(player.tileFrom[0],player.tileFrom[1])]].floor == 2)
     {
         player.sethp(player.gethp()-1);
+        console.log("a");
+        console.log(player.gethp());
     }
    
     if(!tilesetLoaded) { requestAnimationFrame(drawMap); return;}
