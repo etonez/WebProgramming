@@ -162,7 +162,11 @@ function Character()
     this.thisMoved  = 0;
     this.dimensions = [35, 35];
     this.position   = [40, 40];
-    this.delayMove  = 120;
+
+    this.delayMove = {}
+    this.delayMove[floorTypes.path]  = 120;
+    this.delayMove[floorTypes.water] = 500;
+
     this.direction  = directions.right;
 
     this.sprites    = {};
@@ -203,7 +207,10 @@ Character.prototype.processMovement = function(t)
         return false;
     }
 
-    if((t-this.timeMoved) >= this.delayMove)
+    var moveSpeed = this.delayMove[tileTypes[gameMap[
+        toIndex(this.tileFrom[0], this.tileFrom[1])]].floor];
+
+    if((t-this.timeMoved) >= moveSpeed)
     {
         this.placeAt(this.tileTo[0], this.tileTo[1]);
     }
@@ -213,12 +220,12 @@ Character.prototype.processMovement = function(t)
 
         if(this.tileTo[0] != this.tileFrom[0])
             {
-                var diff = (tileW / this.delayMove) * (t - this.timeMoved);
+                var diff = (tileW / moveSpeed) * (t - this.timeMoved);
                 this.position[0]+= (this.tileTo[0]<this.tileFrom[0] ? 0 - diff : diff);
             }
             if(this.tileTo[1] != this.tileFrom[1])
             {
-                var diff = (tileH / this.delayMove) * (t - this.timeMoved);
+                var diff = (tileH / moveSpeed) * (t - this.timeMoved);
                 this.position[1]+= (this.tileTo[1]<this.tileFrom[1] ? 0 - diff : diff);
             }
 
@@ -232,7 +239,7 @@ Character.prototype.processMovement = function(t)
 Character.prototype.canMoveTo = function(x, y) 
 {
     if(x < 0 || x>= mapW || y < 0 || y >= mapH) {return false;}
-    if(tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.solid) {return false;}
+    if(typeof this.delayMove[tileTypes[gameMap[toIndex(x,y)]].floor] == 'undefined') {return false;}
     return true;
 }
 
