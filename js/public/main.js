@@ -5,6 +5,15 @@ var ctx = null;
 var tileW = 40, tileH = 40;
 var mapW = 60, mapH = 60;
 
+
+
+
+
+
+
+
+
+
 var canvasRect = {
     x:0,
     y:0,
@@ -23,14 +32,15 @@ var floorTypes = {
     solid : 0,
     path : 1,
     water : 2,
-    lava  : 3
+    lava  : 3,
+    sand  : 4
 }
 
 //the below variable stores all of the different types of tiles and assigns them a sprite from tileset.png
 var tileTypes = {
     0 : { colour:"#999999", floor:floorTypes.solid, sprite:[{x:200, y:200, w:40, h:40}]},
     1 : { colour:"#eeeeee", floor:floorTypes.path, sprite:[{x:0, y:0, w:40, h:40}]},
-    2 : { colour:"#0B99F7", floor:floorTypes.path, sprite:[{x:40, y:0, w:40, h:40}]},
+    2 : { colour:"#0B99F7", floor:floorTypes.sand, sprite:[{x:40, y:0, w:40, h:40}]},
     3 : { colour:"#0B99F7", floor:floorTypes.water, sprite:[{x:80, y:0, w:40, h:40}]},
     4 : { colour:"#0B99F7", floor:floorTypes.path, sprite:[{x:120, y:0, w:40, h:40}]},
     5 : { colour:"#0B99F7", floor:floorTypes.lava, sprite:[{x:160, y:0, w:40, h:40}]},
@@ -155,6 +165,40 @@ var viewport = {
 
 
 
+
+var monsterReady = false;
+var monsterImage = new Image();
+monsterImage.onload = function () {
+monsterReady = true;
+};
+
+
+
+function monster()
+{
+    this.tileFrom   = [9,1];
+    this.tileTo     = [9,1];
+    this.thisMoved  = 0;
+    this.dimensions = [25, 25];
+    this.position   = [360, 40];
+    this.delayMove  = 250;
+}
+
+
+var crab = new monster();
+var crab1 = new monster();
+var crab2 = new monster();
+var crab3 = new monster();
+var crab4 = new monster();
+var crab5 = new monster();
+var crab6 = new monster();
+
+
+
+
+
+
+
 function Character()
 {
     this.tileFrom   = [1,1];
@@ -194,7 +238,51 @@ Character.prototype.placeAt = function(x, y)
     this.position   = [((tileW*x) + ((tileW-this.dimensions[0])/2)), ((tileH*y) + ((tileH-this.dimensions[1])/2))];
 }
 
+monster.prototype.placeAt = function(x, y)
+{
+    this.tileFrom   = [x,y];
+    this.tileTo     = [x,y];
+    this.position   = [((tileW*x) + ((tileW-this.dimensions[0])/2)), ((tileH*y) + ((tileH-this.dimensions[1])/2))];
+}
+
+
 Character.prototype.processMovement = function(t)
+{
+
+    if(this.tileFrom[0]==this.tileTo[0] &&
+    this.tileFrom[1]==this.tileTo[1])
+    {
+        return false;
+    }
+
+    if((t-this.timeMoved) >= this.delayMove)
+    {
+        this.placeAt(this.tileTo[0], this.tileTo[1]);
+    }
+    else{
+        this.position[0] = (this.tileFrom[0] * tileW) + ((tileW - this.dimensions[0])/2);
+        this.position[1] = (this.tileFrom[1] * tileH) + ((tileH - this.dimensions[1])/2);
+
+        if(this.tileTo[0] != this.tileFrom[0])
+            {
+                var diff = (tileW / this.delayMove) * (t - this.timeMoved);
+                this.position[0]+= (this.tileTo[0]<this.tileFrom[0] ? 0 - diff : diff);
+            }
+            if(this.tileTo[1] != this.tileFrom[1])
+            {
+                var diff = (tileH / this.delayMove) * (t - this.timeMoved);
+                this.position[1]+= (this.tileTo[1]<this.tileFrom[1] ? 0 - diff : diff);
+            }
+
+            this.position[0] = Math.round(this.position[0]);
+            this.position[1] = Math.round(this.position[1]);
+    }
+    
+    return true;
+}
+
+
+monster.prototype.processMovement = function(t)
 {
 
     if(this.tileFrom[0]==this.tileTo[0] &&
@@ -236,6 +324,14 @@ Character.prototype.canMoveTo = function(x, y)
     return true;
 }
 
+
+monster.prototype.canMoveTo = function(x, y) 
+{
+    if(x < 0 || x>= mapW || y < 0 || y >= mapH) {return false;}
+    if(tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.sand || tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.water) {return true;}
+    else if(tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.path || tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.solid){return false;}
+}
+
 Character.prototype.canMoveUp       = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);}
 Character.prototype.canMoveDown     = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 2);}
 Character.prototype.canMoveLeft     = function() {return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);}
@@ -246,6 +342,17 @@ Character.prototype.moveLeft        = function(t) {this.tileTo[0]-=1; this.timeM
 Character.prototype.moveRight       = function(t) {this.tileTo[0]+=1; this.timeMoved = t; this.direction = directions.right;}
 Character.prototype.moveUp          = function(t) {this.tileTo[1]-=1; this.timeMoved = t; this.direction = directions.up;}
 Character.prototype.moveDown        = function(t) {this.tileTo[1]+=1; this.timeMoved = t; this.direction = directions.down;}
+
+monster.prototype.canMoveUp       = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);}
+monster.prototype.canMoveDown     = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);}
+monster.prototype.canMoveLeft     = function() {return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);}
+monster.prototype.canMoveRight    = function() {return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);}
+
+
+monster.prototype.moveLeft        = function(t) {this.tileTo[0]-=1; this.timeMoved = t;}
+monster.prototype.moveRight       = function(t) {this.tileTo[0]+=1; this.timeMoved = t;}
+monster.prototype.moveUp          = function(t) {this.tileTo[1]-=1; this.timeMoved = t;}
+monster.prototype.moveDown        = function(t) {this.tileTo[1]+=1; this.timeMoved = t;}
 
 
 
@@ -291,6 +398,8 @@ window.onload = function()
     this.tileset.onload = function() { tilesetLoaded = true;}
 
     this.tileset.src = tilesetURL;
+    this.monsterImage.src = "enemyCrab.png";
+
 
 }
 
@@ -314,6 +423,18 @@ function drawMap()
         frameCount = 1;
     }
     else {frameCount++;}
+
+    var crabMovement = Math.floor((Math.random() * 4) + 1);
+    var crab1Movement = Math.floor((Math.random() * 4) + 1);
+    var crab2Movement = Math.floor((Math.random() * 4) + 1);
+    var crab3Movement = Math.floor((Math.random() * 4) + 1);
+    var crab4Movement = Math.floor((Math.random() * 4) + 1);
+    var crab5Movement = Math.floor((Math.random() * 4) + 1);
+    var crab6Movement = Math.floor((Math.random() * 4) + 1);
+
+
+
+
     
     if(!player.processMovement(currentFrameTime))
     {
@@ -339,9 +460,179 @@ function drawMap()
         }
     }
 
+    if(!crab.processMovement(currentFrameTime))
+    {
+        if(crabMovement == 1 && crab.canMoveUp())
+        {
+            crab.moveUp(currentFrameTime);
+        }
+        else  if(crabMovement == 2 && crab.canMoveDown())
+        {
+            crab.moveDown(currentFrameTime);
+        }
+        else if(crabMovement == 3 && crab.canMoveLeft())
+        {
+            crab.moveLeft(currentFrameTime);
+        }
+        else if(crabMovement == 4 && crab.canMoveRight())
+        {
+            crab.moveRight(currentFrameTime);
+        }
+        if(crab.tileFrom[0]!=crab.tileTo[0] || crab.tileFrom[1]!=crab.tileTo[1])
+        {
+            crab.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab1.processMovement(currentFrameTime))
+    {
+        if(crab1Movement == 1 && crab1.canMoveUp())
+        {
+            crab1.moveUp(currentFrameTime);
+        }
+        else  if(crab1Movement == 2 && crab1.canMoveDown())
+        {
+            crab1.moveDown(currentFrameTime);
+        }
+        else if(crab1Movement == 3 && crab1.canMoveLeft())
+        {
+            crab1.moveLeft(currentFrameTime);
+        }
+        else if(crab1Movement == 4 && crab1.canMoveRight())
+        {
+            crab1.moveRight(currentFrameTime);
+        }
+        if(crab1.tileFrom[0]!=crab1.tileTo[0] || crab1.tileFrom[1]!=crab1.tileTo[1])
+        {
+            crab1.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab2.processMovement(currentFrameTime))
+    {
+        if(crab2Movement == 1 && crab2.canMoveUp())
+        {
+            crab2.moveUp(currentFrameTime);
+        }
+        else  if(crab2Movement == 2 && crab2.canMoveDown())
+        {
+            crab2.moveDown(currentFrameTime);
+        }
+        else if(crab2Movement == 3 && crab2.canMoveLeft())
+        {
+            crab2.moveLeft(currentFrameTime);
+        }
+        else if(crab2Movement == 4 && crab2.canMoveRight())
+        {
+            crab2.moveRight(currentFrameTime);
+        }
+        if(crab2.tileFrom[0]!=crab2.tileTo[0] || crab2.tileFrom[1]!=crab2.tileTo[1])
+        {
+            crab2.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab3.processMovement(currentFrameTime))
+    {
+        if(crab3Movement == 1 && crab3.canMoveUp())
+        {
+            crab3.moveUp(currentFrameTime);
+        }
+        else  if(crab3Movement == 2 && crab3.canMoveDown())
+        {
+            crab3.moveDown(currentFrameTime);
+        }
+        else if(crab3Movement == 3 && crab3.canMoveLeft())
+        {
+            crab3.moveLeft(currentFrameTime);
+        }
+        else if(crab3Movement == 4 && crab3.canMoveRight())
+        {
+            crab3.moveRight(currentFrameTime);
+        }
+        if(crab3.tileFrom[0]!=crab3.tileTo[0] || crab3.tileFrom[1]!=crab3.tileTo[1])
+        {
+            crab3.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab4.processMovement(currentFrameTime))
+    {
+        if(crab4Movement == 1 && crab4.canMoveUp())
+        {
+            crab4.moveUp(currentFrameTime);
+        }
+        else  if(crab4Movement == 2 && crab4.canMoveDown())
+        {
+            crab4.moveDown(currentFrameTime);
+        }
+        else if(crab4Movement == 3 && crab4.canMoveLeft())
+        {
+            crab4.moveLeft(currentFrameTime);
+        }
+        else if(crab4Movement == 4 && crab4.canMoveRight())
+        {
+            crab4.moveRight(currentFrameTime);
+        }
+        if(crab4.tileFrom[0]!=crab4.tileTo[0] || crab4.tileFrom[1]!=crab4.tileTo[1])
+        {
+            crab4.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab5.processMovement(currentFrameTime))
+    {
+        if(crab5Movement == 1 && crab5.canMoveUp())
+        {
+            crab5.moveUp(currentFrameTime);
+        }
+        else  if(crab5Movement == 2 && crab5.canMoveDown())
+        {
+            crab5.moveDown(currentFrameTime);
+        }
+        else if(crab5Movement == 3 && crab5.canMoveLeft())
+        {
+            crab5.moveLeft(currentFrameTime);
+        }
+        else if(crab5Movement == 4 && crab5.canMoveRight())
+        {
+            crab5.moveRight(currentFrameTime);
+        }
+        if(crab5.tileFrom[0]!=crab5.tileTo[0] || crab5.tileFrom[1]!=crab5.tileTo[1])
+        {
+            crab5.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab6.processMovement(currentFrameTime))
+    {
+        if(crab6Movement == 1 && crab6.canMoveUp())
+        {
+            crab6.moveUp(currentFrameTime);
+        }
+        else  if(crab6Movement == 2 && crab6.canMoveDown())
+        {
+            crab6.moveDown(currentFrameTime);
+        }
+        else if(crab6Movement == 3 && crab6.canMoveLeft())
+        {
+            crab6.moveLeft(currentFrameTime);
+        }
+        else if(crab6Movement == 4 && crab6.canMoveRight())
+        {
+            crab6.moveRight(currentFrameTime);
+        }
+        if(crab6.tileFrom[0]!=crab6.tileTo[0] || crab6.tileFrom[1]!=crab6.tileTo[1])
+        {
+            crab6.timeMoved = currentFrameTime;
+        }
+    }
+
+    
+
     viewport.update(
         player.position[0] + (player.dimensions[0]/2),
-        player.position[1] + (player.dimensions[1]/2)
+        player.position[1] + (player.dimensions[1]/2),
     )
 
     ctx.fillStyle = "#999999";
@@ -358,9 +649,19 @@ function drawMap()
 
     var sprite = player.sprites[player.direction];
     ctx.drawImage(tileset, sprite[0].x, sprite[0].y, sprite[0].w, sprite[0].h, viewport.offset[0] + player.position[0], viewport.offset[1] + player.position[1], player.dimensions[0], player.dimensions[1]);
+    
+    ctx.drawImage(monsterImage, viewport.offset[0] + crab.position[0], viewport.offset[1] + crab.position[1]);
+    ctx.drawImage(monsterImage, viewport.offset[0] + crab1.position[0], viewport.offset[1] + crab1.position[1]);
+    ctx.drawImage(monsterImage, viewport.offset[0] + crab2.position[0], viewport.offset[1] + crab2.position[1]);
+    ctx.drawImage(monsterImage, viewport.offset[0] + crab3.position[0], viewport.offset[1] + crab3.position[1]);
+    ctx.drawImage(monsterImage, viewport.offset[0] + crab4.position[0], viewport.offset[1] + crab4.position[1]);
+    ctx.drawImage(monsterImage, viewport.offset[0] + crab5.position[0], viewport.offset[1] + crab5.position[1]);
+    ctx.drawImage(monsterImage, viewport.offset[0] + crab6.position[0], viewport.offset[1] + crab6.position[1]);
 
-    ctx.fillStyle = "rgba(0, 0, 255, 0)";
-    ctx.fillRect(viewport.offset[0] + player.position[0], viewport.offset[1] + player.position[1], player.dimensions[0], player.dimensions[1]);
+
+
+
+
 
     requestAnimationFrame(drawMap);
 }
