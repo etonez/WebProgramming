@@ -165,7 +165,8 @@ function Character()
 
     this.delayMove = {}
     this.delayMove[floorTypes.path]  = 120;
-    this.delayMove[floorTypes.water] = 500;
+    this.delayMove[floorTypes.water] = 200;
+    this.delayMove[floorTypes.lava] = 200;
 
     this.direction  = directions.right;
 
