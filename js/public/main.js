@@ -342,7 +342,6 @@ function drawMap()
     
     if(!player.processMovement(currentFrameTime))
     {
-        console.log(tileTypes[gameMap[toIndex(player.tileFrom[0],player.tileFrom[1])]].floor)
         if(keysDown[87] && player.canMoveUp())
         {
             player.moveUp(currentFrameTime);
