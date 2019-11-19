@@ -190,17 +190,6 @@ var crab5 = new crabObject();
 var crab6 = new crabObject();
 
 //Creates the higher level crab object
-<<<<<<< HEAD
-function lvl2crabObject()
-{
-    this.tileFrom   = [13,24];
-    this.tileTo     = [13,24];
-    this.thisMoved  = 0;
-    this.dimensions = [35, 35];
-    this.position   = [520, 960];
-    this.delayMove  = 300;
-    this.hp = 80;
-=======
 function lvl2crabObject() {
 	this.tileFrom = [13, 24];
 	this.tileTo = [13, 24];
@@ -209,7 +198,6 @@ function lvl2crabObject() {
 	this.position = [520, 960];
 	this.delayMove = 300;
 	this.hp = 80;
->>>>>>> c3a846814cc3395f74d1bceda2da8b388a4a511a
 }
 
 //creates instances of the lvl2crab object
@@ -228,34 +216,6 @@ var crab18 = new lvl2crabObject();
 var crab19 = new lvl2crabObject();
 var crab20 = new lvl2crabObject();
 
-<<<<<<< HEAD
-
-crab14.tileTo[22,37];
-crab14.tileFrom[22,37];
-crab14.position[880,1480];
-crab15.tileTo[22,37];
-crab15.tileTo[22,37];
-crab15.position[880,1480];
-crab16.tileTo[22,37];
-crab16.tileTo[22,37];
-crab16.position[880,1480];
-crab17.tileTo[22,37];
-crab17.tileTo[22,37];
-crab17.position[880,1480];
-crab18.tileTo[22,37];
-crab18.tileTo[22,37];
-crab18.position[880,1480];
-crab19.tileTo[22,37];
-crab19.tileTo[22,37];
-crab19.position[880,1480];
-crab20.tileTo[22,37];
-crab20.tileTo[22,37];
-crab20.position[880,1480];
-
-
-
-
-=======
 crab14.tileTo[(22, 37)];
 crab14.tileTo[(22, 37)];
 crab14.position[(880, 1480)];
@@ -277,7 +237,6 @@ crab19.position[(880, 1480)];
 crab20.tileTo[(22, 37)];
 crab20.tileTo[(22, 37)];
 crab20.position[(880, 1480)];
->>>>>>> c3a846814cc3395f74d1bceda2da8b388a4a511a
 
 //Creates the character object that will hold all of the player's information
 function Character() {
