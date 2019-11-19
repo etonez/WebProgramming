@@ -207,7 +207,7 @@ function lvl2crabObject()
     this.tileFrom   = [13,24];
     this.tileTo     = [13,24];
     this.thisMoved  = 0;
-    this.dimensions = [30, 30];
+    this.dimensions = [35, 35];
     this.position   = [520, 960];
     this.delayMove  = 300;
     this.hp = 80;
@@ -232,8 +232,9 @@ var crab18 = new lvl2crabObject();
 var crab19 = new lvl2crabObject();
 var crab20 = new lvl2crabObject();
 
+
 crab14.tileTo[22,37];
-crab14.tileTo[22,37];
+crab14.tileFrom[22,37];
 crab14.position[880,1480];
 crab15.tileTo[22,37];
 crab15.tileTo[22,37];
