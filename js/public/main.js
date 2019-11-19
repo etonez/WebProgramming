@@ -5,17 +5,8 @@ var ctx = null;
 var ctx_hp = null;
 var tileW = 40, tileH = 40;
 var mapW = 60, mapH = 60;
-
-var canvasRect = {
-    x:0,
-    y:0,
-    width:0,
-    height:600
-};
-
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0;
 var lastFrameTime = 0;
-
 var tileset = null, tilesetURL = "tileset.png", tilesetLoaded = false;
 
 
@@ -26,6 +17,7 @@ var floorTypes = {
     water : 2,
     lava  : 3
 }
+
 
 //the below variable stores all of the different types of tiles and assigns them a sprite from tileset.png
 var tileTypes = {
@@ -57,7 +49,8 @@ var keysDown = {
     68 : false
 }
 
-var player = new Character();
+
+
 
 //the below variable stores all of the tiles that are used to create the map that the players traverses
 var gameMap = [
@@ -125,7 +118,7 @@ var gameMap = [
 ];
 
 
-//t
+//associative list that stores and updates 
 var viewport = {
         screen      :[0,0],
         startTile   :[0,0],
@@ -155,29 +148,75 @@ var viewport = {
 }
 
 
-
-function Character()
-{
-    this.tileFrom   = [1,1];
-    this.tileTo     = [1,1];
-    this.thisMoved  = 0;
-    this.dimensions = [35, 35];
-    this.position   = [40, 40];
-    this.hp = 100;
-
-    this.delayMove = {}
-    this.delayMove[floorTypes.path]  = 120;
-    this.delayMove[floorTypes.water] = 200;
-    this.delayMove[floorTypes.lava] = 200;
-
-    this.direction  = directions.right;
-
-    this.sprites    = {};
-    this.sprites[directions.right] = [{x:0, y:205, w:35, h:35}];
-    this.sprites[directions.left]  = [{x:35, y:205, w:35, h:35}];
-    this.sprites[directions.up]    = [{x:35, y:170, w:35, h:35}];
-    this.sprites[directions.down]  = [{x:0, y:170, w:35, h:35}];;
-
+//
+class Character {
+    constructor() {
+        this.tileFrom = [1, 1];
+        this.tileTo = [1, 1];
+        this.thisMoved = 0;
+        this.dimensions = [35, 35];
+        this.position = [40, 40];
+        this.hp = 100;
+        this.delayMove = {};
+        this.delayMove[floorTypes.path] = 120;
+        this.delayMove[floorTypes.water] = 200;
+        this.delayMove[floorTypes.lava] = 200;
+        this.direction = directions.right;
+        this.sprites = {};
+        this.sprites[directions.right] = [{ x: 0, y: 205, w: 35, h: 35 }];
+        this.sprites[directions.left] = [{ x: 35, y: 205, w: 35, h: 35 }];
+        this.sprites[directions.up] = [{ x: 35, y: 170, w: 35, h: 35 }];
+        this.sprites[directions.down] = [{ x: 0, y: 170, w: 35, h: 35 }];
+    }
+    placeAt(x, y) {
+        this.tileFrom = [x, y];
+        this.tileTo = [x, y];
+        this.position = [((tileW * x) + ((tileW - this.dimensions[0]) / 2)), ((tileH * y) + ((tileH - this.dimensions[1]) / 2))];
+    }
+    processMovement(t) {
+        if (this.tileFrom[0] == this.tileTo[0] &&
+            this.tileFrom[1] == this.tileTo[1]) {
+            return false;
+        }
+        var moveSpeed = this.delayMove[tileTypes[gameMap[toIndex(this.tileFrom[0], this.tileFrom[1])]].floor];
+        if ((t - this.timeMoved) >= moveSpeed) {
+            this.placeAt(this.tileTo[0], this.tileTo[1]);
+        }
+        else {
+            this.position[0] = (this.tileFrom[0] * tileW) + ((tileW - this.dimensions[0]) / 2);
+            this.position[1] = (this.tileFrom[1] * tileH) + ((tileH - this.dimensions[1]) / 2);
+            if (this.tileTo[0] != this.tileFrom[0]) {
+                var diff = (tileW / moveSpeed) * (t - this.timeMoved);
+                this.position[0] += (this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff);
+            }
+            if (this.tileTo[1] != this.tileFrom[1]) {
+                var diff = (tileH / moveSpeed) * (t - this.timeMoved);
+                this.position[1] += (this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff);
+            }
+            this.position[0] = Math.round(this.position[0]);
+            this.position[1] = Math.round(this.position[1]);
+        }
+        return true;
+    }
+    canMoveTo(x, y) {
+        if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
+            return false;
+        }
+        if (typeof this.delayMove[tileTypes[gameMap[toIndex(x, y)]].floor] == 'undefined') {
+            return false;
+        }
+        return true;
+    }
+    canMoveUp() { return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1); }
+    canMoveDown() { return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 2); }
+    canMoveLeft() { return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]); }
+    canMoveRight() { return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]); }
+    moveLeft(t) { this.tileTo[0] -= 1; this.timeMoved = t; this.direction = directions.left; }
+    moveRight(t) { this.tileTo[0] += 1; this.timeMoved = t; this.direction = directions.right; }
+    moveUp(t) { this.tileTo[1] -= 1; this.timeMoved = t; this.direction = directions.up; }
+    moveDown(t) { this.tileTo[1] += 1; this.timeMoved = t; this.direction = directions.down; }
+    gethp() { return this.hp; }
+    sethp(v) { this.hp = v; drawHp(); }
 }
 
 //Function to get the mouse position
@@ -194,77 +233,18 @@ function isInside(pos, rect){
     return pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.height && pos.y > rect.y
 }
 
-Character.prototype.placeAt = function(x, y)
-{
-    this.tileFrom   = [x,y];
-    this.tileTo     = [x,y];
-    this.position   = [((tileW*x) + ((tileW-this.dimensions[0])/2)), ((tileH*y) + ((tileH-this.dimensions[1])/2))];
-}
 
-Character.prototype.processMovement = function(t)
-{
-
-    if(this.tileFrom[0]==this.tileTo[0] &&
-    this.tileFrom[1]==this.tileTo[1])
-    {
-        return false;
-    }
-
-    var moveSpeed = this.delayMove[tileTypes[gameMap[toIndex(this.tileFrom[0], this.tileFrom[1])]].floor];
-
-    if((t-this.timeMoved) >= moveSpeed)
-    {
-        this.placeAt(this.tileTo[0], this.tileTo[1]);
-    }
-    else{
-        this.position[0] = (this.tileFrom[0] * tileW) + ((tileW - this.dimensions[0])/2);
-        this.position[1] = (this.tileFrom[1] * tileH) + ((tileH - this.dimensions[1])/2);
-
-        if(this.tileTo[0] != this.tileFrom[0])
-            {
-                var diff = (tileW / moveSpeed) * (t - this.timeMoved);
-                this.position[0]+= (this.tileTo[0]<this.tileFrom[0] ? 0 - diff : diff);
-            }
-            if(this.tileTo[1] != this.tileFrom[1])
-            {
-                var diff = (tileH / moveSpeed) * (t - this.timeMoved);
-                this.position[1]+= (this.tileTo[1]<this.tileFrom[1] ? 0 - diff : diff);
-            }
-
-            this.position[0] = Math.round(this.position[0]);
-            this.position[1] = Math.round(this.position[1]);
-    }
-    
-    return true;
-}
-
-Character.prototype.canMoveTo = function(x, y) 
-{
-    if(x < 0 || x>= mapW || y < 0 || y >= mapH) {return false;}
-    if(typeof this.delayMove[tileTypes[gameMap[toIndex(x,y)]].floor] == 'undefined') {return false;}
-    return true;
-}
-
-Character.prototype.canMoveUp       = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);}
-Character.prototype.canMoveDown     = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 2);}
-Character.prototype.canMoveLeft     = function() {return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);}
-Character.prototype.canMoveRight    = function() {return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);}
+var player = new Character();
 
 
-Character.prototype.moveLeft        = function(t) {this.tileTo[0]-=1; this.timeMoved = t; this.direction = directions.left;}
-Character.prototype.moveRight       = function(t) {this.tileTo[0]+=1; this.timeMoved = t; this.direction = directions.right;}
-Character.prototype.moveUp          = function(t) {this.tileTo[1]-=1; this.timeMoved = t; this.direction = directions.up;}
-Character.prototype.moveDown        = function(t) {this.tileTo[1]+=1; this.timeMoved = t; this.direction = directions.down;}
-
-
-
-
-
+//returns the map index given its coordinates, if the list were a 60*60 grid as in this game.
 function toIndex(x, y)
 {
     return ((y * mapW) + x);
 }
 
+
+//window load setup, listeners and variables
 window.onload = function()
 {
     ctx = document.getElementById('map').getContext('2d');
@@ -303,8 +283,7 @@ window.onload = function()
 
 }
 
-Character.prototype.gethp = function(){return this.hp}
-Character.prototype.sethp = function(v){this.hp = v;drawHp()}
+
 function drawHp()
 {
     if (ctx_hp == null){return;}
@@ -313,6 +292,8 @@ function drawHp()
     ctx_hp.fillRect(0,0,(player.gethp()*6),10)
     
 }
+
+
 function drawMap()
 {
 

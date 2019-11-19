@@ -1,0 +1,8 @@
+use double quotes: "string" instead of 'string'
+camelCase for variables
+Capital name for Classes
+Put spaces around operators and commas 
+     = + - * / , .
+Indent with tab (4 space block){
+    and write blocks like this ^
+}
