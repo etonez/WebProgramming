@@ -167,17 +167,25 @@ crabImage.onload = function () {
 crabReady = true;
 };
 
+//drawing the lvl2crabs onto the canvas
+var lvl2crabReady = false;
+var lvl2crabImage = new Image();
+lvl2crabImage.onload = function () {
+    lvl2crabReady = true;
+};
+
 
 
 //Creates the crab object which will hold all of the sprite's information
 function crabObject()
 {
-    this.tileFrom   = [9,1];
-    this.tileTo     = [9,1];
+    this.tileFrom   = [17,8];
+    this.tileTo     = [17,8];
     this.thisMoved  = 0;
     this.dimensions = [25, 25];
-    this.position   = [360, 40];
+    this.position   = [680, 320];
     this.delayMove  = 250;
+    this.hp = 40;
 }
 
 
@@ -190,6 +198,61 @@ var crab4 = new crabObject();
 var crab5 = new crabObject();
 var crab6 = new crabObject();
 
+
+
+
+//Creates the higher level crab object
+function lvl2crabObject()
+{
+    this.tileFrom   = [13,24];
+    this.tileTo     = [13,24];
+    this.thisMoved  = 0;
+    this.dimensions = [35, 35];
+    this.position   = [520, 960];
+    this.delayMove  = 300;
+    this.hp = 80;
+}
+
+
+
+//creates instances of the lvl2crab object
+var crab7 = new lvl2crabObject();
+var crab8 = new lvl2crabObject();
+var crab9 = new lvl2crabObject();
+var crab10 = new lvl2crabObject();
+var crab11 = new lvl2crabObject();
+var crab12 = new lvl2crabObject();
+var crab13 = new lvl2crabObject();
+
+var crab14 = new lvl2crabObject();
+var crab15 = new lvl2crabObject();
+var crab16 = new lvl2crabObject();
+var crab17 = new lvl2crabObject();
+var crab18 = new lvl2crabObject();
+var crab19 = new lvl2crabObject();
+var crab20 = new lvl2crabObject();
+
+crab14.tileTo[22,37];
+crab14.tileTo[22,37];
+crab14.position[880,1480];
+crab15.tileTo[22,37];
+crab15.tileTo[22,37];
+crab15.position[880,1480];
+crab16.tileTo[22,37];
+crab16.tileTo[22,37];
+crab16.position[880,1480];
+crab17.tileTo[22,37];
+crab17.tileTo[22,37];
+crab17.position[880,1480];
+crab18.tileTo[22,37];
+crab18.tileTo[22,37];
+crab18.position[880,1480];
+crab19.tileTo[22,37];
+crab19.tileTo[22,37];
+crab19.position[880,1480];
+crab20.tileTo[22,37];
+crab20.tileTo[22,37];
+crab20.position[880,1480];
 
 
 
@@ -248,6 +311,13 @@ Character.prototype.placeAt = function(x, y)
 }
 
 crabObject.prototype.placeAt = function(x, y)
+{
+    this.tileFrom   = [x,y];
+    this.tileTo     = [x,y];
+    this.position   = [((tileW*x) + ((tileW-this.dimensions[0])/2)), ((tileH*y) + ((tileH-this.dimensions[1])/2))];
+}
+
+lvl2crabObject.prototype.placeAt = function(x, y)
 {
     this.tileFrom   = [x,y];
     this.tileTo     = [x,y];
@@ -331,6 +401,42 @@ crabObject.prototype.processMovement = function(t)
 }
 
 
+lvl2crabObject.prototype.processMovement = function(t)
+{
+
+    if(this.tileFrom[0]==this.tileTo[0] &&
+    this.tileFrom[1]==this.tileTo[1])
+    {
+        return false;
+    }
+
+    if((t-this.timeMoved) >= this.delayMove)
+    {
+        this.placeAt(this.tileTo[0], this.tileTo[1]);
+    }
+    else{
+        this.position[0] = (this.tileFrom[0] * tileW) + ((tileW - this.dimensions[0])/2);
+        this.position[1] = (this.tileFrom[1] * tileH) + ((tileH - this.dimensions[1])/2);
+
+        if(this.tileTo[0] != this.tileFrom[0])
+            {
+                var diff = (tileW / this.delayMove) * (t - this.timeMoved);
+                this.position[0]+= (this.tileTo[0]<this.tileFrom[0] ? 0 - diff : diff);
+            }
+            if(this.tileTo[1] != this.tileFrom[1])
+            {
+                var diff = (tileH / this.delayMove) * (t - this.timeMoved);
+                this.position[1]+= (this.tileTo[1]<this.tileFrom[1] ? 0 - diff : diff);
+            }
+
+            this.position[0] = Math.round(this.position[0]);
+            this.position[1] = Math.round(this.position[1]);
+    }
+    
+    return true;
+}
+
+
 //THE BELOW FUNCTIONS DETERMINE WHETHER OR NOT###############################################################
 //THE SPRITES IN QUESTION ARE ABLE TO MOVE TO THE NEXT BLOCK OR NOT##########################################
 Character.prototype.canMoveTo = function(x, y) 
@@ -341,8 +447,15 @@ Character.prototype.canMoveTo = function(x, y)
 }
 
 
-
 crabObject.prototype.canMoveTo = function(x, y) 
+{
+    if(x < 0 || x>= mapW || y < 0 || y >= mapH) {return false;}
+    if(tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.sand && this.tileFrom[1]<17 || tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.water && this.tileFrom[1]<17) {return true;}
+    else if(tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.path || tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.solid || this.tileFrom[1]>=17){return false;}
+}
+
+
+lvl2crabObject.prototype.canMoveTo = function(x, y) 
 {
     if(x < 0 || x>= mapW || y < 0 || y >= mapH) {return false;}
     if(tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.sand || tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.water) {return true;}
@@ -376,6 +489,18 @@ crabObject.prototype.moveLeft        = function(t) {this.tileTo[0]-=1; this.time
 crabObject.prototype.moveRight       = function(t) {this.tileTo[0]+=1; this.timeMoved = t;}
 crabObject.prototype.moveUp          = function(t) {this.tileTo[1]-=1; this.timeMoved = t;}
 crabObject.prototype.moveDown        = function(t) {this.tileTo[1]+=1; this.timeMoved = t;}
+
+
+lvl2crabObject.prototype.canMoveUp       = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);}
+lvl2crabObject.prototype.canMoveDown     = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);}
+lvl2crabObject.prototype.canMoveLeft     = function() {return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);}
+lvl2crabObject.prototype.canMoveRight    = function() {return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);}
+
+
+lvl2crabObject.prototype.moveLeft        = function(t) {this.tileTo[0]-=1; this.timeMoved = t;}
+lvl2crabObject.prototype.moveRight       = function(t) {this.tileTo[0]+=1; this.timeMoved = t;}
+lvl2crabObject.prototype.moveUp          = function(t) {this.tileTo[1]-=1; this.timeMoved = t;}
+lvl2crabObject.prototype.moveDown        = function(t) {this.tileTo[1]+=1; this.timeMoved = t;}
 
 
 
@@ -429,10 +554,17 @@ window.onload = function()
     }
     this.crabImage.onload = function() { tilesetLoaded = true;}
 
+    this.lvl2crabImage.onerror = function(){
+        ctx = null;
+        alert("Failed to load sprites");
+    }
+    this.lvl2crabImage.onload = function() { tilesetLoaded = true;}
+
 
     //assigning sprites their images
     this.tileset.src = "tileset.png";
     this.crabImage.src = "enemyCrab.png";
+    this.lvl2crabImage.src = "lvl2crab.png"
 
 
 }
@@ -502,6 +634,20 @@ function drawMap()
     var crab4Movement = Math.floor((Math.random() * 4) + 1);
     var crab5Movement = Math.floor((Math.random() * 4) + 1);
     var crab6Movement = Math.floor((Math.random() * 4) + 1);
+    var crab7Movement = Math.floor((Math.random() * 4) + 1);
+    var crab8Movement = Math.floor((Math.random() * 4) + 1);
+    var crab9Movement = Math.floor((Math.random() * 4) + 1);
+    var crab10Movement = Math.floor((Math.random() * 4) + 1);
+    var crab11Movement = Math.floor((Math.random() * 4) + 1);
+    var crab12Movement = Math.floor((Math.random() * 4) + 1);
+    var crab13Movement = Math.floor((Math.random() * 4) + 1);
+    var crab14Movement = Math.floor((Math.random() * 4) + 1);
+    var crab15Movement = Math.floor((Math.random() * 4) + 1);
+    var crab16Movement = Math.floor((Math.random() * 4) + 1);
+    var crab17Movement = Math.floor((Math.random() * 4) + 1);
+    var crab18Movement = Math.floor((Math.random() * 4) + 1);
+    var crab19Movement = Math.floor((Math.random() * 4) + 1);
+    var crab20Movement = Math.floor((Math.random() * 4) + 1);
 
 
 
@@ -700,6 +846,341 @@ function drawMap()
             crab6.timeMoved = currentFrameTime;
         }
     }
+    if(!crab7.processMovement(currentFrameTime))
+    {
+        if(crab7Movement == 1 && crab.canMoveUp())
+        {
+            crab7.moveUp(currentFrameTime);
+        }
+        else  if(crab7Movement == 2 && crab.canMoveDown())
+        {
+            crab7.moveDown(currentFrameTime);
+        }
+        else if(crab7Movement == 3 && crab7.canMoveLeft())
+        {
+            crab7.moveLeft(currentFrameTime);
+        }
+        else if(crab7Movement == 4 && crab7.canMoveRight())
+        {
+            crab7.moveRight(currentFrameTime);
+        }
+        if(crab7.tileFrom[0]!=crab7.tileTo[0] || crab7.tileFrom[1]!=crab7.tileTo[1])
+        {
+            crab7.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab8.processMovement(currentFrameTime))
+    {
+        if(crab8Movement == 1 && crab8.canMoveUp())
+        {
+            crab8.moveUp(currentFrameTime);
+        }
+        else  if(crab8Movement == 2 && crab8.canMoveDown())
+        {
+            crab8.moveDown(currentFrameTime);
+        }
+        else if(crab8Movement == 3 && crab8.canMoveLeft())
+        {
+            crab8.moveLeft(currentFrameTime);
+        }
+        else if(crab8Movement == 4 && crab8.canMoveRight())
+        {
+            crab8.moveRight(currentFrameTime);
+        }
+        if(crab8.tileFrom[0]!=crab8.tileTo[0] || crab8.tileFrom[1]!=crab8.tileTo[1])
+        {
+            crab8.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab9.processMovement(currentFrameTime))
+    {
+        if(crab9Movement == 1 && crab9.canMoveUp())
+        {
+            crab9.moveUp(currentFrameTime);
+        }
+        else  if(crab9Movement == 2 && crab9.canMoveDown())
+        {
+            crab9.moveDown(currentFrameTime);
+        }
+        else if(crab9Movement == 3 && crab9.canMoveLeft())
+        {
+            crab9.moveLeft(currentFrameTime);
+        }
+        else if(crab9Movement == 4 && crab9.canMoveRight())
+        {
+            crab9.moveRight(currentFrameTime);
+        }
+        if(crab9.tileFrom[0]!=crab9.tileTo[0] || crab9.tileFrom[1]!=crab9.tileTo[1])
+        {
+            crab9.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab10.processMovement(currentFrameTime))
+    {
+        if(crab10Movement == 1 && crab10.canMoveUp())
+        {
+            crab10.moveUp(currentFrameTime);
+        }
+        else  if(crab10Movement == 2 && crab10.canMoveDown())
+        {
+            crab10.moveDown(currentFrameTime);
+        }
+        else if(crab10Movement == 3 && crab10.canMoveLeft())
+        {
+            crab10.moveLeft(currentFrameTime);
+        }
+        else if(crab10Movement == 4 && crab10.canMoveRight())
+        {
+            crab10.moveRight(currentFrameTime);
+        }
+        if(crab10.tileFrom[0]!=crab10.tileTo[0] || crab10.tileFrom[1]!=crab10.tileTo[1])
+        {
+            crab10.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab11.processMovement(currentFrameTime))
+    {
+        if(crab11Movement == 1 && crab11.canMoveUp())
+        {
+            crab11.moveUp(currentFrameTime);
+        }
+        else  if(crab11Movement == 2 && crab11.canMoveDown())
+        {
+            crab11.moveDown(currentFrameTime);
+        }
+        else if(crab11Movement == 3 && crab11.canMoveLeft())
+        {
+            crab11.moveLeft(currentFrameTime);
+        }
+        else if(crab11Movement == 4 && crab11.canMoveRight())
+        {
+            crab11.moveRight(currentFrameTime);
+        }
+        if(crab11.tileFrom[0]!=crab11.tileTo[0] || crab11.tileFrom[1]!=crab11.tileTo[1])
+        {
+            crab11.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab12.processMovement(currentFrameTime))
+    {
+        if(crab12Movement == 1 && crab12.canMoveUp())
+        {
+            crab12.moveUp(currentFrameTime);
+        }
+        else  if(crab5Movement == 2 && crab12.canMoveDown())
+        {
+            crab12.moveDown(currentFrameTime);
+        }
+        else if(crab12Movement == 3 && crab12.canMoveLeft())
+        {
+            crab12.moveLeft(currentFrameTime);
+        }
+        else if(crab12Movement == 4 && crab12.canMoveRight())
+        {
+            crab12.moveRight(currentFrameTime);
+        }
+        if(crab12.tileFrom[0]!=crab12.tileTo[0] || crab12.tileFrom[1]!=crab12.tileTo[1])
+        {
+            crab12.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab13.processMovement(currentFrameTime))
+    {
+        if(crab13Movement == 1 && crab13.canMoveUp())
+        {
+            crab13.moveUp(currentFrameTime);
+        }
+        else  if(crab13Movement == 2 && crab13.canMoveDown())
+        {
+            crab13.moveDown(currentFrameTime);
+        }
+        else if(crab13Movement == 3 && crab13.canMoveLeft())
+        {
+            crab13.moveLeft(currentFrameTime);
+        }
+        else if(crab13Movement == 4 && crab13.canMoveRight())
+        {
+            crab13.moveRight(currentFrameTime);
+        }
+        if(crab13.tileFrom[0]!=crab13.tileTo[0] || crab13.tileFrom[1]!=crab13.tileTo[1])
+        {
+            crab13.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab14.processMovement(currentFrameTime))
+    {
+        if(crab14Movement == 1 && crab14.canMoveUp())
+        {
+            crab14.moveUp(currentFrameTime);
+        }
+        else  if(crab14Movement == 2 && crab14.canMoveDown())
+        {
+            crab14.moveDown(currentFrameTime);
+        }
+        else if(crab14Movement == 3 && crab14.canMoveLeft())
+        {
+            crab14.moveLeft(currentFrameTime);
+        }
+        else if(crab14Movement == 4 && crab14.canMoveRight())
+        {
+            crab14.moveRight(currentFrameTime);
+        }
+        if(crab14.tileFrom[0]!=crab14.tileTo[0] || crab14.tileFrom[1]!=crab14.tileTo[1])
+        {
+            crab14.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab15.processMovement(currentFrameTime))
+    {
+        if(crab15Movement == 1 && crab15.canMoveUp())
+        {
+            crab15.moveUp(currentFrameTime);
+        }
+        else  if(crab15Movement == 2 && crab15.canMoveDown())
+        {
+            crab15.moveDown(currentFrameTime);
+        }
+        else if(crab15Movement == 3 && crab15.canMoveLeft())
+        {
+            crab15.moveLeft(currentFrameTime);
+        }
+        else if(crab15Movement == 4 && crab15.canMoveRight())
+        {
+            crab15.moveRight(currentFrameTime);
+        }
+        if(crab15.tileFrom[0]!=crab15.tileTo[0] || crab15.tileFrom[1]!=crab15.tileTo[1])
+        {
+            crab15.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab16.processMovement(currentFrameTime))
+    {
+        if(crab16Movement == 1 && crab16.canMoveUp())
+        {
+            crab16.moveUp(currentFrameTime);
+        }
+        else  if(crab16Movement == 2 && crab16.canMoveDown())
+        {
+            crab16.moveDown(currentFrameTime);
+        }
+        else if(crab16Movement == 3 && crab16.canMoveLeft())
+        {
+            crab16.moveLeft(currentFrameTime);
+        }
+        else if(crab16Movement == 4 && crab16.canMoveRight())
+        {
+            crab16.moveRight(currentFrameTime);
+        }
+        if(crab16.tileFrom[0]!=crab16.tileTo[0] || crab16.tileFrom[1]!=crab16.tileTo[1])
+        {
+            crab16.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab17.processMovement(currentFrameTime))
+    {
+        if(crab17Movement == 1 && crab17.canMoveUp())
+        {
+            crab17.moveUp(currentFrameTime);
+        }
+        else  if(crab17Movement == 2 && crab17.canMoveDown())
+        {
+            crab17.moveDown(currentFrameTime);
+        }
+        else if(crab17Movement == 3 && crab17.canMoveLeft())
+        {
+            crab17.moveLeft(currentFrameTime);
+        }
+        else if(crab17Movement == 4 && crab17.canMoveRight())
+        {
+            crab17.moveRight(currentFrameTime);
+        }
+        if(crab17.tileFrom[0]!=crab17.tileTo[0] || crab17.tileFrom[1]!=crab17.tileTo[1])
+        {
+            crab17.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab18.processMovement(currentFrameTime))
+    {
+        if(crab18Movement == 1 && crab18.canMoveUp())
+        {
+            crab18.moveUp(currentFrameTime);
+        }
+        else  if(crab18Movement == 2 && crab18.canMoveDown())
+        {
+            crab18.moveDown(currentFrameTime);
+        }
+        else if(crab18Movement == 3 && crab18.canMoveLeft())
+        {
+            crab18.moveLeft(currentFrameTime);
+        }
+        else if(crab18Movement == 4 && crab18.canMoveRight())
+        {
+            crab18.moveRight(currentFrameTime);
+        }
+        if(crab18.tileFrom[0]!=crab18.tileTo[0] || crab18.tileFrom[1]!=crab18.tileTo[1])
+        {
+            crab18.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab19.processMovement(currentFrameTime))
+    {
+        if(crab19Movement == 1 && crab19.canMoveUp())
+        {
+            crab19.moveUp(currentFrameTime);
+        }
+        else  if(crab19Movement == 2 && crab19.canMoveDown())
+        {
+            crab19.moveDown(currentFrameTime);
+        }
+        else if(crab19Movement == 3 && crab19.canMoveLeft())
+        {
+            crab19.moveLeft(currentFrameTime);
+        }
+        else if(crab19Movement == 4 && crab19.canMoveRight())
+        {
+            crab19.moveRight(currentFrameTime);
+        }
+        if(crab19.tileFrom[0]!=crab19.tileTo[0] || crab19.tileFrom[1]!=crab19.tileTo[1])
+        {
+            crab19.timeMoved = currentFrameTime;
+        }
+    }
+
+    if(!crab20.processMovement(currentFrameTime))
+    {
+        if(crab20Movement == 1 && crab20.canMoveUp())
+        {
+            crab20.moveUp(currentFrameTime);
+        }
+        else  if(crab20Movement == 2 && crab20.canMoveDown())
+        {
+            crab20.moveDown(currentFrameTime);
+        }
+        else if(crab20Movement == 3 && crab20.canMoveLeft())
+        {
+            crab20.moveLeft(currentFrameTime);
+        }
+        else if(crab20Movement == 4 && crab20.canMoveRight())
+        {
+            crab20.moveRight(currentFrameTime);
+        }
+        if(crab20.tileFrom[0]!=crab20.tileTo[0] || crab20.tileFrom[1]!=crab20.tileTo[1])
+        {
+            crab20.timeMoved = currentFrameTime;
+        }
+    }
 
     
     //Places the player in the middle of the tile
@@ -739,9 +1220,25 @@ function drawMap()
     ctx.drawImage(crabImage, viewport.offset[0] + crab5.position[0], viewport.offset[1] + crab5.position[1]);
     ctx.drawImage(crabImage, viewport.offset[0] + crab6.position[0], viewport.offset[1] + crab6.position[1]);
 
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab7.position[0], viewport.offset[1] + crab7.position[1]);
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab8.position[0], viewport.offset[1] + crab8.position[1]);
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab9.position[0], viewport.offset[1] + crab9.position[1]);
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab10.position[0], viewport.offset[1] + crab10.position[1]);
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab11.position[0], viewport.offset[1] + crab11.position[1]);
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab12.position[0], viewport.offset[1] + crab12.position[1]);
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab13.position[0], viewport.offset[1] + crab13.position[1]);
+
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab14.position[0], viewport.offset[1] + crab14.position[1]);
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab15.position[0], viewport.offset[1] + crab15.position[1]);
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab16.position[0], viewport.offset[1] + crab16.position[1]);
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab17.position[0], viewport.offset[1] + crab17.position[1]);
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab18.position[0], viewport.offset[1] + crab18.position[1]);
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab19.position[0], viewport.offset[1] + crab19.position[1]);
+    ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab20.position[0], viewport.offset[1] + crab20.position[1]);
 
 
 
+    console.log("x of char is: " + player.position[0] + ", y of char is: " + player.position[1]);
 
 
     //telling the browser to update the animation with this function before the next paint
