@@ -51,7 +51,6 @@ var keysDown = {
     68 : false
 }
 
-var player = new Character();
 
 //the below variable stores all of the tiles that are used to create the map that the players traverses
 var gameMap = [
@@ -119,7 +118,7 @@ var gameMap = [
 ];
 
 
-//t
+//the below variable controls the screen that follows the character around the map
 var viewport = {
         screen      :[0,0],
         startTile   :[0,0],
@@ -151,15 +150,26 @@ var viewport = {
 
 
 
-var monsterReady = false;
-var monsterImage = new Image();
-monsterImage.onload = function () {
-monsterReady = true;
+
+//returns what the current tile's index
+function toIndex(x, y)
+{
+    return ((y * mapW) + x);
+}
+
+
+
+//drawing the crabs onto the canvas
+var crabReady = false;
+var crabImage = new Image();
+crabImage.onload = function () {
+crabReady = true;
 };
 
 
 
-function monster()
+//Creates the crab object which will hold all of the sprite's information
+function crabObject()
 {
     this.tileFrom   = [9,1];
     this.tileTo     = [9,1];
@@ -170,20 +180,21 @@ function monster()
 }
 
 
-var crab = new monster();
-var crab1 = new monster();
-var crab2 = new monster();
-var crab3 = new monster();
-var crab4 = new monster();
-var crab5 = new monster();
-var crab6 = new monster();
+//creates instances of the crab object
+var crab = new crabObject();
+var crab1 = new crabObject();
+var crab2 = new crabObject();
+var crab3 = new crabObject();
+var crab4 = new crabObject();
+var crab5 = new crabObject();
+var crab6 = new crabObject();
 
 
 
 
 
 
-
+//Creates the character object that will hold all of the player's information
 function Character()
 {
     this.tileFrom   = [1,1];
@@ -208,6 +219,9 @@ function Character()
 
 }
 
+//creates an instance of the character object
+var player = new Character();
+
 //Function to get the mouse position
 function getMousePos(canvas, event) {
     var rect = canvas.getBoundingClientRect();
@@ -222,6 +236,9 @@ function isInside(pos, rect){
     return pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.height && pos.y > rect.y
 }
 
+
+//THE BELOW FUNCTIONS PLACE THE SPRITE AT THE DESIRED SPAWN POINT##############################################
+//#############################################################################################################
 Character.prototype.placeAt = function(x, y)
 {
     this.tileFrom   = [x,y];
@@ -229,7 +246,7 @@ Character.prototype.placeAt = function(x, y)
     this.position   = [((tileW*x) + ((tileW-this.dimensions[0])/2)), ((tileH*y) + ((tileH-this.dimensions[1])/2))];
 }
 
-monster.prototype.placeAt = function(x, y)
+crabObject.prototype.placeAt = function(x, y)
 {
     this.tileFrom   = [x,y];
     this.tileTo     = [x,y];
@@ -237,6 +254,8 @@ monster.prototype.placeAt = function(x, y)
 }
 
 
+//THE BELOW FUNCTIONS MOVE THE SPRITE TO THE CORRECT TILE,#######################################################
+// DETERMINES IT'S MOVEMENT SPEED AND PLACES IT IN THE MIDDLE OF THE TILE #######################################
 Character.prototype.processMovement = function(t)
 {
 
@@ -275,7 +294,7 @@ Character.prototype.processMovement = function(t)
 }
 
 
-monster.prototype.processMovement = function(t)
+crabObject.prototype.processMovement = function(t)
 {
 
     if(this.tileFrom[0]==this.tileTo[0] &&
@@ -310,6 +329,9 @@ monster.prototype.processMovement = function(t)
     return true;
 }
 
+
+//THE BELOW FUNCTIONS DETERMINE WHETHER OR NOT###############################################################
+//THE SPRITES IN QUESTION ARE ABLE TO MOVE TO THE NEXT BLOCK OR NOT##########################################
 Character.prototype.canMoveTo = function(x, y) 
 {
     if(x < 0 || x>= mapW || y < 0 || y >= mapH) {return false;}
@@ -318,13 +340,19 @@ Character.prototype.canMoveTo = function(x, y)
 }
 
 
-monster.prototype.canMoveTo = function(x, y) 
+
+crabObject.prototype.canMoveTo = function(x, y) 
 {
     if(x < 0 || x>= mapW || y < 0 || y >= mapH) {return false;}
     if(tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.sand || tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.water) {return true;}
     else if(tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.path || tileTypes[gameMap[toIndex(x,y)]].floor==floorTypes.solid){return false;}
 }
 
+
+
+//########################################SPRITE############################################################
+//#######################################MOVEMENT###########################################################
+//##########################################################################################################
 Character.prototype.canMoveUp       = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);}
 Character.prototype.canMoveDown     = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 2);}
 Character.prototype.canMoveLeft     = function() {return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);}
@@ -336,40 +364,41 @@ Character.prototype.moveRight       = function(t) {this.tileTo[0]+=1; this.timeM
 Character.prototype.moveUp          = function(t) {this.tileTo[1]-=1; this.timeMoved = t; this.direction = directions.up;}
 Character.prototype.moveDown        = function(t) {this.tileTo[1]+=1; this.timeMoved = t; this.direction = directions.down;}
 
-monster.prototype.canMoveUp       = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);}
-monster.prototype.canMoveDown     = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);}
-monster.prototype.canMoveLeft     = function() {return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);}
-monster.prototype.canMoveRight    = function() {return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);}
+
+crabObject.prototype.canMoveUp       = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);}
+crabObject.prototype.canMoveDown     = function() {return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);}
+crabObject.prototype.canMoveLeft     = function() {return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);}
+crabObject.prototype.canMoveRight    = function() {return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);}
 
 
-monster.prototype.moveLeft        = function(t) {this.tileTo[0]-=1; this.timeMoved = t;}
-monster.prototype.moveRight       = function(t) {this.tileTo[0]+=1; this.timeMoved = t;}
-monster.prototype.moveUp          = function(t) {this.tileTo[1]-=1; this.timeMoved = t;}
-monster.prototype.moveDown        = function(t) {this.tileTo[1]+=1; this.timeMoved = t;}
+crabObject.prototype.moveLeft        = function(t) {this.tileTo[0]-=1; this.timeMoved = t;}
+crabObject.prototype.moveRight       = function(t) {this.tileTo[0]+=1; this.timeMoved = t;}
+crabObject.prototype.moveUp          = function(t) {this.tileTo[1]-=1; this.timeMoved = t;}
+crabObject.prototype.moveDown        = function(t) {this.tileTo[1]+=1; this.timeMoved = t;}
 
 
 
 
 
-function toIndex(x, y)
-{
-    return ((y * mapW) + x);
-}
 
+//when the browser is loaded, do this
 window.onload = function()
 {
+    //assigning the ctx variables to their respective canvases
     ctx = document.getElementById('map').getContext('2d');
     ctx_hp = document.getElementById('playerhp').getContext('2d');
+
+    //tells the browser that upon loading, it must call this function to update the animation before the next repaint
     requestAnimationFrame(drawMap);
 
-    ctx.font = "bold 10pt sans-serif";
-
+    //tells the browser that if any of the WASD keys are pressed, assign keysDown variable to true
     window.addEventListener("keydown", function(e){
         if(e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68)
         {
             keysDown[e.keyCode] = true;
         }
     })
+    //tells the browser that if any of the WASD keys are pressed, assign keysDown variable to true
     window.addEventListener("keyup", function(e)
     {
         if(e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68)
@@ -377,6 +406,8 @@ window.onload = function()
             keysDown[e.keyCode] = false;
         }
     })
+
+    //storing the canvas "map"'s width and height in the viewports' screen paramater 
     viewport.screen = [
         document.getElementById('map').width,
         document.getElementById('map').height,
@@ -384,18 +415,29 @@ window.onload = function()
 
     tileset = new this.Image();
 
+    //if for any reason the sprites cannot be loaded, the user will be alerted
     this.tileset.onerror = function(){
         ctx = null;
         alert("Failed to load sprites");
     }
     this.tileset.onload = function() { tilesetLoaded = true;}
 
+    this.crabImage.onerror = function(){
+        ctx = null;
+        alert("Failed to load sprites");
+    }
+    this.crabImage.onload = function() { tilesetLoaded = true;}
+
+
+    //assigning sprites their images
     this.tileset.src = tilesetURL;
-    this.monsterImage.src = "enemyCrab.png";
+    this.crabImage.src = "enemyCrab.png";
 
 
 }
 
+
+//creates the hp canvas and gives it the player's current hp
 Character.prototype.gethp = function(){return this.hp}
 Character.prototype.sethp = function(v){this.hp = v;drawHp()}
 function drawHp()
@@ -406,6 +448,15 @@ function drawHp()
     ctx_hp.fillRect(0,0,(player.gethp()*6),10)
     
 }
+
+
+
+
+
+/*#################################DRAW#########################################
+#################################FUNCTIONS######################################
+################################################################################
+*/
 function drawMap()
 {
 
@@ -433,6 +484,16 @@ function drawMap()
     }
     else {frameCount++;}
 
+
+
+/*######################MOVEMENT###############################
+#######################DIRECTION###############################
+#######################VARIABLES###############################
+*/
+
+
+
+
     var crabMovement = Math.floor((Math.random() * 4) + 1);
     var crab1Movement = Math.floor((Math.random() * 4) + 1);
     var crab2Movement = Math.floor((Math.random() * 4) + 1);
@@ -444,7 +505,8 @@ function drawMap()
 
 
 
-    
+    //the below if loops determine whether or not the respective entity can move in the direction desired
+    //and if it can, move it to the desired tile
     if(!player.processMovement(currentFrameTime))
     {
         console.log(tileTypes[gameMap[toIndex(player.tileFrom[0],player.tileFrom[1])]].floor)
@@ -639,12 +701,13 @@ function drawMap()
     }
 
     
-
+    //Places the player in the middle of the tile
     viewport.update(
         player.position[0] + (player.dimensions[0]/2),
         player.position[1] + (player.dimensions[1]/2),
     )
 
+    //Drawing the map
     ctx.fillStyle = "#999999";
     ctx.fillRect(0, 0, viewport.screen[0], viewport.screen[1]);
 
@@ -657,23 +720,30 @@ function drawMap()
         }
     }
 
+
+
+
+    /*###################################SPRITE##########################################
+    ######################################DRAW###########################################
+    ####################################FUNCTIONS########################################
+    */
     var sprite = player.sprites[player.direction];
     ctx.drawImage(tileset, sprite[0].x, sprite[0].y, sprite[0].w, sprite[0].h, viewport.offset[0] + player.position[0], viewport.offset[1] + player.position[1], player.dimensions[0], player.dimensions[1]);
     
-    ctx.drawImage(monsterImage, viewport.offset[0] + crab.position[0], viewport.offset[1] + crab.position[1]);
-    ctx.drawImage(monsterImage, viewport.offset[0] + crab1.position[0], viewport.offset[1] + crab1.position[1]);
-    ctx.drawImage(monsterImage, viewport.offset[0] + crab2.position[0], viewport.offset[1] + crab2.position[1]);
-    ctx.drawImage(monsterImage, viewport.offset[0] + crab3.position[0], viewport.offset[1] + crab3.position[1]);
-    ctx.drawImage(monsterImage, viewport.offset[0] + crab4.position[0], viewport.offset[1] + crab4.position[1]);
-    ctx.drawImage(monsterImage, viewport.offset[0] + crab5.position[0], viewport.offset[1] + crab5.position[1]);
-    ctx.drawImage(monsterImage, viewport.offset[0] + crab6.position[0], viewport.offset[1] + crab6.position[1]);
+    ctx.drawImage(crabImage, viewport.offset[0] + crab.position[0], viewport.offset[1] + crab.position[1]);
+    ctx.drawImage(crabImage, viewport.offset[0] + crab1.position[0], viewport.offset[1] + crab1.position[1]);
+    ctx.drawImage(crabImage, viewport.offset[0] + crab2.position[0], viewport.offset[1] + crab2.position[1]);
+    ctx.drawImage(crabImage, viewport.offset[0] + crab3.position[0], viewport.offset[1] + crab3.position[1]);
+    ctx.drawImage(crabImage, viewport.offset[0] + crab4.position[0], viewport.offset[1] + crab4.position[1]);
+    ctx.drawImage(crabImage, viewport.offset[0] + crab5.position[0], viewport.offset[1] + crab5.position[1]);
+    ctx.drawImage(crabImage, viewport.offset[0] + crab6.position[0], viewport.offset[1] + crab6.position[1]);
 
 
 
 
 
 
-    
+    //telling the browser to update the animation with this function before the next paint
     requestAnimationFrame(drawMap);
 }
 
