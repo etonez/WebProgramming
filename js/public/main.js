@@ -1,16 +1,17 @@
-/*global variables 
-
-*/
+//the canvas variables
 var ctx = null;
 var ctx_hp = null;
+//the width of each tile in pixels
 var tileW = 40, tileH = 40;
+//the width of the map in tiles
 var mapW = 60, mapH = 60;
 
 
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0;
 var lastFrameTime = 0;
 
-var tileset = null, tilesetURL = "tileset.png", tilesetLoaded = false;
+//the variables associated with map and player sprites
+var tileset = null, tilesetLoaded = false;
 
 
 //This variable distinguishes different types of tile so that it can be used to make for a more dynamic map with obstacles
@@ -430,7 +431,7 @@ window.onload = function()
 
 
     //assigning sprites their images
-    this.tileset.src = tilesetURL;
+    this.tileset.src = "tileset.png";
     this.crabImage.src = "enemyCrab.png";
 
 
