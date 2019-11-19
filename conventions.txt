@@ -7,5 +7,4 @@ Indent with tab (4 space block){
     and write blocks like this ^
 }
 no line space between 2 if statements,
-1  line space to seperate blocks of code in the first indent level and beyond
-2 line spaces to seperate unindented blocks of code
+1  line space to seperate different blocks of code
