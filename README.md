@@ -1,4 +1,4 @@
-Read me for MoonScape the premium moonbased MMORPG\
+Read me for MoonScape the premium moonbased MMORPG
 
 **IMPORTANT**\
 MUST HAVE NODE.JS TO RUN: https://nodejs.org/en/
