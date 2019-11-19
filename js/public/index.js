@@ -1,3 +1,4 @@
+//if username textbox is filled with username when clicked, empty the textbox
 function field_focus(field, username)
 {
   if(field.value == username)
@@ -6,6 +7,7 @@ function field_focus(field, username)
   }
 }
 
+//if the username textbox is empty, fill it with username 
 function field_blur(field, username)
 {
   if(field.value == '')
@@ -14,12 +16,8 @@ function field_blur(field, username)
   }
 }
 
-//Fade in dashboard box
-$(document).ready(function(){
-  $('.box').hide().fadeIn(1000);
-  });
 
-//Stop click event
+//when the button is pressed do this
 $('a').click(function(event){
   event.preventDefault(); 
   });
