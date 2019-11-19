@@ -1,0 +1,10 @@
+use double quotes: "string" instead of 'string'
+camelCase for variables
+Capital name for Classes
+Put spaces around operators and commas 
+     = + - * / , .
+Indent with tab (4 space block){
+    and write blocks like this ^
+}
+no line space between 2 if statements,
+1  line space to seperate different blocks of code
