@@ -3,6 +3,8 @@ Read me for MoonScape the premium moonbased MMORPG
 **IMPORTANT**\
 MUST HAVE NODE.JS TO RUN: https://nodejs.org/en/
 
+*ONCE NODE.JS IS INSTALLED:*
+
 1.Open up windows powershell \
 2.cd to WebProgramming/js/ using the full directory path \
 3.type: node index\
