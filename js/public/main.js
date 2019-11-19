@@ -207,7 +207,7 @@ function lvl2crabObject()
     this.tileFrom   = [13,24];
     this.tileTo     = [13,24];
     this.thisMoved  = 0;
-    this.dimensions = [35, 35];
+    this.dimensions = [30, 30];
     this.position   = [520, 960];
     this.delayMove  = 300;
     this.hp = 80;
