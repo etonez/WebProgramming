@@ -11,8 +11,11 @@ function isInside(pos, rect){
     return pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.height && pos.y > rect.y
 }
 
+//assigning the canvas variables
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
+
+
 //The rectangle should have x,y,width,height properties
 var archer = {
     x:0,
@@ -35,7 +38,7 @@ var mage = {
     height:600
 };
 
-
+//draw the charselect.png image onto the canvas
 var img = new Image();
 img.onload = function () {
     context.drawImage(img, 0, 0);
