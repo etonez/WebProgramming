@@ -604,10 +604,8 @@ function drawMap() {
 	if (ctx == null) {
 		return;
 	}
-	if (tileTypes[gameMap[toIndex(player.tileFrom[0], player.tileFrom[1])]].floor == 2) {
+	if (tileTypes[gameMap[toIndex(player.tileFrom[0], player.tileFrom[1])]].floor == 3) {
 		player.sethp(player.gethp() - 1);
-		console.log("a");
-		console.log(player.gethp());
 	}
 
 	if (!tilesetLoaded) {
