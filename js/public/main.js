@@ -176,7 +176,7 @@ function crabObject() {
 	this.thisMoved = 0;
 	this.dimensions = [25, 25];
 	this.position = [680, 320];
-	this.delayMove = 250;
+	this.delayMove = 300;
 	this.hp = 40;
 }
 
@@ -196,7 +196,7 @@ function lvl2crabObject() {
 	this.thisMoved = 0;
 	this.dimensions = [30, 30];
 	this.position = [520, 960];
-	this.delayMove = 300;
+	this.delayMove = 400;
 	this.hp = 80;
 }
 
@@ -400,14 +400,13 @@ crabObject.prototype.canMoveTo = function(x, y) {
 		return false;
 	}
 	if (
-		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand && this.tileFrom[1] < 17) ||
-		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water && this.tileFrom[1] < 17)
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
 	) {
 		return true;
 	} else if (
 		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path ||
-		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.solid ||
-		this.tileFrom[1] >= 17
+		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.solid
 	) {
 		return false;
 	}

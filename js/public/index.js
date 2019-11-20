@@ -18,6 +18,6 @@ function field_blur(field, username)
 
 
 //when the button is pressed do this
-$('a').click(function(event){
+('a').click(function(event){
   event.preventDefault(); 
   });
