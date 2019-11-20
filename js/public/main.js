@@ -123,7 +123,7 @@ var gameMap = [
 var occupiedGrid = [];
 
 for (i = 0;i<gameMap.length; i++){
-    occupiedGrid.append(false);
+    occupiedGrid.push(false);
 }
 
 //the below variable controls the screen that follows the character around the map
@@ -313,8 +313,8 @@ lvl2crabObject.prototype.placeAt = function(x, y) {
 Character.prototype.processMovement = function(t) {
 	if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
 		return false;
-	}
-
+    }
+    
 	var moveSpeed = this.delayMove[tileTypes[gameMap[toIndex(this.tileFrom[0], this.tileFrom[1])]].floor];
 
 	if (t - this.timeMoved >= moveSpeed) {
@@ -342,8 +342,7 @@ Character.prototype.processMovement = function(t) {
 crabObject.prototype.processMovement = function(t) {
 	if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
 		return false;
-	}
-
+    }
 	if (t - this.timeMoved >= this.delayMove) {
 		this.placeAt(this.tileTo[0], this.tileTo[1]);
 	} else {
@@ -369,7 +368,7 @@ crabObject.prototype.processMovement = function(t) {
 lvl2crabObject.prototype.processMovement = function(t) {
 	if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
 		return false;
-	}
+    }
 
 	if (t - this.timeMoved >= this.delayMove) {
 		this.placeAt(this.tileTo[0], this.tileTo[1]);
@@ -396,6 +395,9 @@ lvl2crabObject.prototype.processMovement = function(t) {
 //THE BELOW FUNCTIONS DETERMINE WHETHER OR NOT
 //THE SPRITES IN QUESTION ARE ABLE TO MOVE TO THE NEXT BLOCK OR NOT
 Character.prototype.canMoveTo = function(x, y) {
+    if (isOccupied(toIndex(x,y))){
+        return false;
+    }
 	if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
 		return false;
 	}
@@ -409,11 +411,15 @@ crabObject.prototype.canMoveTo = function(x, y) {
     //makes sure it can't move off map
 	if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
 		return false;
-	}
+    }
+    if (isOccupied(toIndex(x,y))){
+        return false;
+    }
 	if (
 		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
 		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
 	) {
+        console.log("crab moves");
 		return true;
 	} else if (
 		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path ||
@@ -426,7 +432,10 @@ crabObject.prototype.canMoveTo = function(x, y) {
 lvl2crabObject.prototype.canMoveTo = function(x, y) {
 	if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
 		return false;
-	}
+    }
+    if (isOccupied(toIndex(x,y))){
+        return false;
+    }
 	if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water) {
 		return true;
 	} else if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.solid) {
@@ -543,13 +552,18 @@ lvl2crabObject.prototype.moveDown = function(t) {
 	this.timeMoved = t;
 };
 
-
 function updateOccupied(square,truth){
     occupiedGrid[square] = truth;
 }
 
-function checkOccupied(square){
+function isOccupied(square){
     return occupiedGrid[square];
+}
+
+function getObject(index){
+    if (isOccupied(index)){
+        return 
+    }
 }
 
 //when the browser is loaded, do this
@@ -1040,6 +1054,24 @@ function drawMap() {
 		}
 	}
 
+    var allobj = [];
+    for(var key in window) {
+        var value = window[key];
+        if ((value instanceof Character)||(value instanceof crabObject)||(value instanceof lvl2crabObject)) {
+            allobj.push(toIndex(value.tileFrom[0],value.tileFrom[1]));
+            allobj.push(toIndex(value.tileTo[0],value.tileTo[1]));
+        }
+    }
+
+    for (i=0;i<occupiedGrid.length;i++){
+        if (allobj.includes(i)){
+            updateOccupied(i,true);
+        }
+        else{
+            updateOccupied(i,false);
+        }
+    }
+  
 	/*###################################SPRITE##########################################
     ######################################DRAW###########################################
     ####################################FUNCTIONS########################################
