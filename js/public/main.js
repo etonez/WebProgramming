@@ -13,10 +13,12 @@ var currentSecond = 0,
 	framesLastSecond = 0;
 var lastFrameTime = 0;
 
+//sets the variables characterType whatever was stored in cTypeLocalStorage
+var characterType = localStorage.getItem("cTypeLocalStorage");
+
 //the variables associated with map and player sprites
 var tileset = null,
 	tilesetLoaded = false;
-
 //This variable distinguishes different types of tile so that it can be used to make for a more dynamic map with obstacles
 var floorTypes = {
 	solid: 0,
@@ -178,7 +180,7 @@ function crabObject() {
 	this.thisMoved = 0;
 	this.dimensions = [25, 25];
 	this.position = [680, 320];
-	this.delayMove = 250;
+	this.delayMove = 300;
 	this.hp = 40;
 }
 
@@ -198,7 +200,7 @@ function lvl2crabObject() {
 	this.thisMoved = 0;
 	this.dimensions = [30, 30];
 	this.position = [520, 960];
-	this.delayMove = 300;
+	this.delayMove = 400;
 	this.hp = 80;
 }
 
@@ -401,11 +403,16 @@ crabObject.prototype.canMoveTo = function(x, y) {
     //makes sure it can't move off map
 	if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
 		return false;
-    }
-    //makes sure it can only walk on water or sand, and not others
-    if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water && this.tileFrom[1] < 17) {return true}
-	if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand && this.tileFrom[1] < 17) {return true}
-    else {
+	}
+	if (
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
+	) {
+		return true;
+	} else if (
+		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path ||
+		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.solid
+	) {
 		return false;
 	}
 };
@@ -583,7 +590,15 @@ window.onload = function() {
 	};
 
 	//assigning sprites their images
-	this.tileset.src = "tileset.png";
+	if(characterType == "archer"){
+		this.tileset.src = "tileset.png"
+	}
+	if(characterType == "knight"){
+		this.tileset.src = "tilesetknight.png"
+	}
+	if(characterType == "mage"){
+		this.tileset.src = "tilesetmage.png"
+	}
 	this.crabImage.src = "enemyCrab.png";
 	this.lvl2crabImage.src = "lvl2crab.png";
 };

@@ -12,6 +12,45 @@ body{
     text-decoration: none;
     color:#ffffff;
   }
+  .archer{
+    background:#020074;
+    width:600px;
+    padding-top:5px;
+    padding-bottom:5px;
+    text-align:center;
+    color:white;
+    border-radius:4px;
+    border: #000000 1px solid;
+    margin: auto;
+    font-weight:800;
+    font-size:0.8em;
+  }
+  .knight{
+    background:#474747;
+    width:600px;
+    padding-top:5px;
+    padding-bottom:5px;
+    text-align:center;
+    color:white;
+    border-radius:4px;
+    border: #000000 1px solid;
+    margin: auto;
+    font-weight:800;
+    font-size:0.8em;
+  }
+  .mage{
+    background:#49005f;
+    width:600px;
+    padding-top:5px;
+    padding-bottom:5px;
+    text-align:center;
+    color:white;
+    border-radius:4px;
+    border: #000000 1px solid;
+    margin: auto;
+    font-weight:800;
+    font-size:0.8em;
+  }
   
   
   
