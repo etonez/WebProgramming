@@ -51,6 +51,8 @@ var keysDown = {
 	68: false
 };
 
+var occupied = [];
+
 //the below variable stores all of the tiles that are used to create the map that the players traverses
 var gameMap = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -396,19 +398,14 @@ Character.prototype.canMoveTo = function(x, y) {
 };
 
 crabObject.prototype.canMoveTo = function(x, y) {
+    //makes sure it can't move off map
 	if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
 		return false;
-	}
-	if (
-		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand && this.tileFrom[1] < 17) ||
-		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water && this.tileFrom[1] < 17)
-	) {
-		return true;
-	} else if (
-		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path ||
-		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.solid ||
-		this.tileFrom[1] >= 17
-	) {
+    }
+    //makes sure it can only walk on water or sand, and not others
+    if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water && this.tileFrom[1] < 17) {return true}
+	if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand && this.tileFrom[1] < 17) {return true}
+    else {
 		return false;
 	}
 };
@@ -423,6 +420,18 @@ lvl2crabObject.prototype.canMoveTo = function(x, y) {
 		return false;
 	}
 };
+
+Character.prototype.gethp = function() {
+	return this.hp;
+};
+Character.prototype.sethp = function(v) {
+	this.hp = v;
+	drawHp();
+};
+Character.prototype.respawn = function(){
+    this.placeAt(1,1);
+    this.sethp(100);
+}
 
 //########################################SPRITE############################################################
 //#######################################MOVEMENT###########################################################
@@ -580,13 +589,6 @@ window.onload = function() {
 };
 
 //creates the hp canvas and gives it the player's current hp
-Character.prototype.gethp = function() {
-	return this.hp;
-};
-Character.prototype.sethp = function(v) {
-	this.hp = v;
-	drawHp();
-};
 function drawHp() {
 	if (ctx_hp == null) {
 		return;
@@ -605,9 +607,11 @@ function drawMap() {
 		return;
 	}
 	if (tileTypes[gameMap[toIndex(player.tileFrom[0], player.tileFrom[1])]].floor == 3) {
-		player.sethp(player.gethp() - 1);
+		player.sethp(player.gethp() - 0.5);
 	}
-
+    if (player.gethp() <= 0) {
+        player.respawn();
+    }
 	if (!tilesetLoaded) {
 		requestAnimationFrame(drawMap);
 		return;
@@ -773,9 +777,9 @@ function drawMap() {
 		}
 	}
 	if (!crab7.processMovement(currentFrameTime)) {
-		if (crab7Movement == 1 && crab.canMoveUp()) {
+		if (crab7Movement == 1 && crab7.canMoveUp()) {
 			crab7.moveUp(currentFrameTime);
-		} else if (crab7Movement == 2 && crab.canMoveDown()) {
+		} else if (crab7Movement == 2 && crab7.canMoveDown()) {
 			crab7.moveDown(currentFrameTime);
 		} else if (crab7Movement == 3 && crab7.canMoveLeft()) {
 			crab7.moveLeft(currentFrameTime);
