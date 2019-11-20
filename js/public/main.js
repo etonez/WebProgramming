@@ -53,7 +53,7 @@ var keysDown = {
 	68: false
 };
 
-var occupied = [];
+
 
 //the below variable stores all of the tiles that are used to create the map that the players traverses
 var gameMap = [
@@ -119,6 +119,12 @@ var gameMap = [
 	0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 0,
    	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ];
+
+var occupiedGrid = [];
+
+for (i = 0;i<gameMap.length; i++){
+    occupiedGrid.append(false);
+}
 
 //the below variable controls the screen that follows the character around the map
 var viewport = {
@@ -536,6 +542,15 @@ lvl2crabObject.prototype.moveDown = function(t) {
 	this.tileTo[1] += 1;
 	this.timeMoved = t;
 };
+
+
+function updateOccupied(square,truth){
+    occupiedGrid[square] = truth;
+}
+
+function checkOccupied(square){
+    return occupiedGrid[square];
+}
 
 //when the browser is loaded, do this
 window.onload = function() {
@@ -1066,7 +1081,7 @@ function drawMap() {
 	ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab19.position[0], viewport.offset[1] + crab19.position[1]);
 	ctx.drawImage(lvl2crabImage, viewport.offset[0] + crab20.position[0], viewport.offset[1] + crab20.position[1]);
 
-	console.log("x of char is: " + player.position[0] + ", y of char is: " + player.position[1]);
+	//console.log("x of char is: " + player.position[0] + ", y of char is: " + player.position[1]);
 
 	//telling the browser to update the animation with this function before the next paint
 	requestAnimationFrame(drawMap);
