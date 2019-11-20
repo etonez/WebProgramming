@@ -13,10 +13,12 @@ var currentSecond = 0,
 	framesLastSecond = 0;
 var lastFrameTime = 0;
 
+//sets the variables characterType whatever was stored in cTypeLocalStorage
+var characterType = localStorage.getItem("cTypeLocalStorage");
+
 //the variables associated with map and player sprites
 var tileset = null,
 	tilesetLoaded = false;
-
 //This variable distinguishes different types of tile so that it can be used to make for a more dynamic map with obstacles
 var floorTypes = {
 	solid: 0,
@@ -573,7 +575,15 @@ window.onload = function() {
 	};
 
 	//assigning sprites their images
-	this.tileset.src = "tileset.png";
+	if(characterType == "archer"){
+		this.tileset.src = "tileset.png"
+	}
+	if(characterType == "knight"){
+		this.tileset.src = "tilesetknight.png"
+	}
+	if(characterType == "mage"){
+		this.tileset.src = "tilesetmage.png"
+	}
 	this.crabImage.src = "enemyCrab.png";
 	this.lvl2crabImage.src = "lvl2crab.png";
 };

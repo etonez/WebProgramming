@@ -8,14 +8,13 @@
 
 <h1>Moonscape</h1>
 
-<input type="username" name="username" value="username" onFocus="field_focus(this, 'username');" onblur="field_blur(this, 'username');" class="username" />
+Username: <input type="text" id="username"/>
   
-<input type="password" name="password" value="password" onFocus="field_focus(this, 'password');" onblur="field_blur(this, 'password');" class="password" />
+Password: <input type="text" id="password"/>
 
 
   
-<a href="charselect.html"><div class="btn">Sign In / Create Account</div></a> <!-- End Btn -->
-
+<a href="charselect.html"><btn onclick="getUser()"><div class="btn">Sign In / Create Account</div></btn></a> <!-- End Btn -->
   
 </div> <!-- End Box -->
   
@@ -24,5 +23,18 @@
 <p>Enter an existing username & password or create an account! </p>
   
 <script src="index.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script>
+var socket = io();
+
+var getUser = function(){
+    socket.emit('user',{
+      username: document.getElementById("username").value,
+      password: document.getElementById("password").value
+    });
+}
+
+
+</script>
 
 </html>
