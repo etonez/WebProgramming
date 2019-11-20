@@ -408,7 +408,6 @@ crabObject.prototype.canMoveTo = function(x, y) {
 		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
 		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
 	) {
-        console.log("crab moves");
 		return true;
 	} else if (
 		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path ||
