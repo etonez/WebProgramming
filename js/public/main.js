@@ -609,16 +609,16 @@ window.onload = function() {
 
 	//assigning sprites their images
 	if(characterType == "archer"){
-		this.tileset.src = "tileset.png"
+		this.tileset.src = "assets/images/tileset.png"
 	}
 	if(characterType == "knight"){
-		this.tileset.src = "tilesetknight.png"
+		this.tileset.src = "assets/images/tilesetknight.png"
 	}
 	if(characterType == "mage"){
-		this.tileset.src = "tilesetmage.png"
+		this.tileset.src = "assets/images/tilesetmage.png"
 	}
-	this.crabImage.src = "enemyCrab.png";
-	this.lvl2crabImage.src = "lvl2crab.png";
+	this.crabImage.src = "assets/images/enemyCrab.png";
+	this.lvl2crabImage.src = "assets/images/lvl2crab.png";
 };
 
 //creates the hp canvas and gives it the player's current hp
