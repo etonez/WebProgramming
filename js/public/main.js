@@ -1,4 +1,4 @@
-//the canvas variabless
+//the canvas variables
 var ctx = null;
 var ctx_hp = null;
 //the width of each tile in pixels
@@ -15,6 +15,9 @@ var lastFrameTime = 0;
 
 //sets the variables characterType whatever was stored in cTypeLocalStorage
 var characterType = localStorage.getItem("cTypeLocalStorage");
+/*var playx = localStorage.getItem("posxLocalStorage");
+var playy = localStorage.getItem("posyLocalStorage");
+*/
 
 //the variables associated with map and player sprites
 var tileset = null,
@@ -557,6 +560,10 @@ function getObject(index){
 
 //when the browser is loaded, do this
 window.onload = function() {
+	//sends position of player to the server every 100 milliseconds
+	window.setInterval(function(){
+		getPosition();
+	},100);
 	//assigning the ctx variables to their respective canvases
 	ctx = document.getElementById("map").getContext("2d");
 	ctx_hp = document.getElementById("playerhp").getContext("2d");
@@ -780,9 +787,20 @@ for (i = 0; i < crabCount; i++){
 for (i = 7; i < 20; i++){
 	ctx.drawImage(lvl2crabImage, viewport.offset[0] + lvl2Crab[i].position[0], viewport.offset[1] + lvl2Crab[i].position[1]);
 }
-
-	//console.log("x of char is: " + player.position[0] + ", y of char is: " + player.position[1]);
-
+/*
+ctx.drawImage(
+	tileset,
+	sprite[0].x,
+	sprite[0].y,
+	sprite[0].w,
+	sprite[0].h,
+	viewport.offset[0] + playx,
+	viewport.offset[1] + playy,
+	playx,
+	playy
+);
+	console.log("x of char is: " + playx + ", y of char is: " + playy);
+*/
 	//telling the browser to update the animation with this function before the next paint
 	requestAnimationFrame(drawMap);
 }
