@@ -1,4 +1,4 @@
-//the canvas variables
+//the canvas variabless
 var ctx = null;
 var ctx_hp = null;
 //the width of each tile in pixels
