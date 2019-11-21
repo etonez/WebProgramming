@@ -183,14 +183,88 @@ var darkSquidImage = new Image();
 
 
 //Creates the crab object which will hold all of the sprite's information
-function crabObject() {
-	this.tileFrom = [17, 8];
-	this.tileTo = [17, 8];
-	this.thisMoved = 0;
-	this.dimensions = [25, 25];
-	this.position = [680, 320];
-	this.delayMove = 300;
-	this.hp = 40;
+class crabObject {
+	constructor() {
+		this.tileFrom = [17, 8];
+		this.tileTo = [17, 8];
+		this.thisMoved = 0;
+		this.dimensions = [25, 25];
+		this.position = [680, 320];
+		this.delayMove = 300;
+		this.hp = 40;
+	}
+	placeAt(x, y) {
+		this.tileFrom = [x, y];
+		this.tileTo = [x, y];
+		this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
+	}
+	processMovement(t) {
+		if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
+			return false;
+		}
+		if (t - this.timeMoved >= this.delayMove) {
+			this.placeAt(this.tileTo[0], this.tileTo[1]);
+		}
+		else {
+			this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
+			this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
+			if (this.tileTo[0] != this.tileFrom[0]) {
+				var diff = (tileW / this.delayMove) * (t - this.timeMoved);
+				this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
+			}
+			if (this.tileTo[1] != this.tileFrom[1]) {
+				var diff = (tileH / this.delayMove) * (t - this.timeMoved);
+				this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
+			}
+			this.position[0] = Math.round(this.position[0]);
+			this.position[1] = Math.round(this.position[1]);
+		}
+		return true;
+	}
+	canMoveTo(x, y) {
+		//makes sure it can't move off map
+		if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
+			return false;
+		}
+		if (isOccupied(toIndex(x, y))) {
+			return false;
+		}
+		if ((tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
+			(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	canMoveUp() {
+		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
+	}
+	canMoveDown() {
+		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);
+	}
+	canMoveLeft() {
+		return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
+	}
+	canMoveRight() {
+		return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
+	}
+	moveLeft(t) {
+		this.tileTo[0] -= 1;
+		this.timeMoved = t;
+	}
+	moveRight(t) {
+		this.tileTo[0] += 1;
+		this.timeMoved = t;
+	}
+	moveUp(t) {
+		this.tileTo[1] -= 1;
+		this.timeMoved = t;
+	}
+	moveDown(t) {
+		this.tileTo[1] += 1;
+		this.timeMoved = t;
+	}
 }
 
 //creates instances of the crab object
@@ -201,14 +275,87 @@ for (var i = 0; i < crabCount; i++){
 }
 
 //Creates the level 2 crab object
-function lvl2crabObject() {
-	this.tileFrom = [13, 24];
-	this.tileTo = [13, 24];
-	this.thisMoved = 0;
-	this.dimensions = [30, 30];
-	this.position = [520, 960];
-	this.delayMove = 400;
-	this.hp = 80;
+class lvl2crabObject {
+	constructor() {
+		this.tileFrom = [13, 24];
+		this.tileTo = [13, 24];
+		this.thisMoved = 0;
+		this.dimensions = [30, 30];
+		this.position = [520, 960];
+		this.delayMove = 400;
+		this.hp = 80;
+	}
+	placeAt(x, y) {
+		this.tileFrom = [x, y];
+		this.tileTo = [x, y];
+		this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
+	}
+	processMovement(t) {
+		if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
+			return false;
+		}
+		if (t - this.timeMoved >= this.delayMove) {
+			this.placeAt(this.tileTo[0], this.tileTo[1]);
+		}
+		else {
+			this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
+			this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
+			if (this.tileTo[0] != this.tileFrom[0]) {
+				var diff = (tileW / this.delayMove) * (t - this.timeMoved);
+				this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
+			}
+			if (this.tileTo[1] != this.tileFrom[1]) {
+				var diff = (tileH / this.delayMove) * (t - this.timeMoved);
+				this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
+			}
+			this.position[0] = Math.round(this.position[0]);
+			this.position[1] = Math.round(this.position[1]);
+		}
+		return true;
+	}
+	canMoveTo(x, y) {
+		if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
+			return false;
+		}
+		if (isOccupied(toIndex(x, y))) {
+			return false;
+		}
+		if ((tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
+			(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	canMoveUp() {
+		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
+	}
+	canMoveDown() {
+		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);
+	}
+	canMoveLeft() {
+		return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
+	}
+	canMoveRight() {
+		return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
+	}
+	moveLeft(t) {
+		this.tileTo[0] -= 1;
+		this.timeMoved = t;
+	}
+	moveRight(t) {
+		this.tileTo[0] += 1;
+		this.timeMoved = t;
+	}
+	moveUp(t) {
+		this.tileTo[1] -= 1;
+		this.timeMoved = t;
+	}
+	moveDown(t) {
+		this.tileTo[1] += 1;
+		this.timeMoved = t;
+	}
 }
 
 //creates instances of the lvl2crab object
@@ -218,14 +365,87 @@ for (i = 7; i < 20; i++){
 }
 
 //Creates the level 3 crab object
-function lvl3crabObject() {
-	this.tileFrom = [38, 26];
-	this.tileTo = [38, 26];
-	this.thisMoved = 0;
-	this.dimensions = [40, 40];
-	this.position = [1520, 1040];
-	this.delayMove = 500;
-	this.hp = 160;
+class lvl3crabObject {
+	constructor() {
+		this.tileFrom = [38, 26];
+		this.tileTo = [38, 26];
+		this.thisMoved = 0;
+		this.dimensions = [40, 40];
+		this.position = [1520, 1040];
+		this.delayMove = 500;
+		this.hp = 160;
+	}
+	placeAt(x, y) {
+		this.tileFrom = [x, y];
+		this.tileTo = [x, y];
+		this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
+	}
+	processMovement(t) {
+		if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
+			return false;
+		}
+		if (t - this.timeMoved >= this.delayMove) {
+			this.placeAt(this.tileTo[0], this.tileTo[1]);
+		}
+		else {
+			this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
+			this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
+			if (this.tileTo[0] != this.tileFrom[0]) {
+				var diff = (tileW / this.delayMove) * (t - this.timeMoved);
+				this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
+			}
+			if (this.tileTo[1] != this.tileFrom[1]) {
+				var diff = (tileH / this.delayMove) * (t - this.timeMoved);
+				this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
+			}
+			this.position[0] = Math.round(this.position[0]);
+			this.position[1] = Math.round(this.position[1]);
+		}
+		return true;
+	}
+	canMoveTo(x, y) {
+		if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
+			return false;
+		}
+		if (isOccupied(toIndex(x, y))) {
+			return false;
+		}
+		if ((tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
+			(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	canMoveUp() {
+		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
+	}
+	canMoveDown() {
+		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);
+	}
+	canMoveLeft() {
+		return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
+	}
+	canMoveRight() {
+		return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
+	}
+	moveLeft(t) {
+		this.tileTo[0] -= 1;
+		this.timeMoved = t;
+	}
+	moveRight(t) {
+		this.tileTo[0] += 1;
+		this.timeMoved = t;
+	}
+	moveUp(t) {
+		this.tileTo[1] -= 1;
+		this.timeMoved = t;
+	}
+	moveDown(t) {
+		this.tileTo[1] += 1;
+		this.timeMoved = t;
+	}
 }
 
 //creates instances of the lvl3crab object
@@ -235,48 +455,213 @@ for (i = 21; i < 31; i++){
 }
 
 //Creates the level 2 crab object
-function darkSquidObject() {
-	this.tileFrom = [57, 57];
-	this.tileTo = [57, 57];
-	this.thisMoved = 0;
-	this.dimensions = [33, 40];
-	this.position = [2280, 2280];
-	this.delayMove = 600;
-	this.hp = 3000;
-
-	this.direction = directions.left;
-
-	this.sprites = {};
-	this.sprites[directions.right] = [{ x: 33, y: 0, w: 33, h: 40 }];
-	this.sprites[directions.left] = [{ x: 0, y: 0, w: 33, h: 40 }];
+class darkSquidObject {
+	constructor() {
+		this.tileFrom = [57, 57];
+		this.tileTo = [57, 57];
+		this.thisMoved = 0;
+		this.dimensions = [33, 40];
+		this.position = [2280, 2280];
+		this.delayMove = 600;
+		this.hp = 3000;
+		this.direction = directions.left;
+		this.sprites = {};
+		this.sprites[directions.right] = [{ x: 33, y: 0, w: 33, h: 40 }];
+		this.sprites[directions.left] = [{ x: 0, y: 0, w: 33, h: 40 }];
+	}
+	placeAt(x, y) {
+		this.tileFrom = [x, y];
+		this.tileTo = [x, y];
+		this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
+	}
+	processMovement(t) {
+		if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
+			return false;
+		}
+		if (t - this.timeMoved >= this.delayMove) {
+			this.placeAt(this.tileTo[0], this.tileTo[1]);
+		}
+		else {
+			this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
+			this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
+			if (this.tileTo[0] != this.tileFrom[0]) {
+				var diff = (tileW / this.delayMove) * (t - this.timeMoved);
+				this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
+			}
+			if (this.tileTo[1] != this.tileFrom[1]) {
+				var diff = (tileH / this.delayMove) * (t - this.timeMoved);
+				this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
+			}
+			this.position[0] = Math.round(this.position[0]);
+			this.position[1] = Math.round(this.position[1]);
+		}
+		return true;
+	}
+	canMoveTo(x, y) {
+		if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
+			return false;
+		}
+		if (isOccupied(toIndex(x, y))) {
+			return false;
+		}
+		if ((tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.darkPath) ||
+			(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.lava)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	canMoveUp() {
+		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
+	}
+	canMoveDown() {
+		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 2);
+	}
+	canMoveLeft() {
+		return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
+	}
+	canMoveRight() {
+		return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
+	}
+	moveLeft(t) {
+		this.tileTo[0] -= 1;
+		this.timeMoved = t;
+		this.direction = directions.left;
+	}
+	moveRight(t) {
+		this.tileTo[0] += 1;
+		this.timeMoved = t;
+		this.direction = directions.right;
+	}
+	moveUp(t) {
+		this.tileTo[1] -= 1;
+		this.timeMoved = t;
+	}
+	moveDown(t) {
+		this.tileTo[1] += 1;
+		this.timeMoved = t;
+	}
 }
 
 //creates instances of the lvl2crab object
 darkSquid = new darkSquidObject();
 
 //Creates the character object that will hold all of the player's information
-function Character() {
-	this.tileFrom = [1, 1];
-	this.tileTo = [1, 1];
-	this.thisMoved = 0;
-	this.dimensions = [35, 35];
-	this.position = [40, 40];
-	this.hp = 100;
-
-	this.delayMove = {};
-	this.delayMove[floorTypes.path] = 120;
-	this.delayMove[floorTypes.sand] = 120;
-	this.delayMove[floorTypes.water] = 200;
-	this.delayMove[floorTypes.lava] = 200;
-	this.delayMove[floorTypes.darkPath] = 120;
-
-	this.direction = directions.right;
-
-	this.sprites = {};
-	this.sprites[directions.right] = [{ x: 0, y: 205, w: 35, h: 35 }];
-	this.sprites[directions.left] = [{ x: 35, y: 205, w: 35, h: 35 }];
-	this.sprites[directions.up] = [{ x: 35, y: 170, w: 35, h: 35 }];
-	this.sprites[directions.down] = [{ x: 0, y: 170, w: 35, h: 35 }];
+class Character {
+	constructor() {
+		this.tileFrom = [1, 1];
+		this.tileTo = [1, 1];
+		this.thisMoved = 0;
+		this.dimensions = [35, 35];
+		this.position = [40, 40];
+		this.hp = 100;
+		this.delayMove = {};
+		this.delayMove[floorTypes.path] = 120;
+		this.delayMove[floorTypes.sand] = 120;
+		this.delayMove[floorTypes.water] = 200;
+		this.delayMove[floorTypes.lava] = 200;
+		this.delayMove[floorTypes.darkPath] = 120;
+		this.direction = directions.right;
+		this.sprites = {};
+		this.sprites[directions.right] = [{ x: 0, y: 205, w: 35, h: 35 }];
+		this.sprites[directions.left] = [{ x: 35, y: 205, w: 35, h: 35 }];
+		this.sprites[directions.up] = [{ x: 35, y: 170, w: 35, h: 35 }];
+		this.sprites[directions.down] = [{ x: 0, y: 170, w: 35, h: 35 }];
+	}
+	//THE BELOW FUNCTIONS PLACE THE SPRITE AT THE DESIRED SPAWN POINT##############################################
+	//#############################################################################################################
+	placeAt(x, y) {
+		this.tileFrom = [x, y];
+		this.tileTo = [x, y];
+		this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
+	}
+	//THE BELOW FUNCTIONS MOVE THE SPRITE TO THE CORRECT TILE,#######################################################
+	// DETERMINES IT'S MOVEMENT SPEED AND PLACES IT IN THE MIDDLE OF THE TILE #######################################
+	processMovement(t) {
+		if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
+			return false;
+		}
+		var moveSpeed = this.delayMove[tileTypes[gameMap[toIndex(this.tileFrom[0], this.tileFrom[1])]].floor];
+		if (t - this.timeMoved >= moveSpeed) {
+			this.placeAt(this.tileTo[0], this.tileTo[1]);
+		}
+		else {
+			this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
+			this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
+			if (this.tileTo[0] != this.tileFrom[0]) {
+				var diff = (tileW / moveSpeed) * (t - this.timeMoved);
+				this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
+			}
+			if (this.tileTo[1] != this.tileFrom[1]) {
+				var diff = (tileH / moveSpeed) * (t - this.timeMoved);
+				this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
+			}
+			this.position[0] = Math.round(this.position[0]);
+			this.position[1] = Math.round(this.position[1]);
+		}
+		return true;
+	}
+	//THE BELOW FUNCTIONS DETERMINE WHETHER OR NOT
+	//THE SPRITES IN QUESTION ARE ABLE TO MOVE TO THE NEXT BLOCK OR NOT
+	canMoveTo(x, y) {
+		if (isOccupied(toIndex(x, y))) {
+			return false;
+		}
+		if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
+			return false;
+		}
+		if (typeof this.delayMove[tileTypes[gameMap[toIndex(x, y)]].floor] == "undefined") {
+			return false;
+		}
+		return true;
+	}
+	gethp() {
+		return this.hp;
+	}
+	sethp(v) {
+		this.hp = v;
+		drawHp();
+	}
+	respawn() {
+		this.placeAt(1, 1);
+		this.sethp(100);
+	}
+	//########################################SPRITE############################################################
+	//#######################################MOVEMENT###########################################################
+	//##########################################################################################################
+	canMoveUp() {
+		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
+	}
+	canMoveDown() {
+		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 2);
+	}
+	canMoveLeft() {
+		return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
+	}
+	canMoveRight() {
+		return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
+	}
+	moveLeft(t) {
+		this.tileTo[0] -= 1;
+		this.timeMoved = t;
+		this.direction = directions.left;
+	}
+	moveRight(t) {
+		this.tileTo[0] += 1;
+		this.timeMoved = t;
+		this.direction = directions.right;
+	}
+	moveUp(t) {
+		this.tileTo[1] -= 1;
+		this.timeMoved = t;
+		this.direction = directions.up;
+	}
+	moveDown(t) {
+		this.tileTo[1] += 1;
+		this.timeMoved = t;
+		this.direction = directions.down;
+	}
 }
 
 //creates an instance of the character object
@@ -296,419 +681,30 @@ function isInside(pos, rect) {
 	return pos.x > rect.x && pos.x < rect.x + rect.width && pos.y < rect.y + rect.height && pos.y > rect.y;
 }
 
-//THE BELOW FUNCTIONS PLACE THE SPRITE AT THE DESIRED SPAWN POINT##############################################
-//#############################################################################################################
-Character.prototype.placeAt = function(x, y) {
-	this.tileFrom = [x, y];
-	this.tileTo = [x, y];
-	this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
-};
 
-crabObject.prototype.placeAt = function(x, y) {
-	this.tileFrom = [x, y];
-	this.tileTo = [x, y];
-	this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
-};
 
-lvl2crabObject.prototype.placeAt = function(x, y) {
-	this.tileFrom = [x, y];
-	this.tileTo = [x, y];
-	this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
-};
 
-lvl3crabObject.prototype.placeAt = function(x, y) {
-	this.tileFrom = [x, y];
-	this.tileTo = [x, y];
-	this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
-};
 
-darkSquidObject.prototype.placeAt = function(x, y) {
-	this.tileFrom = [x, y];
-	this.tileTo = [x, y];
-	this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
-};
 
-//THE BELOW FUNCTIONS MOVE THE SPRITE TO THE CORRECT TILE,#######################################################
-// DETERMINES IT'S MOVEMENT SPEED AND PLACES IT IN THE MIDDLE OF THE TILE #######################################
-Character.prototype.processMovement = function(t) {
-	if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
-		return false;
-    }
-    
-	var moveSpeed = this.delayMove[tileTypes[gameMap[toIndex(this.tileFrom[0], this.tileFrom[1])]].floor];
 
-	if (t - this.timeMoved >= moveSpeed) {
-		this.placeAt(this.tileTo[0], this.tileTo[1]);
-	} else {
-		this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
-		this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
 
-		if (this.tileTo[0] != this.tileFrom[0]) {
-			var diff = (tileW / moveSpeed) * (t - this.timeMoved);
-			this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
-		}
-		if (this.tileTo[1] != this.tileFrom[1]) {
-			var diff = (tileH / moveSpeed) * (t - this.timeMoved);
-			this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
-		}
 
-		this.position[0] = Math.round(this.position[0]);
-		this.position[1] = Math.round(this.position[1]);
-	}
 
-	return true;
-};
 
-crabObject.prototype.processMovement = function(t) {
-	if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
-		return false;
-    }
-	if (t - this.timeMoved >= this.delayMove) {
-		this.placeAt(this.tileTo[0], this.tileTo[1]);
-	} else {
-		this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
-		this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
 
-		if (this.tileTo[0] != this.tileFrom[0]) {
-			var diff = (tileW / this.delayMove) * (t - this.timeMoved);
-			this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
-		}
-		if (this.tileTo[1] != this.tileFrom[1]) {
-			var diff = (tileH / this.delayMove) * (t - this.timeMoved);
-			this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
-		}
 
-		this.position[0] = Math.round(this.position[0]);
-		this.position[1] = Math.round(this.position[1]);
-	}
 
-	return true;
-};
 
-lvl2crabObject.prototype.processMovement = function(t) {
-	if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
-		return false;
-    }
 
-	if (t - this.timeMoved >= this.delayMove) {
-		this.placeAt(this.tileTo[0], this.tileTo[1]);
-	} else {
-		this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
-		this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
 
-		if (this.tileTo[0] != this.tileFrom[0]) {
-			var diff = (tileW / this.delayMove) * (t - this.timeMoved);
-			this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
-		}
-		if (this.tileTo[1] != this.tileFrom[1]) {
-			var diff = (tileH / this.delayMove) * (t - this.timeMoved);
-			this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
-		}
 
-		this.position[0] = Math.round(this.position[0]);
-		this.position[1] = Math.round(this.position[1]);
-	}
 
-	return true;
-};
 
-lvl3crabObject.prototype.processMovement = function(t) {
-	if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
-		return false;
-    }
 
-	if (t - this.timeMoved >= this.delayMove) {
-		this.placeAt(this.tileTo[0], this.tileTo[1]);
-	} else {
-		this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
-		this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
 
-		if (this.tileTo[0] != this.tileFrom[0]) {
-			var diff = (tileW / this.delayMove) * (t - this.timeMoved);
-			this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
-		}
-		if (this.tileTo[1] != this.tileFrom[1]) {
-			var diff = (tileH / this.delayMove) * (t - this.timeMoved);
-			this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
-		}
 
-		this.position[0] = Math.round(this.position[0]);
-		this.position[1] = Math.round(this.position[1]);
-	}
 
-	return true;
-};
-darkSquidObject.prototype.processMovement = function(t) {
-	if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
-		return false;
-    }
 
-	if (t - this.timeMoved >= this.delayMove) {
-		this.placeAt(this.tileTo[0], this.tileTo[1]);
-	} else {
-		this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
-		this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
-
-		if (this.tileTo[0] != this.tileFrom[0]) {
-			var diff = (tileW / this.delayMove) * (t - this.timeMoved);
-			this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
-		}
-		if (this.tileTo[1] != this.tileFrom[1]) {
-			var diff = (tileH / this.delayMove) * (t - this.timeMoved);
-			this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
-		}
-
-		this.position[0] = Math.round(this.position[0]);
-		this.position[1] = Math.round(this.position[1]);
-	}
-
-	return true;
-};
-
-//THE BELOW FUNCTIONS DETERMINE WHETHER OR NOT
-//THE SPRITES IN QUESTION ARE ABLE TO MOVE TO THE NEXT BLOCK OR NOT
-Character.prototype.canMoveTo = function(x, y) {
-    if (isOccupied(toIndex(x,y))){
-        return false;
-    }
-	if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
-		return false;
-	}
-	if (typeof this.delayMove[tileTypes[gameMap[toIndex(x, y)]].floor] == "undefined") {
-		return false;
-	}
-	return true;
-};
-
-crabObject.prototype.canMoveTo = function(x, y) {
-    //makes sure it can't move off map
-	if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
-		return false;
-    }
-    if (isOccupied(toIndex(x,y))){
-        return false;
-    }
-	if (
-		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
-		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
-	) {
-		return true;
-	} else{return false;}
-};
-
-lvl2crabObject.prototype.canMoveTo = function(x, y) {
-	if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
-		return false;
-    }
-    if (isOccupied(toIndex(x,y))){
-        return false;
-    }
-	if (
-		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
-		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
-	) {
-		return true;
-	} else{return false;}
-};
-
-lvl3crabObject.prototype.canMoveTo = function(x, y) {
-	if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
-		return false;
-    }
-    if (isOccupied(toIndex(x,y))){
-        return false;
-    }
-	if (
-		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand)||
-		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
-	) {return true;	}
-	else{return false;}
-};
-
-darkSquidObject.prototype.canMoveTo = function(x, y) {
-	if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
-		return false;
-    }
-    if (isOccupied(toIndex(x,y))){
-        return false;
-    }
-	if (
-		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.darkPath)||
-		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.lava)
-	) {return true;	}
-	else{return false;}
-};
-
-Character.prototype.gethp = function() {
-	return this.hp;
-};
-Character.prototype.sethp = function(v) {
-	this.hp = v;
-	drawHp();
-};
-Character.prototype.respawn = function(){
-    this.placeAt(1,1);
-    this.sethp(100);
-}
-
-//########################################SPRITE############################################################
-//#######################################MOVEMENT###########################################################
-//##########################################################################################################
-Character.prototype.canMoveUp = function() {
-	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
-};
-Character.prototype.canMoveDown = function() {
-	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 2);
-};
-Character.prototype.canMoveLeft = function() {
-	return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
-};
-Character.prototype.canMoveRight = function() {
-	return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
-};
-
-Character.prototype.moveLeft = function(t) {
-	this.tileTo[0] -= 1;
-	this.timeMoved = t;
-	this.direction = directions.left;
-};
-Character.prototype.moveRight = function(t) {
-	this.tileTo[0] += 1;
-	this.timeMoved = t;
-	this.direction = directions.right;
-};
-Character.prototype.moveUp = function(t) {
-	this.tileTo[1] -= 1;
-	this.timeMoved = t;
-	this.direction = directions.up;
-};
-Character.prototype.moveDown = function(t) {
-	this.tileTo[1] += 1;
-	this.timeMoved = t;
-	this.direction = directions.down;
-};
-
-crabObject.prototype.canMoveUp = function() {
-	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
-};
-crabObject.prototype.canMoveDown = function() {
-	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);
-};
-crabObject.prototype.canMoveLeft = function() {
-	return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
-};
-crabObject.prototype.canMoveRight = function() {
-	return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
-};
-
-crabObject.prototype.moveLeft = function(t) {
-	this.tileTo[0] -= 1;
-	this.timeMoved = t;
-};
-crabObject.prototype.moveRight = function(t) {
-	this.tileTo[0] += 1;
-	this.timeMoved = t;
-};
-crabObject.prototype.moveUp = function(t) {
-	this.tileTo[1] -= 1;
-	this.timeMoved = t;
-};
-crabObject.prototype.moveDown = function(t) {
-	this.tileTo[1] += 1;
-	this.timeMoved = t;
-};
-
-lvl2crabObject.prototype.canMoveUp = function() {
-	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
-};
-lvl2crabObject.prototype.canMoveDown = function() {
-	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);
-};
-lvl2crabObject.prototype.canMoveLeft = function() {
-	return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
-};
-lvl2crabObject.prototype.canMoveRight = function() {
-	return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
-};
-
-lvl2crabObject.prototype.moveLeft = function(t) {
-	this.tileTo[0] -= 1;
-	this.timeMoved = t;
-};
-lvl2crabObject.prototype.moveRight = function(t) {
-	this.tileTo[0] += 1;
-	this.timeMoved = t;
-};
-lvl2crabObject.prototype.moveUp = function(t) {
-	this.tileTo[1] -= 1;
-	this.timeMoved = t;
-};
-lvl2crabObject.prototype.moveDown = function(t) {
-	this.tileTo[1] += 1;
-	this.timeMoved = t;
-};
-
-lvl3crabObject.prototype.canMoveUp = function() {
-	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
-};
-lvl3crabObject.prototype.canMoveDown = function() {
-	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);
-};
-lvl3crabObject.prototype.canMoveLeft = function() {
-	return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
-};
-lvl3crabObject.prototype.canMoveRight = function() {
-	return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
-};
-
-lvl3crabObject.prototype.moveLeft = function(t) {
-	this.tileTo[0] -= 1;
-	this.timeMoved = t;
-};
-lvl3crabObject.prototype.moveRight = function(t) {
-	this.tileTo[0] += 1;
-	this.timeMoved = t;
-};
-lvl3crabObject.prototype.moveUp = function(t) {
-	this.tileTo[1] -= 1;
-	this.timeMoved = t;
-};
-lvl3crabObject.prototype.moveDown = function(t) {
-	this.tileTo[1] += 1;
-	this.timeMoved = t;
-};
-
-darkSquidObject.prototype.canMoveUp = function() {
-	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
-};
-darkSquidObject.prototype.canMoveDown = function() {
-	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 2);
-};
-darkSquidObject.prototype.canMoveLeft = function() {
-	return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
-};
-darkSquidObject.prototype.canMoveRight = function() {
-	return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
-};
-
-darkSquidObject.prototype.moveLeft = function(t) {
-	this.tileTo[0] -= 1;
-	this.timeMoved = t;
-	this.direction = directions.left;
-};
-darkSquidObject.prototype.moveRight = function(t) {
-	this.tileTo[0] += 1;
-	this.timeMoved = t;
-	this.direction = directions.right;
-};
-darkSquidObject.prototype.moveUp = function(t) {
-	this.tileTo[1] -= 1;
-	this.timeMoved = t;
-};
-darkSquidObject.prototype.moveDown = function(t) {
-	this.tileTo[1] += 1;
-	this.timeMoved = t;
-};
 
 function updateOccupied(square,truth){
     occupiedGrid[square] = truth;
