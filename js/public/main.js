@@ -19,7 +19,6 @@ var characterType = localStorage.getItem("cTypeLocalStorage");
 var playy = localStorage.getItem("posyLocalStorage");
 */
 
-
 //This variable distinguishes different types of tile so that it can be used to make for a more dynamic map with obstacles
 var floorTypes = {
 	solid: 0,
@@ -123,8 +122,8 @@ var gameMap = [
 
 var occupiedGrid = [];
 
-for (i = 0;i<gameMap.length; i++){
-    occupiedGrid.push(false);
+for (i = 0; i < gameMap.length; i++) {
+	occupiedGrid.push(false);
 }
 
 //the below variable controls the screen that follows the character around the map
@@ -181,7 +180,6 @@ var lvl3crabImage = new Image();
 var darkSquidReady = false;
 var darkSquidImage = new Image();
 
-
 //Creates the crab object which will hold all of the sprite's information
 class crabObject {
 	constructor() {
@@ -204,8 +202,7 @@ class crabObject {
 		}
 		if (t - this.timeMoved >= this.delayMove) {
 			this.placeAt(this.tileTo[0], this.tileTo[1]);
-		}
-		else {
+		} else {
 			this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
 			this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
 			if (this.tileTo[0] != this.tileFrom[0]) {
@@ -229,11 +226,9 @@ class crabObject {
 		if (isOccupied(toIndex(x, y))) {
 			return false;
 		}
-		if ((tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
-			(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)) {
+		if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -269,9 +264,9 @@ class crabObject {
 
 //creates instances of the crab object
 var crab = [];
-var crabCount = 6
-for (var i = 0; i < crabCount; i++){
-    crab[i] = new crabObject();
+var crabCount = 6;
+for (var i = 0; i < crabCount; i++) {
+	crab[i] = new crabObject();
 }
 
 //Creates the level 2 crab object
@@ -296,8 +291,7 @@ class lvl2crabObject {
 		}
 		if (t - this.timeMoved >= this.delayMove) {
 			this.placeAt(this.tileTo[0], this.tileTo[1]);
-		}
-		else {
+		} else {
 			this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
 			this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
 			if (this.tileTo[0] != this.tileFrom[0]) {
@@ -320,11 +314,9 @@ class lvl2crabObject {
 		if (isOccupied(toIndex(x, y))) {
 			return false;
 		}
-		if ((tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
-			(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)) {
+		if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -360,8 +352,8 @@ class lvl2crabObject {
 
 //creates instances of the lvl2crab object
 var lvl2Crab = [];
-for (i = 7; i < 20; i++){
-    lvl2Crab[i] = new lvl2crabObject();
+for (i = 7; i < 20; i++) {
+	lvl2Crab[i] = new lvl2crabObject();
 }
 
 //Creates the level 3 crab object
@@ -386,8 +378,7 @@ class lvl3crabObject {
 		}
 		if (t - this.timeMoved >= this.delayMove) {
 			this.placeAt(this.tileTo[0], this.tileTo[1]);
-		}
-		else {
+		} else {
 			this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
 			this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
 			if (this.tileTo[0] != this.tileFrom[0]) {
@@ -410,11 +401,9 @@ class lvl3crabObject {
 		if (isOccupied(toIndex(x, y))) {
 			return false;
 		}
-		if ((tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
-			(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)) {
+		if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -450,8 +439,8 @@ class lvl3crabObject {
 
 //creates instances of the lvl3crab object
 var lvl3Crab = [];
-for (i = 21; i < 31; i++){
-    lvl3Crab[i] = new lvl3crabObject();
+for (i = 21; i < 31; i++) {
+	lvl3Crab[i] = new lvl3crabObject();
 }
 
 //Creates the level 2 crab object
@@ -480,8 +469,7 @@ class darkSquidObject {
 		}
 		if (t - this.timeMoved >= this.delayMove) {
 			this.placeAt(this.tileTo[0], this.tileTo[1]);
-		}
-		else {
+		} else {
 			this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
 			this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
 			if (this.tileTo[0] != this.tileFrom[0]) {
@@ -504,11 +492,9 @@ class darkSquidObject {
 		if (isOccupied(toIndex(x, y))) {
 			return false;
 		}
-		if ((tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.darkPath) ||
-			(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.lava)) {
+		if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.darkPath || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.lava) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -585,8 +571,7 @@ class Character {
 		var moveSpeed = this.delayMove[tileTypes[gameMap[toIndex(this.tileFrom[0], this.tileFrom[1])]].floor];
 		if (t - this.timeMoved >= moveSpeed) {
 			this.placeAt(this.tileTo[0], this.tileTo[1]);
-		}
-		else {
+		} else {
 			this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
 			this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
 			if (this.tileTo[0] != this.tileFrom[0]) {
@@ -681,51 +666,26 @@ function isInside(pos, rect) {
 	return pos.x > rect.x && pos.x < rect.x + rect.width && pos.y < rect.y + rect.height && pos.y > rect.y;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function updateOccupied(square,truth){
-    occupiedGrid[square] = truth;
+function updateOccupied(square, truth) {
+	occupiedGrid[square] = truth;
 }
 
-function isOccupied(square){
-    return occupiedGrid[square];
+function isOccupied(square) {
+	return occupiedGrid[square];
 }
 
-function getObject(index){
-    if (isOccupied(index)){
-        return 
-    }
+function getObject(index) {
+	if (isOccupied(index)) {
+		return;
+	}
 }
 
 //when the browser is loaded, do this
 window.onload = function() {
 	//sends position of player to the server every 100 milliseconds
-	window.setInterval(function(){
+	window.setInterval(function() {
 		getPosition();
-	},100);
+	}, 100);
 	//assigning the ctx variables to their respective canvases
 	ctx = document.getElementById("map").getContext("2d");
 	ctx_hp = document.getElementById("playerhp").getContext("2d");
@@ -748,7 +708,6 @@ window.onload = function() {
 
 	//storing the canvas "map"'s width and height in the viewports' screen paramater
 	viewport.screen = [document.getElementById("map").width, document.getElementById("map").height];
-
 
 	//if for any reason the sprites cannot be loaded, the user will be alerted
 	this.tileset.onerror = function() {
@@ -774,7 +733,7 @@ window.onload = function() {
 	this.lvl2crabImage.onload = function() {
 		tilesetLoaded = true;
 	};
-	
+
 	this.lvl3crabImage.onerror = function() {
 		ctx = null;
 		alert("Failed to load sprites");
@@ -792,20 +751,19 @@ window.onload = function() {
 	};
 
 	//assigning sprites their images
-	if(characterType == "archer"){
-		this.tileset.src = "assets/images/tileset.png"
+	if (characterType == "archer") {
+		this.tileset.src = "assets/images/tileset.png";
 	}
-	if(characterType == "knight"){
-		this.tileset.src = "assets/images/tilesetknight.png"
+	if (characterType == "knight") {
+		this.tileset.src = "assets/images/tilesetknight.png";
 	}
-	if(characterType == "mage"){
-		this.tileset.src = "assets/images/tilesetmage.png"
+	if (characterType == "mage") {
+		this.tileset.src = "assets/images/tilesetmage.png";
 	}
 	this.crabImage.src = "assets/images/lvl1crab.png";
 	this.lvl2crabImage.src = "assets/images/lvl2crab.png";
 	this.lvl3crabImage.src = "assets/images/lvl3crab.png";
 	this.darkSquidImage.src = "assets/images/squidboss.png";
-
 };
 
 //creates the hp canvas and gives it the player's current hp
@@ -829,9 +787,9 @@ function drawMap() {
 	if (tileTypes[gameMap[toIndex(player.tileFrom[0], player.tileFrom[1])]].floor == 3) {
 		player.sethp(player.gethp() - 0.5);
 	}
-    if (player.gethp() <= 0) {
-        player.respawn();
-    }
+	if (player.gethp() <= 0) {
+		player.respawn();
+	}
 	if (!tilesetLoaded) {
 		requestAnimationFrame(drawMap);
 		return;
@@ -849,7 +807,6 @@ function drawMap() {
 	} else {
 		frameCount++;
 	}
-	
 
 	//the below if loops determine whether or not the respective entity can move in the direction desired
 	//and if it can, move it to the desired tile
@@ -867,78 +824,77 @@ function drawMap() {
 			player.timeMoved = currentFrameTime;
 		}
 	}
-    //Creates crabs and randomly moves them
-    for (i = 0; i < crabCount; i++){
-        var crabMovement = Math.floor(Math.random() * 4 + 1);
-        if (!crab[i].processMovement(currentFrameTime)) {
-            if (crabMovement == 1 && crab[i].canMoveUp()) {
-                crab[i].moveUp(currentFrameTime);
-            } else if (crabMovement == 2 && crab[i].canMoveDown()) {
-                crab[i].moveDown(currentFrameTime);
-            } else if (crabMovement == 3 && crab[i].canMoveLeft()) {
-                crab[i].moveLeft(currentFrameTime);
-            } else if (crabMovement == 4 && crab[i].canMoveRight()) {
-                crab[i].moveRight(currentFrameTime);
-            }
-            if (crab[i].tileFrom[0] != crab[i].tileTo[0] || crab[i].tileFrom[1] != crab[i].tileTo[1]) {
-                crab[i].timeMoved = currentFrameTime;
-            }
-        }
-    }
-    
-    for (i = 7; i < 20; i++){
-        crabMovement = Math.floor(Math.random() * 4 + 1);
-        if (!lvl2Crab[i].processMovement(currentFrameTime)) {
-            if (crabMovement == 1 && lvl2Crab[i].canMoveUp()) {
-                lvl2Crab[i].moveUp(currentFrameTime);
-            } else if (crabMovement == 2 && lvl2Crab[i].canMoveDown()) {
-                lvl2Crab[i].moveDown(currentFrameTime);
-            } else if (crabMovement == 3 && lvl2Crab[i].canMoveLeft()) {
-                lvl2Crab[i].moveLeft(currentFrameTime);
-            } else if (crabMovement == 4 && lvl2Crab[i].canMoveRight()) {
-                lvl2Crab[i].moveRight(currentFrameTime);
-            }
-            if (lvl2Crab[i].tileFrom[0] != lvl2Crab[i].tileTo[0] || lvl2Crab[i].tileFrom[1] != lvl2Crab[i].tileTo[1]) {
-                lvl2Crab[i].timeMoved = currentFrameTime;
-            }
-        }
+	//Creates crabs and randomly moves them
+	for (i = 0; i < crabCount; i++) {
+		var crabMovement = Math.floor(Math.random() * 4 + 1);
+		if (!crab[i].processMovement(currentFrameTime)) {
+			if (crabMovement == 1 && crab[i].canMoveUp()) {
+				crab[i].moveUp(currentFrameTime);
+			} else if (crabMovement == 2 && crab[i].canMoveDown()) {
+				crab[i].moveDown(currentFrameTime);
+			} else if (crabMovement == 3 && crab[i].canMoveLeft()) {
+				crab[i].moveLeft(currentFrameTime);
+			} else if (crabMovement == 4 && crab[i].canMoveRight()) {
+				crab[i].moveRight(currentFrameTime);
+			}
+			if (crab[i].tileFrom[0] != crab[i].tileTo[0] || crab[i].tileFrom[1] != crab[i].tileTo[1]) {
+				crab[i].timeMoved = currentFrameTime;
+			}
+		}
 	}
 
-	for (i = 21; i < 31; i++){
-        crabMovement = Math.floor(Math.random() * 4 + 1);
-        if (!lvl3Crab[i].processMovement(currentFrameTime)) {
-            if (crabMovement == 1 && lvl3Crab[i].canMoveUp()) {
-                lvl3Crab[i].moveUp(currentFrameTime);
-            } else if (crabMovement == 2 && lvl3Crab[i].canMoveDown()) {
-                lvl3Crab[i].moveDown(currentFrameTime);
-            } else if (crabMovement == 3 && lvl3Crab[i].canMoveLeft()) {
-                lvl3Crab[i].moveLeft(currentFrameTime);
-            } else if (crabMovement == 4 && lvl3Crab[i].canMoveRight()) {
-                lvl3Crab[i].moveRight(currentFrameTime);
-            }
-            if (lvl3Crab[i].tileFrom[0] != lvl3Crab[i].tileTo[0] || lvl3Crab[i].tileFrom[1] != lvl3Crab[i].tileTo[1]) {
-                lvl3Crab[i].timeMoved = currentFrameTime;
-            }
-        }
+	for (i = 7; i < 20; i++) {
+		crabMovement = Math.floor(Math.random() * 4 + 1);
+		if (!lvl2Crab[i].processMovement(currentFrameTime)) {
+			if (crabMovement == 1 && lvl2Crab[i].canMoveUp()) {
+				lvl2Crab[i].moveUp(currentFrameTime);
+			} else if (crabMovement == 2 && lvl2Crab[i].canMoveDown()) {
+				lvl2Crab[i].moveDown(currentFrameTime);
+			} else if (crabMovement == 3 && lvl2Crab[i].canMoveLeft()) {
+				lvl2Crab[i].moveLeft(currentFrameTime);
+			} else if (crabMovement == 4 && lvl2Crab[i].canMoveRight()) {
+				lvl2Crab[i].moveRight(currentFrameTime);
+			}
+			if (lvl2Crab[i].tileFrom[0] != lvl2Crab[i].tileTo[0] || lvl2Crab[i].tileFrom[1] != lvl2Crab[i].tileTo[1]) {
+				lvl2Crab[i].timeMoved = currentFrameTime;
+			}
+		}
 	}
-	
-	
-    if (!darkSquid.processMovement(currentFrameTime)) {
+
+	for (i = 21; i < 31; i++) {
+		crabMovement = Math.floor(Math.random() * 4 + 1);
+		if (!lvl3Crab[i].processMovement(currentFrameTime)) {
+			if (crabMovement == 1 && lvl3Crab[i].canMoveUp()) {
+				lvl3Crab[i].moveUp(currentFrameTime);
+			} else if (crabMovement == 2 && lvl3Crab[i].canMoveDown()) {
+				lvl3Crab[i].moveDown(currentFrameTime);
+			} else if (crabMovement == 3 && lvl3Crab[i].canMoveLeft()) {
+				lvl3Crab[i].moveLeft(currentFrameTime);
+			} else if (crabMovement == 4 && lvl3Crab[i].canMoveRight()) {
+				lvl3Crab[i].moveRight(currentFrameTime);
+			}
+			if (lvl3Crab[i].tileFrom[0] != lvl3Crab[i].tileTo[0] || lvl3Crab[i].tileFrom[1] != lvl3Crab[i].tileTo[1]) {
+				lvl3Crab[i].timeMoved = currentFrameTime;
+			}
+		}
+	}
+
+	if (!darkSquid.processMovement(currentFrameTime)) {
 		var darkSquidMovement = Math.floor(Math.random() * 4 + 1);
-        if (darkSquidMovement == 1 && darkSquid.canMoveUp()) {
-            darkSquid.moveUp(currentFrameTime);
-        } else if (darkSquidMovement == 2 && darkSquid.canMoveDown()) {
-            darkSquid.moveDown(currentFrameTime);
-        } else if (darkSquidMovement == 3 && darkSquid.canMoveLeft()) {
-            darkSquid.moveLeft(currentFrameTime);
-        } else if (darkSquidMovement == 4 && darkSquid.canMoveRight()) {
-            darkSquid.moveRight(currentFrameTime);
-        }
-        if (darkSquid.tileFrom[0] != darkSquid.tileTo[0] || darkSquid.tileFrom[1] != darkSquid.tileTo[1]) {
-            darkSquid.timeMoved = currentFrameTime;
-        }
-    }
-	
+		if (darkSquidMovement == 1 && darkSquid.canMoveUp()) {
+			darkSquid.moveUp(currentFrameTime);
+		} else if (darkSquidMovement == 2 && darkSquid.canMoveDown()) {
+			darkSquid.moveDown(currentFrameTime);
+		} else if (darkSquidMovement == 3 && darkSquid.canMoveLeft()) {
+			darkSquid.moveLeft(currentFrameTime);
+		} else if (darkSquidMovement == 4 && darkSquid.canMoveRight()) {
+			darkSquid.moveRight(currentFrameTime);
+		}
+		if (darkSquid.tileFrom[0] != darkSquid.tileTo[0] || darkSquid.tileFrom[1] != darkSquid.tileTo[1]) {
+			darkSquid.timeMoved = currentFrameTime;
+		}
+	}
+
 	//Places the player in the middle of the tile
 	viewport.update(player.position[0] + player.dimensions[0] / 2, player.position[1] + player.dimensions[1] / 2);
 
@@ -963,24 +919,23 @@ function drawMap() {
 		}
 	}
 
-    var allobj = [];
-    for(var key in window) {
-        var value = window[key];
-        if ((value instanceof Character)||(value instanceof crabObject)||(value instanceof lvl2crabObject)) {
-            allobj.push(toIndex(value.tileFrom[0],value.tileFrom[1]));
-            allobj.push(toIndex(value.tileTo[0],value.tileTo[1]));
-        }
-    }
+	var allobj = [];
+	for (var key in window) {
+		var value = window[key];
+		if (value instanceof Character || value instanceof crabObject || value instanceof lvl2crabObject) {
+			allobj.push(toIndex(value.tileFrom[0], value.tileFrom[1]));
+			allobj.push(toIndex(value.tileTo[0], value.tileTo[1]));
+		}
+	}
 
-    for (i=0;i<occupiedGrid.length;i++){
-        if (allobj.includes(i)){
-            updateOccupied(i,true);
-        }
-        else{
-            updateOccupied(i,false);
-        }
-    }
-  
+	for (i = 0; i < occupiedGrid.length; i++) {
+		if (allobj.includes(i)) {
+			updateOccupied(i, true);
+		} else {
+			updateOccupied(i, false);
+		}
+	}
+
 	/*###################################SPRITE##########################################
     ######################################DRAW###########################################
     ####################################FUNCTIONS########################################
@@ -997,28 +952,28 @@ function drawMap() {
 		player.dimensions[0],
 		player.dimensions[1]
 	);
-for (i = 0; i < crabCount; i++){
-	ctx.drawImage(crabImage, viewport.offset[0] + crab[i].position[0], viewport.offset[1] + crab[i].position[1]);
-}
-for (i = 7; i < 20; i++){
-	ctx.drawImage(lvl2crabImage, viewport.offset[0] + lvl2Crab[i].position[0], viewport.offset[1] + lvl2Crab[i].position[1]);
-}
-for (i = 21; i < 31; i++){
-	ctx.drawImage(lvl3crabImage, viewport.offset[0] + lvl3Crab[i].position[0], viewport.offset[1] + lvl3Crab[i].position[1]);
-}
-var squidSprite = darkSquid.sprites[darkSquid.direction];
-ctx.drawImage(
-	darkSquidImage, 
-	squidSprite[0].x,
-	squidSprite[0].y,
-	squidSprite[0].w,
-	squidSprite[0].h,
-	viewport.offset[0] + darkSquid.position[0], 
-	viewport.offset[1] + darkSquid.position[1],
-	darkSquid.dimensions[0],
-	darkSquid.dimensions[1]
+	for (i = 0; i < crabCount; i++) {
+		ctx.drawImage(crabImage, viewport.offset[0] + crab[i].position[0], viewport.offset[1] + crab[i].position[1]);
+	}
+	for (i = 7; i < 20; i++) {
+		ctx.drawImage(lvl2crabImage, viewport.offset[0] + lvl2Crab[i].position[0], viewport.offset[1] + lvl2Crab[i].position[1]);
+	}
+	for (i = 21; i < 31; i++) {
+		ctx.drawImage(lvl3crabImage, viewport.offset[0] + lvl3Crab[i].position[0], viewport.offset[1] + lvl3Crab[i].position[1]);
+	}
+	var squidSprite = darkSquid.sprites[darkSquid.direction];
+	ctx.drawImage(
+		darkSquidImage,
+		squidSprite[0].x,
+		squidSprite[0].y,
+		squidSprite[0].w,
+		squidSprite[0].h,
+		viewport.offset[0] + darkSquid.position[0],
+		viewport.offset[1] + darkSquid.position[1],
+		darkSquid.dimensions[0],
+		darkSquid.dimensions[1]
 	);
-/*
+	/*
 ctx.drawImage(
 	tileset,
 	sprite[0].x,
@@ -1035,4 +990,3 @@ ctx.drawImage(
 	//telling the browser to update the animation with this function before the next paint
 	requestAnimationFrame(drawMap);
 }
-
