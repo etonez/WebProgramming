@@ -617,7 +617,7 @@ window.onload = function() {
 	if(characterType == "mage"){
 		this.tileset.src = "assets/images/tilesetmage.png"
 	}
-	this.crabImage.src = "assets/images/enemyCrab.png";
+	this.crabImage.src = "assets/images/lvl1crab.png";
 	this.lvl2crabImage.src = "assets/images/lvl2crab.png";
 };
 
