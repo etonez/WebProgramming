@@ -126,6 +126,73 @@ for (i = 0; i < gameMap.length; i++) {
 	occupiedGrid.push(false);
 }
 
+//Creates Item types
+var itemTypes = {
+	1 : {
+		name : "Health",
+		maxStack : 4,
+		sprite : "\assets\images\items\healthpot.png",
+		offset : [0,0]
+	}
+};
+//For Stacks of Items
+function Stack(id, qty)
+{
+	this.type = id;
+	this.qty = qty;
+}
+//Inventory Space
+function Inventory(s)
+{
+	this.spaces		= s;
+	this.stacks		= [];
+}
+//Adds Items to Inventory
+Inventory.prototype.addItems = function(id, qty)
+{
+	for(var i = 0; i < this.spaces; i++)
+	{
+		if(this.stacks.length<=i)
+		{
+			var maxHere = (qty > itemTypes[id].maxStack ?
+				itemTypes[id].maxStack : qty);
+			this.stacks.push(new Stack(id, maxHere));
+			
+			qty-= maxHere;
+		}
+		else if(this.stacks[i].type == id &&
+			this.stacks[i].qty < itemTypes[id].maxStack)
+		{
+			var maxHere = (itemTypes[id].maxStack - this.stacks[i].qty);
+			if(maxHere > qty) { maxHere = qty; }
+			
+			this.stacks[i].qty+= maxHere;
+			qty-= maxHere;
+		}
+		
+		if(qty==0) { return 0; }
+	}
+	
+	return qty;
+};
+
+//Dropped Stacks Of Items On Ground
+function PlacedItemStack(id, qty)
+{
+	this.type = id;
+	this.qty = qty;
+	this.x = 0;
+    this.dimensions = [25, 25];
+	this.y = 0;
+}
+//Places Items At Location
+PlacedItemStack.prototype.placeAt = function(x, y)
+{
+	this.tileFrom = [x, y];
+    this.tileTo = [x, y];
+    this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
+};
+
 //the below variable controls the screen that follows the character around the map
 var viewport = {
 	screen: [0, 0],
@@ -554,6 +621,8 @@ class Character {
 		this.sprites[directions.left] = [{ x: 35, y: 205, w: 35, h: 35 }];
 		this.sprites[directions.up] = [{ x: 35, y: 170, w: 35, h: 35 }];
 		this.sprites[directions.down] = [{ x: 0, y: 170, w: 35, h: 35 }];
+        this.inventory = new Inventory(3);
+
 	}
 	//THE BELOW FUNCTIONS PLACE THE SPRITE AT THE DESIRED SPAWN POINT##############################################
 	//#############################################################################################################
@@ -764,6 +833,8 @@ window.onload = function() {
 	this.lvl2crabImage.src = "assets/images/lvl2crab.png";
 	this.lvl3crabImage.src = "assets/images/lvl3crab.png";
 	this.darkSquidImage.src = "assets/images/squidboss.png";
+    
+    var ps = new PlacedItemStack(1, 1); ps.placeAt(i, 1);
 };
 
 //creates the hp canvas and gives it the player's current hp
@@ -794,7 +865,7 @@ function drawMap() {
 		requestAnimationFrame(drawMap);
 		return;
 	}
-
+    
 	var currentFrameTime = Date.now();
 	var timeElapsed = currentFrameTime - lastFrameTime;
 	drawHp();
@@ -972,6 +1043,38 @@ function drawMap() {
 		darkSquid.dimensions[0],
 		darkSquid.dimensions[1]
 	);
+    
+    ctx.textAlign = "right";
+    
+	//Draws Inventory
+	for(var i = 0; i < player.inventory.spaces; i++)
+	{
+		ctx.fillStyle = "#ddccaa";
+		ctx.fillRect(10 + (i * 50), 350,
+			40, 40);
+		
+		if(typeof player.inventory.stacks[i]!='undefined')
+		{
+			var it = itemTypes[player.inventory.stacks[i].type];
+			var sprite = it.sprite;
+					
+			ctx.drawImage(tileset,
+				sprite[0].x, sprite[0].y,
+				sprite[0].w, sprite[0].h,
+				10 + (i * 50) + it.offset[0],
+				350 + it.offset[1],
+				sprite[0].w, sprite[0].h);
+			
+			if(player.inventory.stacks[i].qty>1)
+			{
+				ctx.fillStyle = "#000000";
+				ctx.fillText("" + player.inventory.stacks[i].qty,
+					10 + (i*50) + 38,
+					350 + 38);
+			}
+		}
+	}
+	ctx.textAlign = "left";
 	/*
 ctx.drawImage(
 	tileset,
