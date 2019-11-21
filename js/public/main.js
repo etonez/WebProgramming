@@ -213,31 +213,10 @@ function lvl2crabObject() {
 
 //creates instances of the lvl2crab object
 var lvl2Crab = [];
-for (i = 7; i < 21; i++){
+for (i = 0; i < 14; i++){
     lvl2Crab[i] = new lvl2crabObject();
 }
 
-lvl2Crab[14].tileTo[(22, 37)];
-lvl2Crab[14].tileTo[(22, 37)];
-lvl2Crab[14].position[(880, 1480)];
-lvl2Crab[15].tileTo[(22, 37)];
-lvl2Crab[15].tileTo[(22, 37)];
-lvl2Crab[15].position[(880, 1480)];
-lvl2Crab[16].tileTo[(22, 37)];
-lvl2Crab[16].tileTo[(22, 37)];
-lvl2Crab[16].position[(880, 1480)];
-lvl2Crab[17].tileTo[(22, 37)];
-lvl2Crab[17].tileTo[(22, 37)];
-lvl2Crab[17].position[(880, 1480)];
-lvl2Crab[18].tileTo[(22, 37)];
-lvl2Crab[18].tileTo[(22, 37)];
-lvl2Crab[18].position[(880, 1480)];
-lvl2Crab[19].tileTo[(22, 37)];
-lvl2Crab[19].tileTo[(22, 37)];
-lvl2Crab[19].position[(880, 1480)];
-lvl2Crab[20].tileTo[(22, 37)];
-lvl2Crab[20].tileTo[(22, 37)];
-lvl2Crab[20].position[(880, 1480)];
 
 //Creates the character object that will hold all of the player's information
 function Character() {
@@ -297,7 +276,6 @@ lvl2crabObject.prototype.placeAt = function(x, y) {
 	this.tileFrom = [x, y];
 	this.tileTo = [x, y];
 	this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
-    
 };
 
 //THE BELOW FUNCTIONS MOVE THE SPRITE TO THE CORRECT TILE,#######################################################
@@ -411,7 +389,6 @@ crabObject.prototype.canMoveTo = function(x, y) {
 		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
 		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
 	) {
-        console.log("crab moves");
 		return true;
 	} else if (
 		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path ||
@@ -706,7 +683,7 @@ function drawMap() {
         }
     }
     
-    for (i = 7; i < 20; i++){
+    for (i = 0; i < 14; i++){
         crabMovement = Math.floor(Math.random() * 4 + 1);
         if (!lvl2Crab[i].processMovement(currentFrameTime)) {
             if (crabMovement == 1 && lvl2Crab[i].canMoveUp()) {
