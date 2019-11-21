@@ -27,14 +27,15 @@ var floorTypes = {
 	solid: 0,
 	path: 1,
 	water: 2,
-	lava: 3
+	lava: 3,
+	sand: 4
 };
 
 //the below variable stores all of the different types of tiles and assigns them a sprite from tileset.png
 var tileTypes = {
 	0: { colour: "#999999", floor: floorTypes.solid, sprite: [{ x: 200, y: 200, w: 40, h: 40 }] },
 	1: { colour: "#eeeeee", floor: floorTypes.path, sprite: [{ x: 0, y: 0, w: 40, h: 40 }] },
-	2: { colour: "#0B99F7", floor: floorTypes.path, sprite: [{ x: 40, y: 0, w: 40, h: 40 }] },
+	2: { colour: "#0B99F7", floor: floorTypes.sand, sprite: [{ x: 40, y: 0, w: 40, h: 40 }] },
 	3: { colour: "#0B99F7", floor: floorTypes.water, sprite: [{ x: 80, y: 0, w: 40, h: 40 }] },
 	4: { colour: "#0B99F7", floor: floorTypes.path, sprite: [{ x: 120, y: 0, w: 40, h: 40 }] },
 	5: { colour: "#0B99F7", floor: floorTypes.lava, sprite: [{ x: 160, y: 0, w: 40, h: 40 }] }
@@ -251,6 +252,7 @@ function Character() {
 
 	this.delayMove = {};
 	this.delayMove[floorTypes.path] = 120;
+	this.delayMove[floorTypes.sand] = 120;
 	this.delayMove[floorTypes.water] = 200;
 	this.delayMove[floorTypes.lava] = 200;
 
@@ -445,12 +447,7 @@ crabObject.prototype.canMoveTo = function(x, y) {
 		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
 	) {
 		return true;
-	} else if (
-		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path ||
-		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.solid
-	) {
-		return false;
-	}
+	} else{return false;}
 };
 
 lvl2crabObject.prototype.canMoveTo = function(x, y) {
@@ -460,11 +457,12 @@ lvl2crabObject.prototype.canMoveTo = function(x, y) {
     if (isOccupied(toIndex(x,y))){
         return false;
     }
-	if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water) {
+	if (
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
+	) {
 		return true;
-	} else if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.solid) {
-		return false;
-	}
+	} else{return false;}
 };
 
 lvl3crabObject.prototype.canMoveTo = function(x, y) {
@@ -474,11 +472,11 @@ lvl3crabObject.prototype.canMoveTo = function(x, y) {
     if (isOccupied(toIndex(x,y))){
         return false;
     }
-	if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water) {
-		return true;
-	} else if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.solid) {
-		return false;
-	}
+	if (
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand)||
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
+	) {return true;	}
+	else{return false;}
 };
 
 Character.prototype.gethp = function() {
