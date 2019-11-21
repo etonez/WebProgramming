@@ -6,7 +6,29 @@
 
 </head>
 
-<script src="main.js"></script>
+<script src="main.js">
+
+</script>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script>
+var socket = io();
+
+var getPosition = function(){
+     socket.emit('position',{
+     x: player.position[0],
+     y: player.position[1]
+     }); 
+}
+/*
+socket.on("newPosition",function(data){
+	
+
+})
+*/
+ 
+
+
+</script>
 <body> 
     <h1> Moonscape </h1>
     <!-- canvas which game is drawn to: -->

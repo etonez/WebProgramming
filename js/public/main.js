@@ -15,25 +15,28 @@ var lastFrameTime = 0;
 
 //sets the variables characterType whatever was stored in cTypeLocalStorage
 var characterType = localStorage.getItem("cTypeLocalStorage");
+/*var playx = localStorage.getItem("posxLocalStorage");
+var playy = localStorage.getItem("posyLocalStorage");
+*/
 
-//the variables associated with map and player sprites
-var tileset = null,
-	tilesetLoaded = false;
+
 //This variable distinguishes different types of tile so that it can be used to make for a more dynamic map with obstacles
 var floorTypes = {
 	solid: 0,
 	path: 1,
 	water: 2,
-	lava: 3
+	lava: 3,
+	sand: 4,
+	darkPath: 5
 };
 
 //the below variable stores all of the different types of tiles and assigns them a sprite from tileset.png
 var tileTypes = {
 	0: { colour: "#999999", floor: floorTypes.solid, sprite: [{ x: 200, y: 200, w: 40, h: 40 }] },
 	1: { colour: "#eeeeee", floor: floorTypes.path, sprite: [{ x: 0, y: 0, w: 40, h: 40 }] },
-	2: { colour: "#0B99F7", floor: floorTypes.path, sprite: [{ x: 40, y: 0, w: 40, h: 40 }] },
+	2: { colour: "#0B99F7", floor: floorTypes.sand, sprite: [{ x: 40, y: 0, w: 40, h: 40 }] },
 	3: { colour: "#0B99F7", floor: floorTypes.water, sprite: [{ x: 80, y: 0, w: 40, h: 40 }] },
-	4: { colour: "#0B99F7", floor: floorTypes.path, sprite: [{ x: 120, y: 0, w: 40, h: 40 }] },
+	4: { colour: "#0B99F7", floor: floorTypes.darkPath, sprite: [{ x: 120, y: 0, w: 40, h: 40 }] },
 	5: { colour: "#0B99F7", floor: floorTypes.lava, sprite: [{ x: 160, y: 0, w: 40, h: 40 }] }
 };
 
@@ -163,19 +166,21 @@ function toIndex(x, y) {
 	return y * mapW + x;
 }
 
-//drawing enemies onto screen
+//the variables associated with map and player sprites
+var tilesetLoaded = false;
+var tileset = new this.Image();
+
+//creating the variables necessary to load the sprites onto the enemies
 var crabReady = false;
 var crabImage = new Image();
 var lvl2crabReady = false;
 var lvl2crabImage = new Image();
+var lvl3crabReady = false;
+var lvl3crabImage = new Image();
 
-crabImage.onload = function() {
-	crabReady = true;
-};
+var darkSquidReady = false;
+var darkSquidImage = new Image();
 
-lvl2crabImage.onload = function() {
-	lvl2crabReady = true;
-};
 
 //Creates the crab object which will hold all of the sprite's information
 function crabObject() {
@@ -195,7 +200,7 @@ for (var i = 0; i < crabCount; i++){
     crab[i] = new crabObject();
 }
 
-//Creates the higher level crab object
+//Creates the level 2 crab object
 function lvl2crabObject() {
 	this.tileFrom = [13, 24];
 	this.tileTo = [13, 24];
@@ -208,31 +213,46 @@ function lvl2crabObject() {
 
 //creates instances of the lvl2crab object
 var lvl2Crab = [];
-for (i = 7; i < 21; i++){
+for (i = 7; i < 20; i++){
     lvl2Crab[i] = new lvl2crabObject();
 }
 
-lvl2Crab[14].tileTo[(22, 37)];
-lvl2Crab[14].tileTo[(22, 37)];
-lvl2Crab[14].position[(880, 1480)];
-lvl2Crab[15].tileTo[(22, 37)];
-lvl2Crab[15].tileTo[(22, 37)];
-lvl2Crab[15].position[(880, 1480)];
-lvl2Crab[16].tileTo[(22, 37)];
-lvl2Crab[16].tileTo[(22, 37)];
-lvl2Crab[16].position[(880, 1480)];
-lvl2Crab[17].tileTo[(22, 37)];
-lvl2Crab[17].tileTo[(22, 37)];
-lvl2Crab[17].position[(880, 1480)];
-lvl2Crab[18].tileTo[(22, 37)];
-lvl2Crab[18].tileTo[(22, 37)];
-lvl2Crab[18].position[(880, 1480)];
-lvl2Crab[19].tileTo[(22, 37)];
-lvl2Crab[19].tileTo[(22, 37)];
-lvl2Crab[19].position[(880, 1480)];
-lvl2Crab[20].tileTo[(22, 37)];
-lvl2Crab[20].tileTo[(22, 37)];
-lvl2Crab[20].position[(880, 1480)];
+//Creates the level 3 crab object
+function lvl3crabObject() {
+	this.tileFrom = [38, 26];
+	this.tileTo = [38, 26];
+	this.thisMoved = 0;
+	this.dimensions = [40, 40];
+	this.position = [1520, 1040];
+	this.delayMove = 500;
+	this.hp = 160;
+}
+
+//creates instances of the lvl3crab object
+var lvl3Crab = [];
+for (i = 21; i < 31; i++){
+    lvl3Crab[i] = new lvl3crabObject();
+}
+
+//Creates the level 2 crab object
+function darkSquidObject() {
+	this.tileFrom = [57, 57];
+	this.tileTo = [57, 57];
+	this.thisMoved = 0;
+	this.dimensions = [33, 40];
+	this.position = [2280, 2280];
+	this.delayMove = 600;
+	this.hp = 3000;
+
+	this.direction = directions.left;
+
+	this.sprites = {};
+	this.sprites[directions.right] = [{ x: 33, y: 0, w: 33, h: 40 }];
+	this.sprites[directions.left] = [{ x: 0, y: 0, w: 33, h: 40 }];
+}
+
+//creates instances of the lvl2crab object
+darkSquid = new darkSquidObject();
 
 //Creates the character object that will hold all of the player's information
 function Character() {
@@ -245,8 +265,10 @@ function Character() {
 
 	this.delayMove = {};
 	this.delayMove[floorTypes.path] = 120;
+	this.delayMove[floorTypes.sand] = 120;
 	this.delayMove[floorTypes.water] = 200;
 	this.delayMove[floorTypes.lava] = 200;
+	this.delayMove[floorTypes.darkPath] = 120;
 
 	this.direction = directions.right;
 
@@ -292,7 +314,18 @@ lvl2crabObject.prototype.placeAt = function(x, y) {
 	this.tileFrom = [x, y];
 	this.tileTo = [x, y];
 	this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
-    
+};
+
+lvl3crabObject.prototype.placeAt = function(x, y) {
+	this.tileFrom = [x, y];
+	this.tileTo = [x, y];
+	this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
+};
+
+darkSquidObject.prototype.placeAt = function(x, y) {
+	this.tileFrom = [x, y];
+	this.tileTo = [x, y];
+	this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
 };
 
 //THE BELOW FUNCTIONS MOVE THE SPRITE TO THE CORRECT TILE,#######################################################
@@ -379,6 +412,59 @@ lvl2crabObject.prototype.processMovement = function(t) {
 	return true;
 };
 
+lvl3crabObject.prototype.processMovement = function(t) {
+	if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
+		return false;
+    }
+
+	if (t - this.timeMoved >= this.delayMove) {
+		this.placeAt(this.tileTo[0], this.tileTo[1]);
+	} else {
+		this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
+		this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
+
+		if (this.tileTo[0] != this.tileFrom[0]) {
+			var diff = (tileW / this.delayMove) * (t - this.timeMoved);
+			this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
+		}
+		if (this.tileTo[1] != this.tileFrom[1]) {
+			var diff = (tileH / this.delayMove) * (t - this.timeMoved);
+			this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
+		}
+
+		this.position[0] = Math.round(this.position[0]);
+		this.position[1] = Math.round(this.position[1]);
+	}
+
+	return true;
+};
+darkSquidObject.prototype.processMovement = function(t) {
+	if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
+		return false;
+    }
+
+	if (t - this.timeMoved >= this.delayMove) {
+		this.placeAt(this.tileTo[0], this.tileTo[1]);
+	} else {
+		this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
+		this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
+
+		if (this.tileTo[0] != this.tileFrom[0]) {
+			var diff = (tileW / this.delayMove) * (t - this.timeMoved);
+			this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
+		}
+		if (this.tileTo[1] != this.tileFrom[1]) {
+			var diff = (tileH / this.delayMove) * (t - this.timeMoved);
+			this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
+		}
+
+		this.position[0] = Math.round(this.position[0]);
+		this.position[1] = Math.round(this.position[1]);
+	}
+
+	return true;
+};
+
 //THE BELOW FUNCTIONS DETERMINE WHETHER OR NOT
 //THE SPRITES IN QUESTION ARE ABLE TO MOVE TO THE NEXT BLOCK OR NOT
 Character.prototype.canMoveTo = function(x, y) {
@@ -407,12 +493,7 @@ crabObject.prototype.canMoveTo = function(x, y) {
 		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
 	) {
 		return true;
-	} else if (
-		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path ||
-		tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.solid
-	) {
-		return false;
-	}
+	} else{return false;}
 };
 
 lvl2crabObject.prototype.canMoveTo = function(x, y) {
@@ -422,11 +503,40 @@ lvl2crabObject.prototype.canMoveTo = function(x, y) {
     if (isOccupied(toIndex(x,y))){
         return false;
     }
-	if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water) {
+	if (
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand) ||
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
+	) {
 		return true;
-	} else if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.solid) {
+	} else{return false;}
+};
+
+lvl3crabObject.prototype.canMoveTo = function(x, y) {
+	if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
 		return false;
-	}
+    }
+    if (isOccupied(toIndex(x,y))){
+        return false;
+    }
+	if (
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand)||
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water)
+	) {return true;	}
+	else{return false;}
+};
+
+darkSquidObject.prototype.canMoveTo = function(x, y) {
+	if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
+		return false;
+    }
+    if (isOccupied(toIndex(x,y))){
+        return false;
+    }
+	if (
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.darkPath)||
+		(tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.lava)
+	) {return true;	}
+	else{return false;}
 };
 
 Character.prototype.gethp = function() {
@@ -538,6 +648,68 @@ lvl2crabObject.prototype.moveDown = function(t) {
 	this.timeMoved = t;
 };
 
+lvl3crabObject.prototype.canMoveUp = function() {
+	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
+};
+lvl3crabObject.prototype.canMoveDown = function() {
+	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);
+};
+lvl3crabObject.prototype.canMoveLeft = function() {
+	return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
+};
+lvl3crabObject.prototype.canMoveRight = function() {
+	return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
+};
+
+lvl3crabObject.prototype.moveLeft = function(t) {
+	this.tileTo[0] -= 1;
+	this.timeMoved = t;
+};
+lvl3crabObject.prototype.moveRight = function(t) {
+	this.tileTo[0] += 1;
+	this.timeMoved = t;
+};
+lvl3crabObject.prototype.moveUp = function(t) {
+	this.tileTo[1] -= 1;
+	this.timeMoved = t;
+};
+lvl3crabObject.prototype.moveDown = function(t) {
+	this.tileTo[1] += 1;
+	this.timeMoved = t;
+};
+
+darkSquidObject.prototype.canMoveUp = function() {
+	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
+};
+darkSquidObject.prototype.canMoveDown = function() {
+	return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 2);
+};
+darkSquidObject.prototype.canMoveLeft = function() {
+	return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
+};
+darkSquidObject.prototype.canMoveRight = function() {
+	return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
+};
+
+darkSquidObject.prototype.moveLeft = function(t) {
+	this.tileTo[0] -= 1;
+	this.timeMoved = t;
+	this.direction = directions.left;
+};
+darkSquidObject.prototype.moveRight = function(t) {
+	this.tileTo[0] += 1;
+	this.timeMoved = t;
+	this.direction = directions.right;
+};
+darkSquidObject.prototype.moveUp = function(t) {
+	this.tileTo[1] -= 1;
+	this.timeMoved = t;
+};
+darkSquidObject.prototype.moveDown = function(t) {
+	this.tileTo[1] += 1;
+	this.timeMoved = t;
+};
+
 function updateOccupied(square,truth){
     occupiedGrid[square] = truth;
 }
@@ -554,6 +726,10 @@ function getObject(index){
 
 //when the browser is loaded, do this
 window.onload = function() {
+	//sends position of player to the server every 100 milliseconds
+	window.setInterval(function(){
+		getPosition();
+	},100);
 	//assigning the ctx variables to their respective canvases
 	ctx = document.getElementById("map").getContext("2d");
 	ctx_hp = document.getElementById("playerhp").getContext("2d");
@@ -577,7 +753,6 @@ window.onload = function() {
 	//storing the canvas "map"'s width and height in the viewports' screen paramater
 	viewport.screen = [document.getElementById("map").width, document.getElementById("map").height];
 
-	tileset = new this.Image();
 
 	//if for any reason the sprites cannot be loaded, the user will be alerted
 	this.tileset.onerror = function() {
@@ -603,19 +778,38 @@ window.onload = function() {
 	this.lvl2crabImage.onload = function() {
 		tilesetLoaded = true;
 	};
+	
+	this.lvl3crabImage.onerror = function() {
+		ctx = null;
+		alert("Failed to load sprites");
+	};
+	this.lvl3crabImage.onload = function() {
+		tilesetLoaded = true;
+	};
+
+	this.darkSquidImage.onerror = function() {
+		ctx = null;
+		alert("Failed to load sprites");
+	};
+	this.darkSquidImage.onload = function() {
+		tilesetLoaded = true;
+	};
 
 	//assigning sprites their images
 	if(characterType == "archer"){
-		this.tileset.src = "tileset.png"
+		this.tileset.src = "assets/images/tileset.png"
 	}
 	if(characterType == "knight"){
-		this.tileset.src = "tilesetknight.png"
+		this.tileset.src = "assets/images/tilesetknight.png"
 	}
 	if(characterType == "mage"){
-		this.tileset.src = "tilesetmage.png"
+		this.tileset.src = "assets/images/tilesetmage.png"
 	}
-	this.crabImage.src = "enemyCrab.png";
-	this.lvl2crabImage.src = "lvl2crab.png";
+	this.crabImage.src = "assets/images/lvl1crab.png";
+	this.lvl2crabImage.src = "assets/images/lvl2crab.png";
+	this.lvl3crabImage.src = "assets/images/lvl3crab.png";
+	this.darkSquidImage.src = "assets/images/squidboss.png";
+
 };
 
 //creates the hp canvas and gives it the player's current hp
@@ -712,7 +906,43 @@ function drawMap() {
                 lvl2Crab[i].timeMoved = currentFrameTime;
             }
         }
+	}
+
+	for (i = 21; i < 31; i++){
+        crabMovement = Math.floor(Math.random() * 4 + 1);
+        if (!lvl3Crab[i].processMovement(currentFrameTime)) {
+            if (crabMovement == 1 && lvl3Crab[i].canMoveUp()) {
+                lvl3Crab[i].moveUp(currentFrameTime);
+            } else if (crabMovement == 2 && lvl3Crab[i].canMoveDown()) {
+                lvl3Crab[i].moveDown(currentFrameTime);
+            } else if (crabMovement == 3 && lvl3Crab[i].canMoveLeft()) {
+                lvl3Crab[i].moveLeft(currentFrameTime);
+            } else if (crabMovement == 4 && lvl3Crab[i].canMoveRight()) {
+                lvl3Crab[i].moveRight(currentFrameTime);
+            }
+            if (lvl3Crab[i].tileFrom[0] != lvl3Crab[i].tileTo[0] || lvl3Crab[i].tileFrom[1] != lvl3Crab[i].tileTo[1]) {
+                lvl3Crab[i].timeMoved = currentFrameTime;
+            }
+        }
+	}
+	
+	
+    if (!darkSquid.processMovement(currentFrameTime)) {
+		var darkSquidMovement = Math.floor(Math.random() * 4 + 1);
+        if (darkSquidMovement == 1 && darkSquid.canMoveUp()) {
+            darkSquid.moveUp(currentFrameTime);
+        } else if (darkSquidMovement == 2 && darkSquid.canMoveDown()) {
+            darkSquid.moveDown(currentFrameTime);
+        } else if (darkSquidMovement == 3 && darkSquid.canMoveLeft()) {
+            darkSquid.moveLeft(currentFrameTime);
+        } else if (darkSquidMovement == 4 && darkSquid.canMoveRight()) {
+            darkSquid.moveRight(currentFrameTime);
+        }
+        if (darkSquid.tileFrom[0] != darkSquid.tileTo[0] || darkSquid.tileFrom[1] != darkSquid.tileTo[1]) {
+            darkSquid.timeMoved = currentFrameTime;
+        }
     }
+	
 	//Places the player in the middle of the tile
 	viewport.update(player.position[0] + player.dimensions[0] / 2, player.position[1] + player.dimensions[1] / 2);
 
@@ -777,8 +1007,34 @@ for (i = 0; i < crabCount; i++){
 for (i = 7; i < 20; i++){
 	ctx.drawImage(lvl2crabImage, viewport.offset[0] + lvl2Crab[i].position[0], viewport.offset[1] + lvl2Crab[i].position[1]);
 }
-
-	//console.log("x of char is: " + player.position[0] + ", y of char is: " + player.position[1]);
+for (i = 21; i < 31; i++){
+	ctx.drawImage(lvl3crabImage, viewport.offset[0] + lvl3Crab[i].position[0], viewport.offset[1] + lvl3Crab[i].position[1]);
+}
+var squidSprite = darkSquid.sprites[darkSquid.direction];
+ctx.drawImage(
+	darkSquidImage, 
+	squidSprite[0].x,
+	squidSprite[0].y,
+	squidSprite[0].w,
+	squidSprite[0].h,
+	viewport.offset[0] + darkSquid.position[0], 
+	viewport.offset[1] + darkSquid.position[1],
+	darkSquid.dimensions[0],
+	darkSquid.dimensions[1]
+	);
+/*
+ctx.drawImage(
+	tileset,
+	sprite[0].x,
+	sprite[0].y,
+	sprite[0].w,
+	sprite[0].h,
+	viewport.offset[0] + playx,
+	viewport.offset[1] + playy,
+	playx,
+	playy
+);*/
+	console.log("x of char is: " + player.position[0] + ", y of char is: " + player.position[1]);
 
 	//telling the browser to update the animation with this function before the next paint
 	requestAnimationFrame(drawMap);
