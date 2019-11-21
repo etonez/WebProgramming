@@ -213,7 +213,7 @@ function lvl2crabObject() {
 
 //creates instances of the lvl2crab object
 var lvl2Crab = [];
-for (i = 0; i < 14; i++){
+for (i = 7; i < 20; i++){
     lvl2Crab[i] = new lvl2crabObject();
 }
 
@@ -683,7 +683,7 @@ function drawMap() {
         }
     }
     
-    for (i = 0; i < 14; i++){
+    for (i = 7; i < 20; i++){
         crabMovement = Math.floor(Math.random() * 4 + 1);
         if (!lvl2Crab[i].processMovement(currentFrameTime)) {
             if (crabMovement == 1 && lvl2Crab[i].canMoveUp()) {
