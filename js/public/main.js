@@ -735,7 +735,7 @@ function getObject(index) {
 	this.archerbow4Image.src = "assets/images/items/archerbow4.png";
 
 	var items = [];
-	items = [healthpotImage,archerbow1Image,archerbow4Image]
+	items = [healthpotImage,archerbow1Image,archerbow4Image, archerbow4Image, archerbow4Image]
 
 //when the browser is loaded, do this
 window.onload = function() {
@@ -854,6 +854,7 @@ function drawHp() {
 	ctx_hp.fillRect(0, 0, player.gethp() * 6, 10);
 }
 
+//creates the inventory canvas and draws the items onto it
 function drawInventory() {
 	if (ctx_inventory == null) {
 		alert("inventory not loaded");
@@ -861,14 +862,7 @@ function drawInventory() {
 	ctx_inventory.fillStyle = "#ddccaa";
 	ctx_inventory.fillRect(0, 0, 210, 350);
 	for(i=0; i <items.length; i++){
-		for(j=0; i<items.length;){
-			if(i%4==0)
-			{
-				j++;
-			}
-			ctx_inventory.drawImage(items[i], (10 * (i + 1))  + (i * 40), (10 * (j + 1) + (j * 40)));
-		}
-		
+		ctx_inventory.drawImage(items[i], (10 * (i + 1))  + (i * 40), 10);
 	}
 
 }
