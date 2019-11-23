@@ -1,6 +1,8 @@
 //the canvas variables
 var ctx = null;
 var ctx_hp = null;
+var ctx_inventory = null;
+var audio = null;
 //the width of each tile in pixels
 var tileW = 40,
 	tileH = 40;
@@ -75,11 +77,11 @@ var gameMap = [
 	0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
 	0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
 	0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-	0, 1, 1, 2, 2, 1, 3, 3, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-	0, 1, 1, 2, 2, 1, 3, 3, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+	0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+	0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
 	0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-	0, 1, 1, 5, 5, 1, 4, 4, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-	0, 1, 1, 5, 5, 1, 4, 4, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+	0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+	0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
 	0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
 	0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
 	0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 7, 7, 8, 8, 8, 7, 7, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
@@ -136,73 +138,6 @@ for (i = 0; i < gameMap.length; i++) {
 	occupiedGrid.push(false);
 }
 
-//Creates Item types
-var itemTypes = {
-	1 : {
-		name : "Health",
-		maxStack : 4,
-		sprite : "\assets\images\items\healthpot.png",
-		offset : [0,0]
-	}
-};
-//For Stacks of Items
-function Stack(id, qty)
-{
-	this.type = id;
-	this.qty = qty;
-}
-//Inventory Space
-function Inventory(s)
-{
-	this.spaces		= s;
-	this.stacks		= [];
-}
-//Adds Items to Inventory
-Inventory.prototype.addItems = function(id, qty)
-{
-	for(var i = 0; i < this.spaces; i++)
-	{
-		if(this.stacks.length<=i)
-		{
-			var maxHere = (qty > itemTypes[id].maxStack ?
-				itemTypes[id].maxStack : qty);
-			this.stacks.push(new Stack(id, maxHere));
-			
-			qty-= maxHere;
-		}
-		else if(this.stacks[i].type == id &&
-			this.stacks[i].qty < itemTypes[id].maxStack)
-		{
-			var maxHere = (itemTypes[id].maxStack - this.stacks[i].qty);
-			if(maxHere > qty) { maxHere = qty; }
-			
-			this.stacks[i].qty+= maxHere;
-			qty-= maxHere;
-		}
-		
-		if(qty==0) { return 0; }
-	}
-	
-	return qty;
-};
-
-//Dropped Stacks Of Items On Ground
-function PlacedItemStack(id, qty)
-{
-	this.type = id;
-	this.qty = qty;
-	this.x = 0;
-    this.dimensions = [25, 25];
-	this.y = 0;
-}
-//Places Items At Location
-PlacedItemStack.prototype.placeAt = function(x, y)
-{
-	this.tileFrom = [x, y];
-    this.tileTo = [x, y];
-    this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
-};
-
 //the below variable controls the screen that follows the character around the map
 var viewport = {
 	screen: [0, 0],
@@ -245,6 +180,10 @@ function toIndex(x, y) {
 //the variables associated with map and player sprites
 var tilesetLoaded = false;
 var tileset = new this.Image();
+
+//the variables associated with loading the sound button
+var soundImageReady = false;
+var soundImage = new Image();
 
 //creating the variables necessary to load the sprites onto the enemies
 var crabReady = false;
@@ -526,7 +465,7 @@ class darkSquidObject {
 		this.tileFrom = [57, 57];
 		this.tileTo = [57, 57];
 		this.thisMoved = 0;
-		this.dimensions = [33, 40];
+		this.dimensions = [66, 80];
 		this.position = [2280, 2280];
 		this.delayMove = 600;
 		this.hp = 3000;
@@ -607,8 +546,23 @@ class darkSquidObject {
 	}
 }
 
-//creates instances of the lvl2crab object
+//creates instances of the dark squid object
 darkSquid = new darkSquidObject();
+
+class SoundButton {
+	constructor() {
+		this.dimensions = [30, 30];
+		this.position = [0, 570];
+		this.on = true;
+		this.sprites = [{ x: 33, y: 0, w: 300, h: 300 }];
+	}
+	placeAt(x, y) {
+		this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
+	}
+}
+
+//creates instance of sound button
+soundButton = new SoundButton();
 
 //Creates the character object that will hold all of the player's information
 class Character {
@@ -636,8 +590,6 @@ class Character {
 		this.sprites[directions.left] = [{ x: 35, y: 205, w: 35, h: 35 }];
 		this.sprites[directions.up] = [{ x: 35, y: 170, w: 35, h: 35 }];
 		this.sprites[directions.down] = [{ x: 0, y: 170, w: 35, h: 35 }];
-        this.inventory = new Inventory(3);
-
 	}
 	//THE BELOW FUNCTIONS PLACE THE SPRITE AT THE DESIRED SPAWN POINT##############################################
 	//#############################################################################################################
@@ -696,6 +648,8 @@ class Character {
 		this.placeAt(1, 1);
 		this.sethp(100);
 	}
+	
+
 	//########################################SPRITE############################################################
 	//#######################################MOVEMENT###########################################################
 	//##########################################################################################################
@@ -764,6 +718,25 @@ function getObject(index) {
 	}
 }
 
+	//###################################################INVENTORY#######################################################
+	//###################################################VARIABLES#######################################################
+	//###################################################################################################################
+	
+	var healthpotImage = new Image();
+	this.healthpotImage.src = "assets/images/items/healthpot.png";
+
+	var archerbow1Image = new Image();
+	this.archerbow1Image.src = "assets/images/items/archerbow1.png";
+	var archerbow2Image = new Image();
+	this.archerbow2Image.src = "assets/images/items/archerbow2.png";
+	var archerbow3Image = new Image();
+	this.archerbow3Image.src = "assets/images/items/archerbow3.png";
+	var archerbow4Image = new Image();
+	this.archerbow4Image.src = "assets/images/items/archerbow4.png";
+
+	var items = [];
+	items = [healthpotImage,archerbow1Image,archerbow4Image]
+
 //when the browser is loaded, do this
 window.onload = function() {
 	//sends position of player to the server every 100 milliseconds
@@ -773,6 +746,10 @@ window.onload = function() {
 	//assigning the ctx variables to their respective canvases
 	ctx = document.getElementById("map").getContext("2d");
 	ctx_hp = document.getElementById("playerhp").getContext("2d");
+	ctx_inventory = document.getElementById("playerinventory").getContext("2d");
+	audio = new this.Audio("assets/Fighting-Dragons-on-The-Moon.mp3")
+	audio.volume = 0.02;
+	
 
 	//tells the browser that upon loading, it must call this function to update the animation before the next repaint
 	requestAnimationFrame(drawMap);
@@ -781,6 +758,9 @@ window.onload = function() {
 	window.addEventListener("keydown", function(e) {
 		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68) {
 			keysDown[e.keyCode] = true;
+			if(soundButton.on == true){
+				audio.play();
+			}
 		}
 	});
 	//tells the browser that if any of the WASD keys are pressed, assign keysDown variable to true
@@ -807,7 +787,7 @@ window.onload = function() {
 		alert("Failed to load sprites");
 	};
 	this.crabImage.onload = function() {
-		tilesetLoaded = true;
+		crabReady = true;
 	};
 
 	this.lvl2crabImage.onerror = function() {
@@ -815,7 +795,7 @@ window.onload = function() {
 		alert("Failed to load sprites");
 	};
 	this.lvl2crabImage.onload = function() {
-		tilesetLoaded = true;
+		lvl2crabReady = true;
 	};
 
 	this.lvl3crabImage.onerror = function() {
@@ -823,7 +803,7 @@ window.onload = function() {
 		alert("Failed to load sprites");
 	};
 	this.lvl3crabImage.onload = function() {
-		tilesetLoaded = true;
+		lvl3crabReady = true;
 	};
 
 	this.darkSquidImage.onerror = function() {
@@ -831,7 +811,15 @@ window.onload = function() {
 		alert("Failed to load sprites");
 	};
 	this.darkSquidImage.onload = function() {
-		tilesetLoaded = true;
+		darkSquidReady = true;
+	};
+
+	this.soundImage.onerror = function() {
+		ctx = null;
+		alert("Failed to load sprites");
+	};
+	this.soundImage.onload = function() {
+		soundImageReady = true;
 	};
 
 	//assigning sprites their images
@@ -848,9 +836,13 @@ window.onload = function() {
 	this.lvl2crabImage.src = "assets/images/lvl2crab.png";
 	this.lvl3crabImage.src = "assets/images/lvl3crab.png";
 	this.darkSquidImage.src = "assets/images/squidboss.png";
-    
-    var ps = new PlacedItemStack(1, 1); ps.placeAt(i, 1);
+	this.soundImage.src = "assets/images/volumeenable.png";  
 };
+
+/*#################################DRAW#########################################
+#################################FUNCTIONS######################################
+################################################################################
+*/
 
 //creates the hp canvas and gives it the player's current hp
 function drawHp() {
@@ -858,14 +850,29 @@ function drawHp() {
 		return;
 	}
 	ctx_hp.clearRect(0, 0, 6000, 200);
-	ctx_hp.fillStyle = "#00FF00";
+	ctx_hp.fillStyle = "#ff0000";
 	ctx_hp.fillRect(0, 0, player.gethp() * 6, 10);
 }
 
-/*#################################DRAW#########################################
-#################################FUNCTIONS######################################
-################################################################################
-*/
+function drawInventory() {
+	if (ctx_inventory == null) {
+		alert("inventory not loaded");
+	}
+	ctx_inventory.fillStyle = "#ddccaa";
+	ctx_inventory.fillRect(0, 0, 210, 350);
+	for(i=0; i <items.length; i++){
+		for(j=0; i<items.length;){
+			if(i%4==0)
+			{
+				j++;
+			}
+			ctx_inventory.drawImage(items[i], (10 * (i + 1))  + (i * 40), (10 * (j + 1) + (j * 40)));
+		}
+		
+	}
+
+}
+
 function drawMap() {
 	if (ctx == null) {
 		return;
@@ -884,6 +891,7 @@ function drawMap() {
 	var currentFrameTime = Date.now();
 	var timeElapsed = currentFrameTime - lastFrameTime;
 	drawHp();
+	drawInventory();
 
 	var sec = Math.floor(Date.now() / 1000);
 	if (sec != currentSecond) {
@@ -1004,6 +1012,8 @@ function drawMap() {
 			);
 		}
 	}
+	
+	
 
 	var allobj = [];
 	for (var key in window) {
@@ -1059,37 +1069,41 @@ function drawMap() {
 		darkSquid.dimensions[1]
 	);
     
-    ctx.textAlign = "right";
-    
-	//Draws Inventory
-	for(var i = 0; i < player.inventory.spaces; i++)
-	{
-		ctx.fillStyle = "#ddccaa";
-		ctx.fillRect(10 + (i * 50), 350,
-			40, 40);
-		
-		if(typeof player.inventory.stacks[i]!='undefined')
-		{
-			var it = itemTypes[player.inventory.stacks[i].type];
-			var sprite = it.sprite;
-					
-			ctx.drawImage(tileset,
-				sprite[0].x, sprite[0].y,
-				sprite[0].w, sprite[0].h,
-				10 + (i * 50) + it.offset[0],
-				350 + it.offset[1],
-				sprite[0].w, sprite[0].h);
-			
-			if(player.inventory.stacks[i].qty>1)
-			{
-				ctx.fillStyle = "#000000";
-				ctx.fillText("" + player.inventory.stacks[i].qty,
-					10 + (i*50) + 38,
-					350 + 38);
-			}
-		}
+	ctx.textAlign = "right";
+	
+
+    var canvas = document.getElementById('map');
+	
+	//draws the sound button and makes it toggle on and off
+	var soundButtonHitbox = {
+		x:0,
+		y:570,
+		width:30,
+		height:30
 	}
-	ctx.textAlign = "left";
+	if(soundButton.on != null){
+		var sprite = soundButton.sprites;
+		ctx.drawImage(soundImage, 0, 570, 30, 30)
+		canvas.addEventListener('click', function(evt) {
+			var mousePos = getMousePos(canvas, evt);
+		
+			if (isInside(mousePos,soundButtonHitbox)) {
+				if(soundButton.on == true)
+				{
+					audio.pause();
+					soundButton.on = false;
+
+				}
+				else
+				{
+					audio.play();
+					soundButton.on = true;
+				}
+			}
+		}, false);
+		
+	}
+
 	/*
 ctx.drawImage(
 	tileset,

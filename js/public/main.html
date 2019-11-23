@@ -5,10 +5,7 @@
 
 
 </head>
-
-<script src="main.js">
-
-</script>
+<script src="main.js"></script>
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script>
 var socket = io();
@@ -31,14 +28,19 @@ socket.on("newPosition",function(data){
 </script>
 <body> 
     <h1> Moonscape </h1>
-    <!-- canvas which game is drawn to: -->
+    
     <div>
-    <canvas id = "map" width = "600" height = "600"></canvas>
+        <!-- canvas which game is drawn to: -->
+        <canvas id = "map" width = "600" height = "600"></canvas>
+        <!-- inventory canvas-->
+        <canvas id = "playerinventory" width = "210" height="350">
+            <h1>equipped</h1>
+        </canvas>
     </div>
     <!-- hp canvas-->
-    <div>
     <canvas id = "playerhp" width = "600" height="20"></canvas>
-    </div>
+    <canvas id = "allignhp" width = "210" height="20"></canvas>
+    
     </body>
 
 </html>
