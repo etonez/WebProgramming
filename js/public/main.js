@@ -700,10 +700,10 @@ class Character {
         //get player location
         //check if there is an enemy within 3 spaces infornt
         for(i = 0; i < crabCount; i++){
-            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] >= (this.tileFrom[1] - 3)) && (this.tileFrom[1] < (this.tileFrom[1]))){
+            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] >= (this.tileFrom[1] - inventoryRange[0])) && (this.tileFrom[1] < (this.tileFrom[1]))){
                 //Y: Subtract x healt
                 console.log("Hit!" + i);
-                crab[i].hp -= 40;
+                crab[i].hp -= inventoryDamage[0];
             }
         }
     }
@@ -711,10 +711,10 @@ class Character {
         //get player location
         //check if there is an enemy within 3 spaces infornt
         for(i = 0; i < crabCount; i++){
-            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] <= (this.tileFrom[1] + 3)) && (crab[i].tileFrom[1] > (this.tileFrom[1]))){
+            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] <= (this.tileFrom[1] + inventoryRange[0])) && (crab[i].tileFrom[1] > (this.tileFrom[1]))){
                 //Y: Subtract x healt
                 console.log("Hit!" + i);
-                crab[i].hp -= 40;
+                crab[i].hp -= inventoryDamage[0];
             }
         }
     }
@@ -722,10 +722,10 @@ class Character {
         //get player location
         //check if there is an enemy within 3 spaces infornt
         for(i = 0; i < crabCount; i++){
-            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] <= (this.tileFrom[0] + 3)) && (crab[i].tileFrom[0] > (this.tileFrom[0]))){
+            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] <= (this.tileFrom[0] + inventoryRange[0])) && (crab[i].tileFrom[0] > (this.tileFrom[0]))){
                 //Y: Subtract x healt
                 console.log("Hit!" + i);
-                crab[i].hp -= 40;
+                crab[i].hp -= inventoryDamage[0];
             }
         }
     }
@@ -733,10 +733,10 @@ class Character {
         //get player location
         //check if there is an enemy within 3 spaces infornt
         for(i = 0; i < crabCount; i++){
-            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] >= (this.tileFrom[0] - 3)) && (crab[i].tileFrom[0] < (this.tileFrom[0]))){
+            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] >= (this.tileFrom[0] - inventoryRange[0])) && (crab[i].tileFrom[0] < (this.tileFrom[0]))){
                 //Y: Subtract x healt
                 console.log("Hit!" + i);
-                crab[i].hp -= 40;
+                crab[i].hp -= inventoryDamage[0];
             }
         }
     }
@@ -982,7 +982,10 @@ window.onload = function() {
 	}
 
 	//adding the default items to inventory
-	inventoryArray = [item1.image,item2.image,item3.image,item4.image,item1.image,item1.image,item1.image,item1.image,item1.image,item1.image,item1.image,]
+	inventoryImages = [item1.image,item2.image,item3.image,item4.image];
+	inventoryDamage = [item1.damage];
+	inventoryRange = [item1.range];
+
 
 	this.crabImage.src = "assets/images/lvl1crab.png";
 	this.lvl2crabImage.src = "assets/images/lvl2crab.png";
@@ -1020,16 +1023,16 @@ function drawInventory() {
 	ctx_inventory.font = "20px Small Fonts"
 	ctx_inventory.textAlign = "right";
 	ctx_inventory.fillText("Equipped:", 100, 90);
-	for(i=0; i <inventoryArray.length;){
-		ctx_inventory.drawImage(inventoryArray[0],(110), 60);
+	for(i=0; i <inventoryImages.length;){
+		ctx_inventory.drawImage(inventoryImages[0],(110), 60);
 		if(i>0){
 			if(i>=5 && i<10){
-				ctx_inventory.drawImage(inventoryArray[i], (10 * (i - 3))  + ((i - 4) * 40) - 50, 160);
+				ctx_inventory.drawImage(inventoryImages[i], (10 * (i - 3))  + ((i - 4) * 40) - 50, 160);
 			}
 			if(i>=10 && i<=15){
-				ctx_inventory.drawImage(inventoryArray[i], (10 * (i - 7))  + ((i - 8) * 40) - 100, 210);
+				ctx_inventory.drawImage(inventoryImages[i], (10 * (i - 7))  + ((i - 8) * 40) - 100, 210);
 			}
-			else{ctx_inventory.drawImage(inventoryArray[i], (10 * i)  + ((i - 1)  * 40), 110);}
+			else{ctx_inventory.drawImage(inventoryImages[i], (10 * i)  + ((i - 1)  * 40), 110);}
 		}
 		i++
 	}
