@@ -236,18 +236,20 @@ class crabObject {
 		return true;
 	}
 	canMoveTo(x, y) {
-		//makes sure it can't move off map
-		if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
-			return false;
-		}
-		if (isOccupied(toIndex(x, y))) {
-			return false;
-		}
-		if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water) {
-			return true;
-		} else {
-			return false;
-		}
+        if(this.hp > 0){
+            //makes sure it can't move off map
+            if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
+                return false;
+            }
+            if (isOccupied(toIndex(x, y))) {
+                return false;
+            }
+            if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 	}
 	canMoveUp() {
 		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
@@ -687,14 +689,47 @@ class Character {
 		this.direction = directions.down;
 	}
     
-    attack(){
+    attackDown(){
         //get player location
         //check if there is an enemy within 3 spaces infornt
         for(i = 0; i < crabCount; i++){
-            if((parseInt(crab[i].position[0]) == parseInt(this.position[0])) && ((crab[i].position[1] < (this.position[1])) && (crab[i].position[1] > (this.position[1] + 3)))){
+            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] >= (this.tileFrom[1] - 3)) && (this.tileFrom[1] < (this.tileFrom[1]))){
                 //Y: Subtract x healt
+                console.log("Hit!" + i);
                 crab[i].hp -= 20;
-                window.alert("Hit!" + crab[i]);
+            }
+        }
+    }
+    attackUp(){
+        //get player location
+        //check if there is an enemy within 3 spaces infornt
+        for(i = 0; i < crabCount; i++){
+            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] <= (this.tileFrom[1] + 3)) && (crab[i].tileFrom[1] > (this.tileFrom[1]))){
+                //Y: Subtract x healt
+                console.log("Hit!" + i);
+                crab[i].hp -= 20;
+            }
+        }
+    }
+    attackRight(){
+        //get player location
+        //check if there is an enemy within 3 spaces infornt
+        for(i = 0; i < crabCount; i++){
+            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] <= (this.tileFrom[0] + 3)) && (crab[i].tileFrom[0] > (this.tileFrom[0]))){
+                //Y: Subtract x healt
+                console.log("Hit!" + i);
+                crab[i].hp -= 20;
+            }
+        }
+    }
+    attackLeft(){
+        //get player location
+        //check if there is an enemy within 3 spaces infornt
+        for(i = 0; i < crabCount; i++){
+            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] >= (this.tileFrom[0] - 3)) && (crab[i].tileFrom[0] < (this.tileFrom[0]))){
+                //Y: Subtract x healt
+                console.log("Hit!" + i);
+                crab[i].hp -= 20;
             }
         }
     }
@@ -938,21 +973,23 @@ function drawMap() {
 	if (!player.processMovement(currentFrameTime)) {
 		if (keysDown[87] && player.canMoveUp()) {
 			player.moveUp(currentFrameTime);
-            player.attack();
+            player.attackUp();
 		} else if (keysDown[83] && player.canMoveDown()) {
 			player.moveDown(currentFrameTime);
+            player.attackDown();
 		} else if (keysDown[65] && player.canMoveLeft()) {
 			player.moveLeft(currentFrameTime);
+            player.attackLeft();
 		} else if (keysDown[68] && player.canMoveRight()) {
 			player.moveRight(currentFrameTime);
-		}
-		if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
-			player.timeMoved = currentFrameTime;
-		}
-        if(keysDown[38]){
+            player.attackRight();
+		} else if(keysDown[38]){
             window.alert("if call");
             player.attack();
-        }   
+        }
+		if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
+			player.timeMoved = currentFrameTime;
+		}   
 	}
     
 	//Creates crabs and randomly moves them
