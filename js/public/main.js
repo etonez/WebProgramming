@@ -700,10 +700,10 @@ class Character {
         //get player location
         //check if there is an enemy within 3 spaces infornt
         for(i = 0; i < crabCount; i++){
-            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] >= (this.tileFrom[1] - inventoryArray[0].range)) && (this.tileFrom[1] < (this.tileFrom[1]))){
+            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] >= (this.tileFrom[1] - 3)) && (this.tileFrom[1] < (this.tileFrom[1]))){
                 //Y: Subtract x healt
                 console.log("Hit!" + i);
-                crab[i].hp -= inventoryArray[0].damage;
+                crab[i].hp -= 40;
             }
         }
     }
@@ -711,10 +711,10 @@ class Character {
         //get player location
         //check if there is an enemy within 3 spaces infornt
         for(i = 0; i < crabCount; i++){
-            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] <= (this.tileFrom[1] + inventoryArray[0].range)) && (crab[i].tileFrom[1] > (this.tileFrom[1]))){
+            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] <= (this.tileFrom[1] + 3)) && (crab[i].tileFrom[1] > (this.tileFrom[1]))){
                 //Y: Subtract x healt
                 console.log("Hit!" + i);
-                crab[i].hp -= inventoryArray[0].damage;
+                crab[i].hp -= 40;
             }
         }
     }
@@ -722,10 +722,10 @@ class Character {
         //get player location
         //check if there is an enemy within 3 spaces infornt
         for(i = 0; i < crabCount; i++){
-            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] <= (this.tileFrom[0] + inventoryArray[0].range)) && (crab[i].tileFrom[0] > (this.tileFrom[0]))){
+            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] <= (this.tileFrom[0] + 3)) && (crab[i].tileFrom[0] > (this.tileFrom[0]))){
                 //Y: Subtract x healt
                 console.log("Hit!" + i);
-                crab[i].hp -= inventoryArray[0].damage;
+                crab[i].hp -= 40;
             }
         }
     }
@@ -733,10 +733,10 @@ class Character {
         //get player location
         //check if there is an enemy within 3 spaces infornt
         for(i = 0; i < crabCount; i++){
-            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] >= (this.tileFrom[0] - inventoryArray[0].range)) && (crab[i].tileFrom[0] < (this.tileFrom[0]))){
+            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] >= (this.tileFrom[0] - 3)) && (crab[i].tileFrom[0] < (this.tileFrom[0]))){
                 //Y: Subtract x healt
                 console.log("Hit!" + i);
-                crab[i].hp -= inventoryArray[0].damage;
+                crab[i].hp -= 40;
             }
         }
     }
@@ -810,64 +810,17 @@ function getObject(index) {
 
 	var inventory = [];
 
-	class Item {
-		constructor() {
-			this.damage = 40;
-			this.range	= 3;
-			this.speed;
-			this.image = archerbow1Image;
-		}
+	function Item(damage, range, speed, image){
+		this.damage = 40;
+		this.range	= 3;
+		this.speed = 0;
+		this.image = archerbow1Image;
 	}
-
-	
-
-	if(characterType == "mage"){
+	var item1	= new Item();
+	var item2	= new Item();
+	var item3	= new Item();
+	var item4	= new Item();
 		
-		var item1	= new Item();
-		var item2	= new Item();
-		var item3	= new Item();
-		var item4	= new Item();
-		item1.damage = 40;
-		item1.range = 2;
-		item1.speed = 1000;
-
-		item2.damage = 80;
-		item2.range = 3;
-		item2.speed = 1000;
-
-		item3.damage = 150;
-		item3.range = 3;
-		item3.speed = 700;
-
-		item4.damage = 300;
-		item4.range = 4;
-		item4.speed = 700;
-	}
-
-	if(characterType == "knight"){
-		
-		var item1	= new Item();
-		var item2	= new Item();
-		var item3	= new Item();
-		var item4	= new Item();
-		item1.damage = 50;
-		item1.range = 2;
-		item1.speed = 1100;
-
-		item2.damage = 100;
-		item2.range = 2;
-		item2.speed = 1100;
-
-		item3.damage = 200;
-		item3.range = 2;
-		item3.speed = 900;
-
-		item4.damage = 400;
-		item4.range = 2;
-		item4.speed = 700;
-	}
-
-	
 
 //when the browser is loaded, do this
 window.onload = function() {
@@ -890,13 +843,15 @@ window.onload = function() {
 
 	//tells the browser that if any of the WASD keys are pressed, assign keysDown variable to true
 	window.addEventListener("keydown", function(e) {
-		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keycode == 32) {
+		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 32) {
 			keysDown[e.keyCode] = true;
 			if(soundButton.on == true){
 				audio.play();
 			}
 		}
 	});
+
+
 	//tells the browser that if any of the WASD keys are pressed, assign keysDown variable to true
 	window.addEventListener("keyup", function(e) {
 		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 32) {
@@ -961,28 +916,73 @@ window.onload = function() {
 	//assigning sprites their images
 	if (characterType == "archer") {
 		this.tileset.src = "assets/images/tileset.png";
-		var item1	= new Item(30, 3, 850, archerbow1Image);
-		var item2	= new Item(60, 3, 850, archerbow2Image);
-		var item3	= new Item(100, 4, 700, archerbow3Image);
-		var item4	= new Item(200, 5, 500, archerbow4Image);
+		item1.damage = 40;
+		item1.range = 2;
+		item1.speed = 1000;
+		item1.image = archerbow1Image
+
+		item2.damage = 80;
+		item2.range = 3;
+		item2.speed = 1000;
+		item2.image = archerbow2Image
+
+		item3.damage = 150;
+		item3.range = 3;
+		item3.speed = 700;
+		item3.image = archerbow3Image
+
+		item4.damage = 300;
+		item4.range = 4;
+		item4.speed = 700;
+		item4.image = archerbow4Image
 	}
 	if (characterType == "knight") {
 		this.tileset.src = "assets/images/tilesetknight.png";
-		item1 = knightsword1Image;
-		item2 = knightsword2Image;
-		item3 = knightsword3Image;
-		item4 = knightsword4Image;
+		item1.damage = 50;
+		item1.range = 2;
+		item1.speed = 1100;
+		item1.image = knightsword1Image;
+
+		item2.damage = 100;
+		item2.range = 2;
+		item2.speed = 1100;
+		item2.image = knightsword2Image;
+
+		item3.damage = 200;
+		item3.range = 2;
+		item3.speed = 900;
+		item3.image = knightsword3Image;
+
+		item4.damage = 400;
+		item4.range = 2;
+		item4.speed = 700;
+		item4.image = knightsword4Image;
 	}
 	if (characterType == "mage") {
 		this.tileset.src = "assets/images/tilesetmage.png";
-		item1 = magestaff1Image;
-		item2 = magestaff2Image;
-		item3 = magestaff3Image;
-		item4 = magestaff4Image;
+		item1.damage = 30;
+		item1.range = 2;
+		item1.speed = 1000;
+		item1.image = magestaff1Image;
+
+		item2.damage = 80;
+		item2.range = 3;
+		item2.speed = 1000;
+		item2.image = magestaff2Image;
+
+		item3.damage = 150;
+		item3.range = 3;
+		item3.speed = 700;
+		item3.image = magestaff3Image;
+
+		item4.damage = 300;
+		item4.range = 4;
+		item4.speed = 700;
+		item4.image = magestaff4Image;
 	}
 
 	//adding the default items to inventory
-	inventoryArray = [item1,healthpotImage,item1,item2, item3, item4,healthpotImage,healthpotImage,item1,item2, item3, item4, item4]
+	inventoryArray = [item1.image,item2.image,item3.image,item4.image,item1.image,item1.image,item1.image,item1.image,item1.image,item1.image,item1.image,]
 
 	this.crabImage.src = "assets/images/lvl1crab.png";
 	this.lvl2crabImage.src = "assets/images/lvl2crab.png";
@@ -1100,8 +1100,17 @@ function drawMap() {
 	}
 	
 
-	if(keysDown[32] == true){
-		alert("if call");
+	if(player.direction == directions.left && keysDown[32] == true){
+		player.attackLeft();
+	}
+	if(player.direction == directions.right && keysDown[32] == true){
+		player.attackRight();
+	}
+	if(player.direction == directions.up && keysDown[32] == true){
+		player.attackUp();
+	}
+	if(player.direction == directions.down && keysDown[32] == true){
+		player.attackDown();
 	}
 
 	//Creates crabs and randomly moves them
