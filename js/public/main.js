@@ -64,7 +64,8 @@ var keysDown = {
 	87: false,
 	65: false,
 	83: false,
-	68: false
+	68: false,
+    38: false
 };
 
 //the below variable stores all of the tiles that are used to create the map that the players traverses
@@ -685,6 +686,18 @@ class Character {
 		this.timeMoved = t;
 		this.direction = directions.down;
 	}
+    
+    attack(){
+        //get player location
+        //check if there is an enemy within 3 spaces infornt
+        for(i = 0; i < crabCount; i++){
+            if((parseInt(crab[i].position[0]) == parseint(this.position[0])) && ((crab[i].position[1] < (this.position[1])) && (crab[i].position[1] > (this.position[1] + 3)))){
+                //Y: Subtract x healt
+                crab[i].hp -= 20;
+                window.alert("Hit!" + crab[i]);
+            }
+        }
+    }
 }
 
 //creates an instance of the character object
@@ -756,7 +769,7 @@ window.onload = function() {
 
 	//tells the browser that if any of the WASD keys are pressed, assign keysDown variable to true
 	window.addEventListener("keydown", function(e) {
-		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68) {
+		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keycode == 38) {
 			keysDown[e.keyCode] = true;
 			if(soundButton.on == true){
 				audio.play();
@@ -765,7 +778,7 @@ window.onload = function() {
 	});
 	//tells the browser that if any of the WASD keys are pressed, assign keysDown variable to true
 	window.addEventListener("keyup", function(e) {
-		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68) {
+		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 38) {
 			keysDown[e.keyCode] = false;
 		}
 	});
@@ -901,6 +914,7 @@ function drawMap() {
 	if (!player.processMovement(currentFrameTime)) {
 		if (keysDown[87] && player.canMoveUp()) {
 			player.moveUp(currentFrameTime);
+            player.attack();
 		} else if (keysDown[83] && player.canMoveDown()) {
 			player.moveDown(currentFrameTime);
 		} else if (keysDown[65] && player.canMoveLeft()) {
@@ -911,7 +925,12 @@ function drawMap() {
 		if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
 			player.timeMoved = currentFrameTime;
 		}
+        if(keysDown[38]){
+            window.alert("if call");
+            player.attack();
+        }   
 	}
+    
 	//Creates crabs and randomly moves them
 	for (i = 0; i < crabCount; i++) {
 		var crabMovement = Math.floor(Math.random() * 4 + 1);
