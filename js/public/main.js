@@ -747,7 +747,27 @@ function getObject(index) {
 	var archerbow4Image = new Image();
 	this.archerbow4Image.src = "assets/images/items/archerbow4.png";
 
+	var knightsword1Image = new Image();
+	this.knightsword1Image.src = "assets/images/items/knightsword1.png";
+	var knightsword2Image = new Image();
+	this.knightsword2Image.src = "assets/images/items/knightsword2.png";
+	var knightsword3Image = new Image();
+	this.knightsword3Image.src = "assets/images/items/knightsword3.png";
+	var knightsword4Image = new Image();
+	this.knightsword4Image.src = "assets/images/items/knightsword4.png";
+
+	var magestaff1Image = new Image();
+	this.magestaff1Image.src = "assets/images/items/magestaff1.png";
+	var magestaff2Image = new Image();
+	this.magestaff2Image.src = "assets/images/items/magestaff2.png";
+	var magestaff3Image = new Image();
+	this.magestaff3Image.src = "assets/images/items/magestaff3.png";
+	var magestaff4Image = new Image();
+	this.magestaff4Image.src = "assets/images/items/magestaff4.png";
+
 	var items = [];
+
+
 	items = [healthpotImage,archerbow1Image,archerbow4Image, archerbow4Image, archerbow4Image]
 
 //when the browser is loaded, do this
@@ -760,6 +780,7 @@ window.onload = function() {
 	ctx = document.getElementById("map").getContext("2d");
 	ctx_hp = document.getElementById("playerhp").getContext("2d");
 	ctx_inventory = document.getElementById("playerinventory").getContext("2d");
+	//assigning the audio variable to the correct file
 	audio = new this.Audio("assets/Fighting-Dragons-on-The-Moon.mp3")
 	audio.volume = 0.02;
 	
@@ -875,7 +896,10 @@ function drawInventory() {
 	ctx_inventory.fillStyle = "#ddccaa";
 	ctx_inventory.fillRect(0, 0, 210, 350);
 	for(i=0; i <items.length; i++){
-		ctx_inventory.drawImage(items[i], (10 * (i + 1))  + (i * 40), 10);
+		if(i>4 && i<8){
+			ctx_inventory.drawImage(items[i], (10 * ((i + 1)-4))  + (i * 40), 60);
+		}
+		else{ctx_inventory.drawImage(items[i], (10 * (i + 1))  + (i * 40), 10);}
 	}
 
 }
