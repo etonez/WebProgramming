@@ -807,9 +807,9 @@ function getObject(index) {
 	this.magestaff4Image.src = "assets/images/items/magestaff4.png";
 
 	var items = [];
-	
 
-	items = [healthpotImage,archerbow1Image,archerbow4Image, archerbow4Image, archerbow4Image]
+
+	items = [healthpotImage,healthpotImage,magestaff4Image,knightsword4Image, archerbow4Image, archerbow4Image]
 
 //when the browser is loaded, do this
 window.onload = function() {
@@ -937,8 +937,8 @@ function drawInventory() {
 	ctx_inventory.fillStyle = "#ddccaa";
 	ctx_inventory.fillRect(0, 0, 210, 350);
 	for(i=0; i <items.length; i++){
-		if(i>4 && i<8){
-			ctx_inventory.drawImage(items[i], (10 * ((i + 1)-4))  + (i * 40), 60);
+		if(i>=4 && i<8){
+			ctx_inventory.drawImage(items[i], (10 * (i - 3))  + ((i - 4) * 40), 60);
 		}
 		else{ctx_inventory.drawImage(items[i], (10 * (i + 1))  + (i * 40), 10);}
 	}
@@ -961,7 +961,6 @@ function drawMap() {
 	}
     
 	var currentFrameTime = Date.now();
-	var timeElapsed = currentFrameTime - lastFrameTime;
 	drawHp();
 	drawInventory();
 
@@ -989,15 +988,17 @@ function drawMap() {
 		} else if (keysDown[68] && player.canMoveRight()) {
 			player.moveRight(currentFrameTime);
             player.attackRight();
-		} else if(keysDown[38]){
-            window.alert("if call");
-            player.attack();
-        }
+		} 
 		if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
 			player.timeMoved = currentFrameTime;
 		}   
 	}
-    
+	
+	if(keysDown[38]){
+		window.alert("if call");
+		player.attack();
+	}
+
 	//Creates crabs and randomly moves them
 	for (i = 0; i < crabCount; i++) {
 		var crabMovement = Math.floor(Math.random() * 4 + 1);
