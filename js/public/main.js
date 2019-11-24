@@ -249,6 +249,12 @@ class crabObject {
 			return false;
 		}
 	}
+	respawn() {
+		//todo
+	}
+	Damage() {
+		//todo
+	}
 	canMoveUp() {
 		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
 	}
