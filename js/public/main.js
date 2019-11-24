@@ -236,18 +236,20 @@ class crabObject {
 		return true;
 	}
 	canMoveTo(x, y) {
-		//makes sure it can't move off map
-		if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
-			return false;
-		}
-		if (isOccupied(toIndex(x, y))) {
-			return false;
-		}
-		if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water) {
-			return true;
-		} else {
-			return false;
-		}
+        if(this.hp > 0){
+            //makes sure it can't move off map
+            if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
+                return false;
+            }
+            if (isOccupied(toIndex(x, y))) {
+                return false;
+            }
+            if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.sand || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.water) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 	}
 	respawn() {
 		//todo
@@ -693,14 +695,47 @@ class Character {
 		this.direction = directions.down;
 	}
     
-    attack(){
+    attackDown(){
         //get player location
         //check if there is an enemy within 3 spaces infornt
         for(i = 0; i < crabCount; i++){
-            if((parseInt(crab[i].position[0]) == parseInt(this.position[0])) && ((crab[i].position[1] < (this.position[1])) && (crab[i].position[1] > (this.position[1] + 3)))){
+            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] >= (this.tileFrom[1] - 3)) && (this.tileFrom[1] < (this.tileFrom[1]))){
                 //Y: Subtract x healt
+                console.log("Hit!" + i);
                 crab[i].hp -= 20;
-                window.alert("Hit!" + crab[i]);
+            }
+        }
+    }
+    attackUp(){
+        //get player location
+        //check if there is an enemy within 3 spaces infornt
+        for(i = 0; i < crabCount; i++){
+            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] <= (this.tileFrom[1] + 3)) && (crab[i].tileFrom[1] > (this.tileFrom[1]))){
+                //Y: Subtract x healt
+                console.log("Hit!" + i);
+                crab[i].hp -= 20;
+            }
+        }
+    }
+    attackRight(){
+        //get player location
+        //check if there is an enemy within 3 spaces infornt
+        for(i = 0; i < crabCount; i++){
+            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] <= (this.tileFrom[0] + 3)) && (crab[i].tileFrom[0] > (this.tileFrom[0]))){
+                //Y: Subtract x healt
+                console.log("Hit!" + i);
+                crab[i].hp -= 20;
+            }
+        }
+    }
+    attackLeft(){
+        //get player location
+        //check if there is an enemy within 3 spaces infornt
+        for(i = 0; i < crabCount; i++){
+            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] >= (this.tileFrom[0] - 3)) && (crab[i].tileFrom[0] < (this.tileFrom[0]))){
+                //Y: Subtract x healt
+                console.log("Hit!" + i);
+                crab[i].hp -= 20;
             }
         }
     }
@@ -753,7 +788,27 @@ function getObject(index) {
 	var archerbow4Image = new Image();
 	this.archerbow4Image.src = "assets/images/items/archerbow4.png";
 
+	var knightsword1Image = new Image();
+	this.knightsword1Image.src = "assets/images/items/knightsword1.png";
+	var knightsword2Image = new Image();
+	this.knightsword2Image.src = "assets/images/items/knightsword2.png";
+	var knightsword3Image = new Image();
+	this.knightsword3Image.src = "assets/images/items/knightsword3.png";
+	var knightsword4Image = new Image();
+	this.knightsword4Image.src = "assets/images/items/knightsword4.png";
+
+	var magestaff1Image = new Image();
+	this.magestaff1Image.src = "assets/images/items/magestaff1.png";
+	var magestaff2Image = new Image();
+	this.magestaff2Image.src = "assets/images/items/magestaff2.png";
+	var magestaff3Image = new Image();
+	this.magestaff3Image.src = "assets/images/items/magestaff3.png";
+	var magestaff4Image = new Image();
+	this.magestaff4Image.src = "assets/images/items/magestaff4.png";
+
 	var items = [];
+
+
 	items = [healthpotImage,archerbow1Image,archerbow4Image, archerbow4Image, archerbow4Image]
 
 //when the browser is loaded, do this
@@ -766,6 +821,7 @@ window.onload = function() {
 	ctx = document.getElementById("map").getContext("2d");
 	ctx_hp = document.getElementById("playerhp").getContext("2d");
 	ctx_inventory = document.getElementById("playerinventory").getContext("2d");
+	//assigning the audio variable to the correct file
 	audio = new this.Audio("assets/Fighting-Dragons-on-The-Moon.mp3")
 	audio.volume = 0.02;
 	
@@ -881,7 +937,10 @@ function drawInventory() {
 	ctx_inventory.fillStyle = "#ddccaa";
 	ctx_inventory.fillRect(0, 0, 210, 350);
 	for(i=0; i <items.length; i++){
-		ctx_inventory.drawImage(items[i], (10 * (i + 1))  + (i * 40), 10);
+		if(i>4 && i<8){
+			ctx_inventory.drawImage(items[i], (10 * ((i + 1)-4))  + (i * 40), 60);
+		}
+		else{ctx_inventory.drawImage(items[i], (10 * (i + 1))  + (i * 40), 10);}
 	}
 
 }
@@ -920,21 +979,23 @@ function drawMap() {
 	if (!player.processMovement(currentFrameTime)) {
 		if (keysDown[87] && player.canMoveUp()) {
 			player.moveUp(currentFrameTime);
-            player.attack();
+            player.attackUp();
 		} else if (keysDown[83] && player.canMoveDown()) {
 			player.moveDown(currentFrameTime);
+            player.attackDown();
 		} else if (keysDown[65] && player.canMoveLeft()) {
 			player.moveLeft(currentFrameTime);
+            player.attackLeft();
 		} else if (keysDown[68] && player.canMoveRight()) {
 			player.moveRight(currentFrameTime);
-		}
-		if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
-			player.timeMoved = currentFrameTime;
-		}
-        if(keysDown[38]){
+            player.attackRight();
+		} else if(keysDown[38]){
             window.alert("if call");
             player.attack();
-        }   
+        }
+		if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
+			player.timeMoved = currentFrameTime;
+		}   
 	}
     
 	//Creates crabs and randomly moves them
