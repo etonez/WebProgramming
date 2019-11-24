@@ -801,7 +801,7 @@ function getObject(index) {
 	this.magestaff4Image.src = "assets/images/items/magestaff4.png";
 
 	var items = [];
-
+	
 
 	items = [healthpotImage,archerbow1Image,archerbow4Image, archerbow4Image, archerbow4Image]
 
