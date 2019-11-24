@@ -691,7 +691,7 @@ class Character {
         //get player location
         //check if there is an enemy within 3 spaces infornt
         for(i = 0; i < crabCount; i++){
-            if((parseInt(crab[i].position[0]) == parseint(this.position[0])) && ((crab[i].position[1] < (this.position[1])) && (crab[i].position[1] > (this.position[1] + 3)))){
+            if((parseInt(crab[i].position[0]) == parseInt(this.position[0])) && ((crab[i].position[1] < (this.position[1])) && (crab[i].position[1] > (this.position[1] + 3)))){
                 //Y: Subtract x healt
                 crab[i].hp -= 20;
                 window.alert("Hit!" + crab[i]);
