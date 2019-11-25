@@ -842,8 +842,6 @@ function getObject(index) {
 	var magestaff4Image = new Image();
 	this.magestaff4Image.src = "assets/images/items/magestaff4.png";
 
-	var inventory = [];
-
 	function Item(damage, range, speed, image){
 		this.damage = 40;
 		this.range	= 3;
