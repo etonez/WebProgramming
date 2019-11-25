@@ -1112,13 +1112,13 @@ function drawMap() {
 	if (!player.processMovement(currentFrameTime)) {
 		if (keysDown[87] && player.canMoveUp()) {
 			player.moveUp(currentFrameTime);
-			player.attackUp();
+			player.attack(player,1);
 		} else if (keysDown[83] && player.canMoveDown()) {
 			player.moveDown(currentFrameTime);
-            player.attackDown();
+            player.attack(player,3);
 		} else if (keysDown[65] && player.canMoveLeft()) {
 			player.moveLeft(currentFrameTime);
-            player.attackLeft();
+            player.attack(player,2);
 		} else if (keysDown[68] && player.canMoveRight()) {
 			player.moveRight(currentFrameTime);
             player.attack(player,0);
