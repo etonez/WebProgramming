@@ -66,7 +66,8 @@ var keysDown = {
 	65: false,
 	83: false,
 	68: false,
-    32: false
+	32: false,
+	13: false
 };
 
 //the below variable stores all of the tiles that are used to create the map that the players traverses
@@ -588,17 +589,17 @@ class Arrow {
 		this.tileFrom = shooterObj.tileFrom;
 		this.direction = dir.direction;
 		this.dimensions = [40, 40];
-		if (dir.direction == 0) {
+		if (dir.direction == 0) { //right
 			this.tileTo = [shooterObj.tileFrom[0]+1,shooterObj.tileFrom[1]];
 		}
-		else if (dir.direction == 1) {
-			this.tileTo = [shooterObj.tileFrom[0], shooterObj.tileFrom[1]+1]
+		else if (dir.direction == 2) { //up
+			this.tileTo = [shooterObj.tileFrom[0], shooterObj.tileFrom[1]-1]
 		}
-		else if (dir.direction == 2) {
+		else if (dir.direction == 1) {
 			this.tileTo = [shooterObj.tileFrom[0]-1, shooterObj.tileFrom[1]]
 		}
-		else if (dir.direction == 3) {
-			this.tileTo = [shooterObj.tileFrom[0], shooterObj.tileFrom[1]-1]
+		else if (dir.direction == 3) { //down
+			this.tileTo = [shooterObj.tileFrom[0], shooterObj.tileFrom[1]+1]
 		}
 		else{
 			this.tileTo = this.tileFrom
@@ -606,22 +607,18 @@ class Arrow {
 	}
 	moveRight(t) {
 		this.timeMoved = t;
-		this.direction = directions.right;
 		this.tileTo[0] +=1;
 	}
 	moveLeft(t) {
 		this.timeMoved = t;
-		this.direction = directions.left;
 		this.tileTo[0] -=1;
 	}
 	moveDown(t) {
 		this.timeMoved = t;
-		this.direction = directions.down;
 		this.tileTo[1] -=1;
 	}
 	moveUp(t) {
 		this.timeMoved = t;
-		this.direction = directions.up;
 		this.tileTo[1] +=1;
 	}
 	placeAt(x, y) {
@@ -775,8 +772,8 @@ class Character {
 		this.timeMoved = t;
 		this.direction = directions.down;
 	}
-	attack(direction) {
-		var a = new Arrow(this,direction)
+	attack(dr) {
+		var a = new Arrow(this,dr)
 		arrowList.push(a)
 	}
 }
@@ -882,7 +879,7 @@ window.onload = function() {
 
 	//tells the browser that if any of the WASD keys are pressed, assign keysDown variable to true
 	window.addEventListener("keydown", function(e) {
-		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 32) {
+		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 13) {
 			keysDown[e.keyCode] = true;
 			if(soundButton.on == true){
 				audio.play();
@@ -893,7 +890,7 @@ window.onload = function() {
 
 	//tells the browser that if any of the WASD keys are pressed, assign keysDown variable to true
 	window.addEventListener("keyup", function(e) {
-		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 32) {
+		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 13) {
 			keysDown[e.keyCode] = false;
 		}
 	});
@@ -1133,13 +1130,13 @@ function drawMap() {
 			if (arrowList[i].direction == 0) {
 				arrowList[i].moveRight(currentFrameTime)
 			}
-			if (arrowList[i].direction == 1) {
+			if (arrowList[i].direction == 3) {
 				arrowList[i].moveUp(currentFrameTime)
 			}
-			if (arrowList[i].direction == 2) {
+			if (arrowList[i].direction == 1) {
 				arrowList[i].moveLeft(currentFrameTime)
 			}
-			if (arrowList[i].direction == 3) {
+			if (arrowList[i].direction == 2) {
 				arrowList[i].moveDown(currentFrameTime)
 			}
 		}
@@ -1150,19 +1147,14 @@ function drawMap() {
 	if (!player.processMovement(currentFrameTime)) {
 		if (keysDown[87] && player.canMoveUp()) {
 			player.moveUp(currentFrameTime);
-			player.attack(player,1);
 		} else if (keysDown[83] && player.canMoveDown()) {
 			player.moveDown(currentFrameTime);
-            player.attack(player,3);
 		} else if (keysDown[65] && player.canMoveLeft()) {
 			player.moveLeft(currentFrameTime);
-            player.attack(player,2);
 		} else if (keysDown[68] && player.canMoveRight()) {
 			player.moveRight(currentFrameTime);
-            player.attack(player,0);
 		} else if(keysDown[38]){
             window.alert("if call");
-            player.attack();
         }
 		if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
 			player.timeMoved = currentFrameTime;
@@ -1170,18 +1162,11 @@ function drawMap() {
 		
 	}
 	
-
-	if(player.direction == directions.left && keysDown[32] == true){
-		player.attackLeft();
-	}
-	if(player.direction == directions.right && keysDown[32] == true){
-		player.attackRight();
-	}
-	if(player.direction == directions.up && keysDown[32] == true){
-		player.attackUp();
-	}
-	if(player.direction == directions.down && keysDown[32] == true){
-		player.attackDown();
+	//if space is pressed, attack
+	if(keysDown[13] == true){
+		keysDown[13] == false;
+		player.attack(player,player.direction);
+		
 	}
 
 	//Creates crabs and randomly moves them
@@ -1325,13 +1310,13 @@ function drawMap() {
 	for (i = 21; i < 31; i++) {
 		ctx.drawImage(lvl3crabImage, viewport.offset[0] + lvl3Crab[i].position[0], viewport.offset[1] + lvl3Crab[i].position[1]);
 	}
-	var squidSprite = darkSquid.sprites[darkSquid.direction];
+	//var squidSprite = darkSquid.sprites[darkSquid.direction];
 	ctx.drawImage(
 		darkSquidImage,
-		squidSprite[0].x,
-		squidSprite[0].y,
-		squidSprite[0].w,
-		squidSprite[0].h,
+		//squidSprite[0].x,
+		//squidSprite[0].y,
+		//squidSprite[0].w,
+		//squidSprite[0].h,
 		viewport.offset[0] + darkSquid.position[0],
 		viewport.offset[1] + darkSquid.position[1],
 		darkSquid.dimensions[0],
