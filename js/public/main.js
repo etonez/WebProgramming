@@ -2,6 +2,7 @@
 var ctx = null;
 var ctx_hp = null;
 var ctx_inventory = null;
+var ctx_stats = null;
 var audio = null;
 //the width of each tile in pixels
 var tileW = 40,
@@ -65,7 +66,7 @@ var keysDown = {
 	65: false,
 	83: false,
 	68: false,
-    38: false
+    32: false
 };
 
 //the below variable stores all of the tiles that are used to create the map that the players traverses
@@ -786,6 +787,7 @@ function getObject(index) {
 	//###################################################VARIABLES#######################################################
 	//###################################################################################################################
 	
+	//the below blocks of code assign all of the inventory items to variables
 	var healthpotImage = new Image();
 	this.healthpotImage.src = "assets/images/items/healthpot.png";
 
@@ -816,10 +818,19 @@ function getObject(index) {
 	var magestaff4Image = new Image();
 	this.magestaff4Image.src = "assets/images/items/magestaff4.png";
 
-	var items = [];
+	var inventory = [];
 
-
-	items = [healthpotImage,archerbow1Image,archerbow4Image, archerbow4Image, archerbow4Image]
+	function Item(damage, range, speed, image){
+		this.damage = 40;
+		this.range	= 3;
+		this.speed = 0;
+		this.image = archerbow1Image;
+	}
+	var item1	= new Item();
+	var item2	= new Item();
+	var item3	= new Item();
+	var item4	= new Item();
+		
 
 //when the browser is loaded, do this
 window.onload = function() {
@@ -831,29 +842,34 @@ window.onload = function() {
 	ctx = document.getElementById("map").getContext("2d");
 	ctx_hp = document.getElementById("playerhp").getContext("2d");
 	ctx_inventory = document.getElementById("playerinventory").getContext("2d");
+	ctx_stats = document.getElementById("playerstats").getContext("2d");
 	//assigning the audio variable to the correct file
 	audio = new this.Audio("assets/Fighting-Dragons-on-The-Moon.mp3")
 	audio.volume = 0.02;
-	
+
 
 	//tells the browser that upon loading, it must call this function to update the animation before the next repaint
 	requestAnimationFrame(drawMap);
 
 	//tells the browser that if any of the WASD keys are pressed, assign keysDown variable to true
 	window.addEventListener("keydown", function(e) {
-		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keycode == 38) {
+		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 32) {
 			keysDown[e.keyCode] = true;
 			if(soundButton.on == true){
 				audio.play();
 			}
 		}
 	});
+
+
 	//tells the browser that if any of the WASD keys are pressed, assign keysDown variable to true
 	window.addEventListener("keyup", function(e) {
-		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 38) {
+		if (e.keyCode == 87 || e.keyCode == 65 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 32) {
 			keysDown[e.keyCode] = false;
 		}
 	});
+
+
 
 	//storing the canvas "map"'s width and height in the viewports' screen paramater
 	viewport.screen = [document.getElementById("map").width, document.getElementById("map").height];
@@ -916,13 +932,77 @@ window.onload = function() {
 	//assigning sprites their images
 	if (characterType == "archer") {
 		this.tileset.src = "assets/images/tileset.png";
+		item1.damage = 40;
+		item1.range = 2;
+		item1.speed = 1000;
+		item1.image = archerbow1Image
+
+		item2.damage = 80;
+		item2.range = 3;
+		item2.speed = 1000;
+		item2.image = archerbow2Image
+
+		item3.damage = 150;
+		item3.range = 3;
+		item3.speed = 700;
+		item3.image = archerbow3Image
+
+		item4.damage = 300;
+		item4.range = 4;
+		item4.speed = 700;
+		item4.image = archerbow4Image
 	}
 	if (characterType == "knight") {
 		this.tileset.src = "assets/images/tilesetknight.png";
+		item1.damage = 50;
+		item1.range = 2;
+		item1.speed = 1100;
+		item1.image = knightsword1Image;
+
+		item2.damage = 100;
+		item2.range = 2;
+		item2.speed = 1100;
+		item2.image = knightsword2Image;
+
+		item3.damage = 200;
+		item3.range = 2;
+		item3.speed = 900;
+		item3.image = knightsword3Image;
+
+		item4.damage = 400;
+		item4.range = 2;
+		item4.speed = 700;
+		item4.image = knightsword4Image;
 	}
 	if (characterType == "mage") {
 		this.tileset.src = "assets/images/tilesetmage.png";
+		item1.damage = 30;
+		item1.range = 2;
+		item1.speed = 1000;
+		item1.image = magestaff1Image;
+
+		item2.damage = 80;
+		item2.range = 3;
+		item2.speed = 1000;
+		item2.image = magestaff2Image;
+
+		item3.damage = 150;
+		item3.range = 3;
+		item3.speed = 700;
+		item3.image = magestaff3Image;
+
+		item4.damage = 300;
+		item4.range = 4;
+		item4.speed = 700;
+		item4.image = magestaff4Image;
 	}
+
+	//adding the default items to inventory
+	inventoryImages = [item1.image,item2.image,item3.image,item4.image];
+	inventoryDamage = [item1.damage];
+	inventoryRange = [item1.range];
+
+
 	this.crabImage.src = "assets/images/lvl1crab.png";
 	this.lvl2crabImage.src = "assets/images/lvl2crab.png";
 	this.lvl3crabImage.src = "assets/images/lvl3crab.png";
@@ -952,16 +1032,42 @@ function drawInventory() {
 		alert("inventory not loaded");
 	}
 	ctx_inventory.fillStyle = "#ddccaa";
-	ctx_inventory.fillRect(0, 0, 210, 350);
-	for(i=0; i <items.length; i++){
-		if(i>4 && i<8){
-			ctx_inventory.drawImage(items[i], (10 * ((i + 1)-4))  + (i * 40), 60);
+	ctx_inventory.fillRect(0, 0, 260, 340);
+	ctx_inventory.fillStyle = "#000000";
+	ctx_inventory.font = "30px Small Fonts"
+	ctx_inventory.textAlign = "center";
+	ctx_inventory.fillText("Inventory", 130, 30);
+	ctx_inventory.font = "20px Small Fonts"
+	ctx_inventory.textAlign = "right";
+	ctx_inventory.fillText("Equipped:", 100, 90);
+	for(i=0; i <inventoryImages.length;){
+		ctx_inventory.drawImage(inventoryImages[0],(110), 60);
+		if(i>0){
+			if(i>=5 && i<10){
+				ctx_inventory.drawImage(inventoryImages[i], (10 * (i - 3))  + ((i - 4) * 40) - 50, 160);
+			}
+			if(i>=10 && i<=15){
+				ctx_inventory.drawImage(inventoryImages[i], (10 * (i - 7))  + ((i - 8) * 40) - 100, 210);
+			}
+			else{ctx_inventory.drawImage(inventoryImages[i], (10 * i)  + ((i - 1)  * 40), 110);}
 		}
-		else{ctx_inventory.drawImage(items[i], (10 * (i + 1))  + (i * 40), 10);}
+		i++
 	}
+	
 
 }
 
+//draws the stats canvas
+function drawStats() {
+	ctx_stats.fillStyle = "#ddccaa";
+	ctx_stats.fillRect(0, 0, 260, 340);
+	ctx_stats.fillStyle = "#000000";
+	ctx_stats.font = "30px Small Fonts"
+	ctx_stats.textAlign = "center";
+	ctx_stats.fillText("Stats", 130, 30);
+}
+
+//draws the main canvas
 function drawMap() {
 	if (ctx == null) {
 		return;
@@ -978,9 +1084,9 @@ function drawMap() {
 	}
     
 	var currentFrameTime = Date.now();
-	var timeElapsed = currentFrameTime - lastFrameTime;
 	drawHp();
 	drawInventory();
+	drawStats();
 
 	var sec = Math.floor(Date.now() / 1000);
 	if (sec != currentSecond) {
@@ -1006,7 +1112,7 @@ function drawMap() {
 	if (!player.processMovement(currentFrameTime)) {
 		if (keysDown[87] && player.canMoveUp()) {
 			player.moveUp(currentFrameTime);
-            player.attackUp();
+			player.attackUp();
 		} else if (keysDown[83] && player.canMoveDown()) {
 			player.moveDown(currentFrameTime);
             player.attackDown();
@@ -1023,8 +1129,23 @@ function drawMap() {
 		if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
 			player.timeMoved = currentFrameTime;
 		}   
+		
 	}
-    
+	
+
+	if(player.direction == directions.left && keysDown[32] == true){
+		player.attackLeft();
+	}
+	if(player.direction == directions.right && keysDown[32] == true){
+		player.attackRight();
+	}
+	if(player.direction == directions.up && keysDown[32] == true){
+		player.attackUp();
+	}
+	if(player.direction == directions.down && keysDown[32] == true){
+		player.attackDown();
+	}
+
 	//Creates crabs and randomly moves them
 	for (i = 0; i < crabCount; i++) {
 		var crabMovement = Math.floor(Math.random() * 4 + 1);

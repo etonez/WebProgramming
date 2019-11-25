@@ -3,7 +3,29 @@ body{
     background:#999999;
     margin: 0 auto 0 auto;  
     width:100%; 
-    text-align:center;
+    text-align:right;
     margin: 20px 0px 20px 0px;   
+  }
+  h1{
+    position: relative;
+    right: 50%;
+  }
+  #map{
+    position: relative;
+    right: 15.6%;
+  }
+  #playerstats{
+    position: relative;
+    bottom: 340px;
+    right: 15.5%;
+  }
+  #playerinventory{
+    position: relative;
+    right: 29.3%;
+
+  }
+  #playerhp{
+    position: relative;
+    right: 43.2%;
   }
   
