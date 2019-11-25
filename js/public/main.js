@@ -1,5 +1,5 @@
-//the canvas variables
 inventorySpeed = [];
+//the canvas variables
 var ctx = null;
 var ctx_hp = null;
 var ctx_inventory = null;
@@ -487,10 +487,6 @@ class darkSquidObject {
 		this.position = [2280, 2280];
 		this.delayMove = 600;
 		this.hp = 3000;
-		this.direction = directions.left;
-		this.sprites = {};
-		this.sprites[directions.right] = [{ x: 33, y: 0, w: 33, h: 40 }];
-		this.sprites[directions.left] = [{ x: 0, y: 0, w: 33, h: 40 }];
 	}
 	placeAt(x, y) {
 		this.tileFrom = [x, y];
@@ -1094,6 +1090,12 @@ function drawStats() {
 	ctx_stats.font = "30px Small Fonts"
 	ctx_stats.textAlign = "center";
 	ctx_stats.fillText("Stats", 130, 30);
+	ctx_stats.font = "20px Small Fonts"
+	ctx_stats.textAlign = "left";
+	ctx_stats.fillText("Health: " + player.gethp() + "/", 10, 80);
+	ctx_stats.fillText("Damage: " + inventoryDamage[0], 10, 130);
+	ctx_stats.fillText("Range: " + inventoryRange[0], 10, 180);
+	ctx_stats.fillText("Level: ", 10, 230);
 }
 
 //draws the main canvas
@@ -1156,8 +1158,6 @@ function drawMap() {
 			player.moveLeft(currentFrameTime);
 		} else if (keysDown[68] && player.canMoveRight()) {
 			player.moveRight(currentFrameTime);
-		} else if(keysDown[38]){
-            window.alert("if call");
         }
 		if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
 			player.timeMoved = currentFrameTime;
@@ -1317,13 +1317,8 @@ function drawMap() {
 	for (i = 21; i < 31; i++) {
 		ctx.drawImage(lvl3crabImage, viewport.offset[0] + lvl3Crab[i].position[0], viewport.offset[1] + lvl3Crab[i].position[1]);
 	}
-	//var squidSprite = darkSquid.sprites[darkSquid.direction];
 	ctx.drawImage(
 		darkSquidImage,
-		//squidSprite[0].x,
-		//squidSprite[0].y,
-		//squidSprite[0].w,
-		//squidSprite[0].h,
 		viewport.offset[0] + darkSquid.position[0],
 		viewport.offset[1] + darkSquid.position[1],
 		darkSquid.dimensions[0],
@@ -1354,7 +1349,6 @@ function drawMap() {
 				{
 					audio.pause();
 					soundButton.on = false;
-
 				}
 				else
 				{

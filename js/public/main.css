@@ -12,20 +12,20 @@ body{
   }
   #map{
     position: relative;
-    right: 15.6%;
+    right: 300px;
   }
   #playerstats{
     position: relative;
     bottom: 340px;
-    right: 15.5%;
+    right: 300px;
   }
   #playerinventory{
     position: relative;
-    right: 29.3%;
+    right: 563px;
 
   }
   #playerhp{
     position: relative;
-    right: 43.2%;
+    right: 830px;
   }
   
