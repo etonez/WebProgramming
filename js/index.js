@@ -22,20 +22,23 @@ io.sockets.on('connection', function(socket){
     socket.on('user',function(data){
         console.log('username: ' + data.username + ' password: ' + data.password);
     });
-/*
+
+
     socket.on('position',function(data){
         setInterval(function(){
-            for(var i in SOCKET_LIST){
-                var socket = SOCKET_LIST[i];
-                socket.x = data.x
-                socket.y = data.y
-                socket.emit("newPosition",{
-                    x:socket.x,
-                    y:socket.y
-                })
-            }
-        },100)
-    });*/
+           // for(var i in SOCKET_LIST){
+              //  var socket = SOCKET_LIST[i];
+                data.x
+                data.y
+                
+                if(data.x!=oldx && data.y != oldy){
+                    console.log(data.x + "   " + data.y);
+                }
+                var oldx = data.x;
+                var oldy = data.y;
+           // }
+        },1000)
+    });
     
 });
 

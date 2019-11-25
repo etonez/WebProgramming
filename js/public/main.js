@@ -732,7 +732,7 @@ class Character {
 		drawHp();
 	}
 	dead() {
-		window.location.href = "test.html";
+		window.location.href = "deathpage.html";
 	}
 
 	//########################################SPRITE############################################################
@@ -857,10 +857,7 @@ function getObject(index) {
 
 //when the browser is loaded, do this
 window.onload = function() {
-	//sends position of player to the server every 100 milliseconds
-	window.setInterval(function() {
-		getPosition();
-	}, 100);
+	
 	//assigning the ctx variables to their respective canvases
 	ctx = document.getElementById("map").getContext("2d");
 	ctx_hp = document.getElementById("playerhp").getContext("2d");
@@ -1090,7 +1087,7 @@ function drawStats() {
 	ctx_stats.fillText("Stats", 130, 30);
 	ctx_stats.font = "20px Small Fonts"
 	ctx_stats.textAlign = "left";
-	ctx_stats.fillText("Health: " + player.gethp() + "/", 10, 80);
+	ctx_stats.fillText("Health: " + player.gethp() + "/100", 10, 80);
 	ctx_stats.fillText("Damage: " + inventoryDamage[0], 10, 130);
 	ctx_stats.fillText("Range: " + inventoryRange[0], 10, 180);
 	ctx_stats.fillText("Level: ", 10, 230);
@@ -1150,12 +1147,21 @@ function drawMap() {
 	if (!player.processMovement(currentFrameTime)) {
 		if (keysDown[87] && player.canMoveUp()) {
 			player.moveUp(currentFrameTime);
+			//sends position of player to the server every 100 milliseconds
+			getPosition();
+
 		} else if (keysDown[83] && player.canMoveDown()) {
 			player.moveDown(currentFrameTime);
+			//sends position of player to the server every 100 milliseconds
+			getPosition();
 		} else if (keysDown[65] && player.canMoveLeft()) {
 			player.moveLeft(currentFrameTime);
+			//sends position of player to the server every 100 milliseconds
+			getPosition();
 		} else if (keysDown[68] && player.canMoveRight()) {
 			player.moveRight(currentFrameTime);
+			//sends position of player to the server every 100 milliseconds
+			getPosition();
         }
 		if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
 			player.timeMoved = currentFrameTime;

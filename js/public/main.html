@@ -11,10 +11,12 @@
 var socket = io();
 
 var getPosition = function(){
-     socket.emit('position',{
+    socket.emit('position',{
      x: player.position[0],
      y: player.position[1]
-     }); 
+     
+     
+    })
 }
 /*
 socket.on("newPosition",function(data){

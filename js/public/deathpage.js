@@ -15,7 +15,7 @@ if (characterType == "archer") {
     this.deathpage.src = "assets/images/deathpagearcher.png";
 }
 if (characterType == "knight") {
-    this.deathpage.src = "assets/images/deathpagenight.png";
+    this.deathpage.src = "assets/images/deathpageknight.png";
 }
 if (characterType == "mage") {
     this.deathpage.src = "assets/images/deathpagemage.png";
