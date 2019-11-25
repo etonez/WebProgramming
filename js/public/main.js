@@ -584,16 +584,43 @@ class Arrow {
 	constructor(shooterObj, dir) {
 		this.position = shooterObj.position;
 		this.tileFrom = shooterObj.tileFrom;
-		this.direction = dir;
+		this.direction = dir.direction;
 		this.dimensions = [40, 40];
-		if (dir == 0) {
+		if (dir.direction == 0) {
 			this.tileTo = [shooterObj.tileFrom[0]+1,shooterObj.tileFrom[1]];
+		}
+		else if (dir.direction == 1) {
+			this.tileTo = [shooterObj.tileFrom[0], shooterObj.tileFrom[1]+1]
+		}
+		else if (dir.direction == 2) {
+			this.tileTo = [shooterObj.tileFrom[0]-1, shooterObj.tileFrom[1]]
+		}
+		else if (dir.direction == 3) {
+			this.tileTo = [shooterObj.tileFrom[0], shooterObj.tileFrom[1]-1]
+		}
+		else{
+			this.tileTo = this.tileFrom
 		}
 	}
 	moveRight(t) {
 		this.timeMoved = t;
 		this.direction = directions.right;
 		this.tileTo[0] +=1;
+	}
+	moveLeft(t) {
+		this.timeMoved = t;
+		this.direction = directions.left;
+		this.tileTo[0] -=1;
+	}
+	moveDown(t) {
+		this.timeMoved = t;
+		this.direction = directions.down;
+		this.tileTo[1] -=1;
+	}
+	moveUp(t) {
+		this.timeMoved = t;
+		this.direction = directions.up;
+		this.tileTo[1] +=1;
 	}
 	placeAt(x, y) {
 		this.tileFrom = [x, y];
@@ -746,8 +773,8 @@ class Character {
 		this.timeMoved = t;
 		this.direction = directions.down;
 	}
-	attack(dir) {
-		var a = new Arrow(this,0)
+	attack(direction) {
+		var a = new Arrow(this,direction)
 		arrowList.push(a)
 	}
 }
@@ -1103,6 +1130,15 @@ function drawMap() {
 		if (!arrowList[i].processMovement(currentFrameTime)) {
 			if (arrowList[i].direction == 0) {
 				arrowList[i].moveRight(currentFrameTime)
+			}
+			if (arrowList[i].direction == 1) {
+				arrowList[i].moveUp(currentFrameTime)
+			}
+			if (arrowList[i].direction == 2) {
+				arrowList[i].moveLeft(currentFrameTime)
+			}
+			if (arrowList[i].direction == 3) {
+				arrowList[i].moveDown(currentFrameTime)
 			}
 		}
 		if (arrowList[i].tileFrom[0] != arrowList[i].tileTo[0] || arrowList[i].tileFrom[1] != arrowList[i].tileTo[1]) {
