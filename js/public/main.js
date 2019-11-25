@@ -20,7 +20,7 @@ var characterType = localStorage.getItem("cTypeLocalStorage");
 /*var playx = localStorage.getItem("posxLocalStorage");
 var playy = localStorage.getItem("posyLocalStorage");
 */
-
+var arrowList = [];
 //This variable distinguishes different types of tile so that it can be used to make for a more dynamic map with obstacles
 var floorTypes = {
 	solid: 0,
@@ -197,6 +197,8 @@ var lvl3crabImage = new Image();
 var darkSquidReady = false;
 var darkSquidImage = new Image();
 
+var arrowReady = false;
+var arrowImage = new Image()
 //Creates the crab object which will hold all of the sprite's information
 class crabObject {
 	constructor() {
@@ -252,10 +254,14 @@ class crabObject {
         }
 	}
 	respawn() {
-		//todo
+		this.placeAt(17,8);
+		this.hp = 40;
 	}
-	Damage() {
-		//todo
+	damage(x) {
+		this.hp -= x;
+		if (this.hp < 0) {
+			this.respawn();
+		}
 	}
 	canMoveUp() {
 		return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
@@ -573,6 +579,51 @@ class SoundButton {
 //creates instance of sound button
 soundButton = new SoundButton();
 
+class Arrow {
+	constructor(shooterObj, dir) {
+		this.position = shooterObj.position;
+		this.tileFrom = shooterObj.tileFrom;
+		this.direction = dir;
+		this.dimensions = [40, 40];
+		if (dir == 0) {
+			this.tileTo = [shooterObj.tileFrom[0]+1,shooterObj.tileFrom[1]];
+		}
+	}
+	moveRight(t) {
+		this.timeMoved = t;
+		this.direction = directions.right;
+		this.tileTo[0] +=1;
+	}
+	placeAt(x, y) {
+		this.tileFrom = [x, y];
+		this.tileTo = [x, y];
+		this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
+	}
+	processMovement(t) {
+		if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
+			return false;
+		}
+		var moveSpeed = 0.04;
+		if (t - this.timeMoved >= moveSpeed) {
+			this.placeAt(this.tileTo[0], this.tileTo[1]);
+		} else {
+			this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
+			this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
+			if (this.tileTo[0] != this.tileFrom[0]) {
+				var diff = (tileW / moveSpeed) * (t - this.timeMoved);
+				this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
+				
+			}
+			if (this.tileTo[1] != this.tileFrom[1]) {
+				var diff = (tileH / moveSpeed) * (t - this.timeMoved);
+				this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff;
+			}
+			this.position[0] = Math.round(this.position[0]);
+			this.position[1] = Math.round(this.position[1]);
+		}
+		return true;
+	}
+}
 //Creates the character object that will hold all of the player's information
 class Character {
 	constructor() {
@@ -694,51 +745,10 @@ class Character {
 		this.timeMoved = t;
 		this.direction = directions.down;
 	}
-    
-    attackDown(){
-        //get player location
-        //check if there is an enemy within 3 spaces infornt
-        for(i = 0; i < crabCount; i++){
-            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] >= (this.tileFrom[1] - 3)) && (this.tileFrom[1] < (this.tileFrom[1]))){
-                //Y: Subtract x healt
-                console.log("Hit!" + i);
-                crab[i].hp -= 20;
-            }
-        }
-    }
-    attackUp(){
-        //get player location
-        //check if there is an enemy within 3 spaces infornt
-        for(i = 0; i < crabCount; i++){
-            if((crab[i].tileFrom[0] == this.tileFrom[0]) && (crab[i].tileFrom[1] <= (this.tileFrom[1] + 3)) && (crab[i].tileFrom[1] > (this.tileFrom[1]))){
-                //Y: Subtract x healt
-                console.log("Hit!" + i);
-                crab[i].hp -= 20;
-            }
-        }
-    }
-    attackRight(){
-        //get player location
-        //check if there is an enemy within 3 spaces infornt
-        for(i = 0; i < crabCount; i++){
-            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] <= (this.tileFrom[0] + 3)) && (crab[i].tileFrom[0] > (this.tileFrom[0]))){
-                //Y: Subtract x healt
-                console.log("Hit!" + i);
-                crab[i].hp -= 20;
-            }
-        }
-    }
-    attackLeft(){
-        //get player location
-        //check if there is an enemy within 3 spaces infornt
-        for(i = 0; i < crabCount; i++){
-            if((crab[i].tileFrom[1] == this.tileFrom[1]) && (crab[i].tileFrom[0] >= (this.tileFrom[0] - 3)) && (crab[i].tileFrom[0] < (this.tileFrom[0]))){
-                //Y: Subtract x healt
-                console.log("Hit!" + i);
-                crab[i].hp -= 20;
-            }
-        }
-    }
+	attack(dir) {
+		var a = new Arrow(this,0)
+		arrowList.push(a)
+	}
 }
 
 //creates an instance of the character object
@@ -872,7 +882,13 @@ window.onload = function() {
 	this.lvl2crabImage.onload = function() {
 		lvl2crabReady = true;
 	};
-
+	this.arrowImage.onerror = function() {
+		ctx = null;
+		alert("Failed to load sprites")
+	}
+	this.arrowImage.onlead = function() {
+		arrowReady = true;
+	}
 	this.lvl3crabImage.onerror = function() {
 		ctx = null;
 		alert("Failed to load sprites");
@@ -912,6 +928,7 @@ window.onload = function() {
 	this.lvl3crabImage.src = "assets/images/lvl3crab.png";
 	this.darkSquidImage.src = "assets/images/squidboss.png";
 	this.soundImage.src = "assets/images/volumeenable.png";  
+	this.arrowImage.src = "assets/images/arrow.png";
 };
 
 /*#################################DRAW#########################################
@@ -976,6 +993,16 @@ function drawMap() {
 
 	//the below if loops determine whether or not the respective entity can move in the direction desired
 	//and if it can, move it to the desired tile
+	for (i=0; i<arrowList.length;i++) {
+		if (!arrowList[i].processMovement(currentFrameTime)) {
+			if (arrowList[i].direction == 0) {
+				arrowList[i].moveRight(currentFrameTime)
+			}
+		}
+		if (arrowList[i].tileFrom[0] != arrowList[i].tileTo[0] || arrowList[i].tileFrom[1] != arrowList[i].tileTo[1]) {
+			arrowList[i].timeMoved = currentFrameTime;
+		}  
+	}
 	if (!player.processMovement(currentFrameTime)) {
 		if (keysDown[87] && player.canMoveUp()) {
 			player.moveUp(currentFrameTime);
@@ -988,7 +1015,7 @@ function drawMap() {
             player.attackLeft();
 		} else if (keysDown[68] && player.canMoveRight()) {
 			player.moveRight(currentFrameTime);
-            player.attackRight();
+            player.attack(player,0);
 		} else if(keysDown[38]){
             window.alert("if call");
             player.attack();
@@ -1127,6 +1154,9 @@ function drawMap() {
 		player.dimensions[0],
 		player.dimensions[1]
 	);
+	for (i=0; i < arrowList.length;i++) {
+		ctx.drawImage(arrowImage, viewport.offset[0] + arrowList[i].position[0], viewport.offset[1] + arrowList[i].position[1])
+	}
 	for (i = 0; i < crabCount; i++) {
 		ctx.drawImage(crabImage, viewport.offset[0] + crab[i].position[0], viewport.offset[1] + crab[i].position[1]);
 	}
@@ -1151,6 +1181,7 @@ function drawMap() {
     
 	ctx.textAlign = "right";
 	
+
 
     var canvas = document.getElementById('map');
 	
@@ -1196,7 +1227,7 @@ ctx.drawImage(
 	playx,
 	playy
 );*/
-	console.log("x of char is: " + player.position[0] + ", y of char is: " + player.position[1]);
+	//console.log("x of char is: " + player.position[0] + ", y of char is: " + player.position[1]);
 
 	//telling the browser to update the animation with this function before the next paint
 	requestAnimationFrame(drawMap);
