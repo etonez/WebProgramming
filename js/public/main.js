@@ -734,9 +734,8 @@ class Character {
 		this.hp = v;
 		drawHp();
 	}
-	respawn() {
-		this.placeAt(1, 1);
-		this.sethp(100);
+	dead() {
+		window.location.href = "test.html";
 	}
 	
 
@@ -1105,7 +1104,7 @@ function drawMap() {
 		player.sethp(player.gethp() - 0.5);
 	}
 	if (player.gethp() <= 0) {
-		player.respawn();
+		player.dead();
 	}
 	if (!tilesetLoaded) {
 		requestAnimationFrame(drawMap);
