@@ -1,3 +1,4 @@
+inventorySpeed = [];
 //the canvas variables
 var ctx = null;
 var ctx_hp = null;
@@ -580,21 +581,21 @@ class SoundButton {
 soundButton = new SoundButton();
 
 class Arrow {
-	constructor(shooterObj, dir) {
+	constructor(shooterObj) {
 		this.position = shooterObj.position;
 		this.tileFrom = shooterObj.tileFrom;
-		this.direction = dir.direction;
+		this.direction = shooterObj.direction;
 		this.dimensions = [40, 40];
-		if (dir.direction == 0) { //right
+		if (this.direction == 0) { //right
 			this.tileTo = [shooterObj.tileFrom[0]+1,shooterObj.tileFrom[1]];
 		}
-		else if (dir.direction == 2) { //up
+		else if (this.direction == 2) { //up
 			this.tileTo = [shooterObj.tileFrom[0], shooterObj.tileFrom[1]-1]
 		}
-		else if (dir.direction == 1) {
+		else if (this.direction == 1) {
 			this.tileTo = [shooterObj.tileFrom[0]-1, shooterObj.tileFrom[1]]
 		}
-		else if (dir.direction == 3) { //down
+		else if (this.direction == 3) { //down
 			this.tileTo = [shooterObj.tileFrom[0], shooterObj.tileFrom[1]+1]
 		}
 		else{
@@ -673,6 +674,8 @@ class Character {
 		this.sprites[directions.left] = [{ x: 35, y: 205, w: 35, h: 35 }];
 		this.sprites[directions.up] = [{ x: 35, y: 170, w: 35, h: 35 }];
 		this.sprites[directions.down] = [{ x: 0, y: 170, w: 35, h: 35 }];
+		this.attackSpeed = inventorySpeed[0];
+		this.lastShot = 0;
 	}
 	//THE BELOW FUNCTIONS PLACE THE SPRITE AT THE DESIRED SPAWN POINT##############################################
 	//#############################################################################################################
@@ -730,7 +733,6 @@ class Character {
 	dead() {
 		window.location.href = "test.html";
 	}
-	
 
 	//########################################SPRITE############################################################
 	//#######################################MOVEMENT###########################################################
@@ -767,8 +769,9 @@ class Character {
 		this.timeMoved = t;
 		this.direction = directions.down;
 	}
-	attack(dr) {
-		var a = new Arrow(this,dr)
+	attack(player,t) {
+		this.lastShot = t;
+		var a = new Arrow(player,player)
 		arrowList.push(a)
 	}
 }
@@ -1024,8 +1027,6 @@ window.onload = function() {
 	inventoryRange = [item1.range];
 	inventorySpeed = [item1.speed];
 
-
-
 	this.crabImage.src = "assets/images/lvl1crab.png";
 	this.lvl2crabImage.src = "assets/images/lvl2crab.png";
 	this.lvl3crabImage.src = "assets/images/lvl3crab.png";
@@ -1165,9 +1166,12 @@ function drawMap() {
 	
 	//if space is pressed, attack
 	if(keysDown[13] == true){
-		keysDown[13] == false;
-		player.attack(player,player.direction);
-		
+		keysDown[13] = false;
+		if (player.lastShot == 0){
+			player.attack(player,currentFrameTime);
+		}
+		else if ((currentFrameTime - player.lastShot) >= inventorySpeed[0])
+			player.attack(player,currentFrameTime);
 	}
 
 	//Creates crabs and randomly moves them
