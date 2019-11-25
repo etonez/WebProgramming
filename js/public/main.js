@@ -864,7 +864,8 @@ window.onload = function() {
 	//sends position of player to the server every 100 milliseconds
 	window.setInterval(function() {
 		getPosition();
-	}, 100);
+		console.log("x of char is: " + player.position[0] + ", y of char is: " + player.position[1]);
+	}, 1000);
 	//assigning the ctx variables to their respective canvases
 	ctx = document.getElementById("map").getContext("2d");
 	ctx_hp = document.getElementById("playerhp").getContext("2d");
@@ -1092,6 +1093,14 @@ function drawStats() {
 	ctx_stats.font = "30px Small Fonts"
 	ctx_stats.textAlign = "center";
 	ctx_stats.fillText("Stats", 130, 30);
+	ctx_stats.textAlign = "left";
+	ctx_stats.font = "20px Small Fonts"
+	ctx_stats.fillText("Health: " + player.gethp() + "/100", 10, 80);
+	ctx_stats.fillText("Damage: " + inventoryDamage[0], 10, 130);
+	ctx_stats.fillText("Range: " + inventoryRange[0], 10, 180);
+	ctx_stats.fillText("Level: " , 10, 230);
+
+
 }
 
 //draws the main canvas
@@ -1384,6 +1393,8 @@ ctx.drawImage(
 	playx,
 	playy
 );*/
+
+	
 	//console.log("x of char is: " + player.position[0] + ", y of char is: " + player.position[1]);
 
 	//telling the browser to update the animation with this function before the next paint
