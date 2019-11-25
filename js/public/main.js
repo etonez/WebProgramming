@@ -589,14 +589,14 @@ class Arrow {
 		this.position = shooterObj.position;
 		this.tileFrom = shooterObj.tileFrom;
 		this.direction = shooterObj.direction;
-		this.dimensions = [40, 40];
+		this.dimensions = [40, 20];
 		if (this.direction == 0) { //right
 			this.tileTo = [shooterObj.tileFrom[0]+1,shooterObj.tileFrom[1]];
 		}
 		else if (this.direction == 2) { //up
 			this.tileTo = [shooterObj.tileFrom[0], shooterObj.tileFrom[1]-1]
 		}
-		else if (this.direction == 1) {
+		else if (this.direction == 1) { //left
 			this.tileTo = [shooterObj.tileFrom[0]-1, shooterObj.tileFrom[1]]
 		}
 		else if (this.direction == 3) { //down
@@ -631,6 +631,7 @@ class Arrow {
 		if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
 			return false;
 		}
+		if (this.tileFrom)
 		var moveSpeed = 0.04;
 		if (t - this.timeMoved >= moveSpeed) {
 			this.placeAt(this.tileTo[0], this.tileTo[1]);
@@ -1172,6 +1173,7 @@ function drawMap() {
 		}
 		else if ((currentFrameTime - player.lastShot) >= inventorySpeed[0])
 			player.attack(player,currentFrameTime);
+			//requestAnimationFrame(drawMap);
 	}
 
 	//Creates crabs and randomly moves them
